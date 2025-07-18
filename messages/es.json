@@ -1,0 +1,144 @@
+{
+    "NotFound": {
+        "title": "Página no encontrada",
+        "subtitle": "Lo sentimos, no podemos encontrar la página que estas buscando.",
+        "buttonLabel": "Regresar"
+    },
+    "LoginPage": {
+        "welcome": "Bienvenido/a a Qi",
+        "user": "Usuario de dolibarr",
+        "pass": "Contraseña",
+        "login": "Inicia sesión",
+        "or": "O",
+        "microsoftLogin": "Entra con tu cuenta de Microsoft",
+        "terms": "Términos y condiciones..."
+    },
+    "LocaleSwitch": {
+        "en": "Inglés",
+        "es": "Español"
+    },
+    "Ecommerce": {
+        "catalog": {
+            "product": {
+                "title": "Búsqueda",
+                "catalogSubtitle": "Aquí puedes buscar cualquier producto del catálogo",
+                "storePrice": "Precio en tiendas",
+                "onlinePrice": "Precio en línea",
+                "availability": "Disponibilidad",
+                "notAvailable": "Producto no disponible",
+                "addToCart": "Añadir al carrito",
+                "createTitle": "Alta de producto",
+                "generalInfo": {
+                    "title": "Información general",
+                    "sku": "SKU",
+                    "productName": "Nombre del producto",
+                    "supplier": "Proveedor",
+                    "goSupplierPage": "Ir a la página del proveedor",
+                    "model": "Modelo",
+                    "brand": "Marca",
+                    "manufacturer": "Fabricante",
+                    "supplierDimensions": "Dimensiones del proveedor",
+                    "dimensions": "Dimensiones",
+                    "length": "Largo",
+                    "width": "Ancho",
+                    "height": "Alto",
+                    "weight": "Peso"
+                },
+                "descriptions": {
+                    "title": "Descripciones",
+                    "detailedDesc": "Descripción larga",
+                    "shortDesc": "Descripción corta"
+                },
+                "images":{
+                    "title": "Imágenes",
+                    "titleDrag": "Haz click o arrastra archivos a esta área para subirlos",
+                    "divider": "O",
+                    "addUrl": "Agrega URL"
+                },
+                "productIdentifiers":{
+                    "title": "Identificadores de producto",
+                    "upc": "UPC",
+                    "serialNumber": "Número de serie",
+                    "mpn": "Número de pieza del fabricante (MPN)",
+                    "gtin": "Número global de artículo comercial (GTIN)",
+                    "bpn": "Número de cubo de recolección (BPN)"
+                },
+                "marketInfo": {
+                    "title": "Información de marketplaces",
+                    "productType": "Tipo de producto",
+                    "physical": "Físico",
+                    "digital": "Digital",
+                    "condition": "Condición",
+                    "new": "Nuevo",
+                    "used": "Usado",
+                    "availability": "Texto de disponibilidad",
+                    "warrantyInfo": "Información de la garantía",
+                    "featuredProduct": "Producto destacado",
+                    "roviDimensions": "Medidas internas (Rovi)",
+                    "dimensions": "Medidas",
+                    "guitar": "Guitarra",
+                    "bass": "Bajo",
+                    "violin": "Violín",
+                    "melodica": "Melódica",
+                    "littleBox": "Cajita",
+                    "envelope": "Sobre",
+                    "patch": "Parche",
+                    "other": "Otro",
+                    "weight": "Peso",
+                    "specs": "Especificaciones técnicas",
+                    "type": "Tipo",
+                    "spec": "Especificación",
+                    "attribute": "Atributo",
+                    "titleSpec": "Título",
+                    "description": "Descripción",
+                    "remove": "Eliminar",
+                    "addSpec": "Añadir especificación",
+                    "variants": "Variantes",
+                    "variantName": "Nombre de la variante",
+                    "value": "Valor",
+                    "addVariant": "Añadir variante",
+                    "relations": "Relaciones",
+                    "relatedProducts": "Productos relacionados",
+                    "alternativeProducts": "Productos equivalentes",
+                    "replacementProducts": "Productos de reemplazo"
+                },
+                "seoInfo": {
+                    "title": "Información de SEO",
+                    "keyWords": "Palabras clave",
+                    "metaTag": "Descripción de la etiqueta meta"
+                },
+                "taxInfo": {
+                    "title": "Información fiscal",
+                    "satCode": "Código SAT",
+                    "taxClass": "Clase de impuestos",
+                    "ivaPercentage": "Porcentaje de IVA",
+                    "taxProviderCode": "Código fiscal del proveedor de impuestos"
+                },
+                "customsInfo": {
+                    "title": "Información aduanal",
+                    "countryOrigin": "País de origen",
+                    "hsCodes": "Códigos HS",
+                    "destinationCountry": "País de destino",
+                    "hsCode": "Código HS",
+                    "remove": "Eliminar",
+                    "addCode": "Añadir código HS"
+                }
+            },
+            "supplier": {
+                "createTitle": "Alta de proveedor"
+            }
+        }
+    },
+    "Analytics":{
+        "marketReports":{
+            "title": "Reportes",
+            "subtitle": "Monitorea tus ventas de cada marketplace",
+            "grossSales": "Ventas brutas",
+            "soldUnits": "Unidades vendidas",
+            "averagePrice": "Precio promedio",
+            "topProducts": "Productos estrella",
+            "downtrendingProducts": "Productos a la baja",
+            "reportingPeriod": "Periodo"
+        }
+    }
+}

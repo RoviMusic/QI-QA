@@ -1,0 +1,144 @@
+{
+    "NotFound": {
+        "title": "Page not found",
+        "subtitle": "Sorry, we couldn’t find the page you’re looking for.",
+        "buttonLabel": "Go back"
+    },
+    "LoginPage": {
+        "welcome": "Welcome to Qi",
+        "user": "Dolibarr user",
+        "pass": "Password",
+        "login": "Login",
+        "or": "Or",
+        "microsoftLogin": "Login with Microsoft",
+        "terms": "Terms and conditions..."
+    },
+    "LocaleSwitch": {
+        "en": "English",
+        "es": "Spanish"
+    },
+    "Ecommerce": {
+        "catalog": {
+            "product": {
+                "title": "Catalog search",
+                "catalogSubtitle": "Here you can search for any product in the catalog",
+                "storePrice": "In-store price",
+                "onlinePrice": "Online price",
+                "availability": "Availability",
+                "notAvailable": "Product not available",
+                "addToCart": "Add to cart",
+                "createTitle": "Product create",
+                "generalInfo": {
+                    "title": "General information",
+                    "sku": "SKU",
+                    "productName": "Product name",
+                    "supplier": "Supplier",
+                    "goSupplierPage": "Go to supplier page",
+                    "model": "Model",
+                    "brand": "Brand",
+                    "manufacturer": "Manufacturer",
+                    "supplierDimensions": "Supplier dimensions",
+                    "dimensions": "Dimensions",
+                    "length": "Length",
+                    "width": "Width",
+                    "height": "Height",
+                    "weight": "Weight"
+                },
+                "descriptions": {
+                    "title": "Descriptions",
+                    "detailedDesc": "Detailed description",
+                    "shortDesc": "Short description"
+                },
+                "images":{
+                    "title": "Images",
+                    "titleDrag": "Click or drag files to this area to upload",
+                    "divider": "Or",
+                    "addUrl": "Add URL"
+                },
+                "productIdentifiers":{
+                    "title": "Products identifiers",
+                    "upc": "UPC",
+                    "serialNumber": "Serial number",
+                    "mpn": "Manufacturer part number (MPN)",
+                    "gtin": "Global trade item number (GTIN)",
+                    "bpn": "Bin Picking Number (BPN)"
+                },
+                "marketInfo": {
+                    "title": "Markets information",
+                    "productType": "Product type",
+                    "physical": "Physical",
+                    "digital": "Digital",
+                    "condition": "Condition",
+                    "new": "New",
+                    "used": "Used",
+                    "availability": "Availability Text",
+                    "warrantyInfo": "Warranty information",
+                    "featuredProduct": "Featured product",
+                    "roviDimensions": "Rovi's dimensions",
+                    "dimensions": "Dimensions",
+                    "guitar": "Guitar",
+                    "bass": "Bass",
+                    "violin": "Violin",
+                    "melodica": "Melodica",
+                    "littleBox": "Little box",
+                    "envelope": "Envelope",
+                    "patch": "Patch",
+                    "other": "Other",
+                    "weight": "Weight",
+                    "specs": "Technical specifications",
+                    "type": "Type",
+                    "spec": "Spec",
+                    "attribute": "Attribute",
+                    "titleSpec": "Title",
+                    "description": "Description",
+                    "remove": "Remove",
+                    "addSpec": "Add spec",
+                    "variants": "Variants",
+                    "variantName": "Variant name",
+                    "value": "Value",
+                    "addVariant": "Add variant",
+                    "relations": "Relations",
+                    "relatedProducts": "Related products",
+                    "alternativeProducts": "Alternative products",
+                    "replacementProducts": "Replacement Products"
+                },
+                "seoInfo": {
+                    "title": "SEO information",
+                    "keyWords": "Key words",
+                    "metaTag": "Meta tag description"
+                },
+                "taxInfo": {
+                    "title": "Tax information",
+                    "satCode": "SAT code",
+                    "taxClass": "Tax class",
+                    "ivaPercentage": "IVA percentage",
+                    "taxProviderCode": "Tax provider fiscal code"
+                },
+                "customsInfo": {
+                    "title": "Customs information",
+                    "countryOrigin": "Country of Origin",
+                    "hsCodes": "HS codes",
+                    "destinationCountry": "Destination Country",
+                    "hsCode": "HS code",
+                    "remove": "Remove",
+                    "addCode": "Add HS code"
+                }
+            },
+            "supplier": {
+                "createTitle": "Supplier create"
+            }
+        }
+    },
+    "Analytics":{
+        "marketReports":{
+            "title": "Report",
+            "subtitle": "Track your sales of each marketplace",
+            "grossSales": "Gross sales",
+            "soldUnits": "Sold units",
+            "averagePrice": "Average price",
+            "topProducts": "Top products",
+            "downtrendingProducts": "Downtrending products",
+            "reportingPeriod": "Reporting period"
+        }
+    }
+}
