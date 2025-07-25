@@ -1,11 +1,17 @@
+"use client";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { MainTitle } from "../../../components/core/Titulo";
 import { providerMap, signIn } from "@/lib/auth";
-import { Button, Divider, Input } from "antd";
+import { Button, Divider, Input, Form } from "antd";
 import { useTranslations } from "next-intl";
 import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { authService } from "../services/authService";
+
+import FormItem from "antd/es/form/FormItem";
+import Password from "antd/es/input/Password";
+import { LoginType } from "../types/loginTypes";
 
 const SIGNIN_ERROR_URL = "/error";
 
@@ -14,6 +20,58 @@ export default function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const t = useTranslations("LoginPage");
+  const router = useRouter()
+
+  // TEMPORAL ANTES DEL HTTPS
+  const [form] = Form.useForm<LoginType>();
+
+  const onFinish = (values: LoginType) => {
+    authService
+      .dolibarAuth(values)
+      .then((res) => {
+        if(res){
+          router.push('/dashboard')
+        }
+      })
+      .catch((e) => {
+        console.error("Error en auth ", e);
+      });
+  };
+
+  // const onFinish = async (values: LoginType) => {
+  //   try {
+  //     const response = await fetch(
+  //       "http://187.189.243.250:8001/api/sso/login",
+  //       {
+  //         method: "POST",
+  //         credentials: "include",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "Access-Control-Allow-Origin": "*",
+  //         },
+  //         body: JSON.stringify({ values }),
+  //       }
+  //     );
+
+  //     const data = await response.json();
+  //     console.log("dataaa? ", data);
+
+  //     if (data.success) {
+  //       const dolibarrWindow = window.open(data.redirect_url, "_blank");
+
+  //       // Esperar a que la página cargue para inyectar cookies
+  //       dolibarrWindow!.onload = () => {
+  //         document.cookie = `DOLSESSID=${data.cookies.DOLSESSID}; path=/`;
+  //       };
+  //     }
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //   }
+  // };
+
+  const onFinishFailed = (error: any) => {
+    console.error(error);
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -26,7 +84,41 @@ export default function LoginForm({
           </a>
           <MainTitle>{t("welcome")}</MainTitle>
         </div>
-        <form
+        <Form
+          name="form-login"
+          layout="vertical"
+          autoComplete="off"
+          form={form}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+        >
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <div>
+                <FormItem<LoginType> label={t("user")} name="user">
+                  <Input name="username" id="username" required />
+                </FormItem>
+              </div>
+
+              <div>
+                <FormItem<LoginType> label={t("pass")} name="pass">
+                  <Input
+                    type="password"
+                    name="password"
+                    id="password"
+                    required
+                  />
+                </FormItem>
+              </div>
+            </div>
+            <FormItem>
+              <Button htmlType="submit" type="primary" style={{width: '100%'}}>
+                {t("login")}
+              </Button>
+            </FormItem>
+          </div>
+        </Form>
+        {/* <form
           action={async (formData) => {
             "use server";
             try {
@@ -55,8 +147,8 @@ export default function LoginForm({
               {t("login")}
             </Button>
           </div>
-        </form>
-        <Divider>{t("or")}</Divider>
+        </form> */}
+        {/* <Divider>{t("or")}</Divider>
         {Object.values(providerMap).map((provider) => (
           <form
             key={provider.id}
@@ -87,7 +179,7 @@ export default function LoginForm({
               <span>{t("microsoftLogin")}</span>
             </Button>
           </form>
-        ))}
+        ))} */}
       </div>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
         {t("terms")}

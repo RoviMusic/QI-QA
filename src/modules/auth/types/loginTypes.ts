@@ -12,10 +12,16 @@ export interface ExternalApiResponse {
 }
 
 export interface LoginResponse {
-  isAuthenticated: boolean,
+  success: boolean,
   user: {
-    email: string,
+    id: string,
+    login: string,
+    entity: string,
+    admin: boolean,
     name: string,
-    id: string
-  }
+    email: string,
+  },
+  dolibarr_url: string,
+  session_id: string,
+  message: string
 }

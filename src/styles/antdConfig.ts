@@ -37,6 +37,9 @@ const defaultTheme: ThemeConfig = {
       itemActiveBg: '#FAB627',
       itemSelectedBg: '#FAB627',
       itemSelectedColor: '#fff'
+    },
+    Button: {
+      colorBgContainerDisabled: '#D9D9D9'
     }
   },
 };

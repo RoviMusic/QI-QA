@@ -13,14 +13,14 @@ export default async function MainLayout({
 }>) {
   const session = await auth();
 
-  if(!session?.user) return redirect('/')
+  //if(!session?.user) return redirect('/')
 
   return (
     <>
       <Layout hasSider className={styles.layout}>
         <Layout className={styles.meshLayout}>
           <MainHeader />
-          <pre>{session.user.name ?? 'hello'}</pre>
+          {/* <pre>{session.user.name ?? 'hello'}</pre> */}
           <MainContent>{children}</MainContent>
         </Layout>
       </Layout>

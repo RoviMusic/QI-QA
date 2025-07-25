@@ -1,20 +1,21 @@
-'use client'
+"use client";
 import { MenuDummy } from "@/shared/types/menuTypes";
 import { Menu, Space, MenuProps } from "antd";
 import NavButton from "../core/NavButton";
 import { iconComponents } from "@/lib/constants/Icon";
 import { MenuType } from "@/shared/types/menuTypes";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-export default function AreaMenu() {
+export default function AreaMenu({ mode = 'horizontal' }: MenuProps) {
   const areas = MenuDummy;
   const pathname = usePathname();
   const [path, setPath] = useState<string>(pathname);
+  const router = useRouter();
 
   useEffect(() => {
     setPath(pathname);
@@ -46,7 +47,9 @@ export default function AreaMenu() {
           ? item.children.map((child) =>
               getItemMenu(
                 child.path ? (
-                  <Link href={child.path} replace>{child.label}</Link>
+                  <Link href={child.path} replace>
+                    {child.label}
+                  </Link>
                 ) : (
                   child.label
                 ),
@@ -56,7 +59,9 @@ export default function AreaMenu() {
                   ? child.children.map((childest) =>
                       getItemMenu(
                         childest.path ? (
-                          <Link href={childest.path} replace>{childest.label}</Link>
+                          <Link href={childest.path} replace>
+                            {childest.label}
+                          </Link>
                         ) : (
                           childest.label
                         ),
@@ -91,17 +96,65 @@ export default function AreaMenu() {
     return IconComponent();
   }
 
+  // const items: MenuItem[] = [
+  //   {
+  //     label: "Dashboard",
+  //     key: "dashboard",
+  //     icon: getIcon("Gauge"),
+  //     onClick: () => router.push("/dashboard"),
+  //   },
+  //   {
+  //     label: "Rovi Music Tools",
+  //     key: "tools",
+  //     icon: getIcon("Toolbox"),
+  //     children: [
+  //       {
+  //         label: "Procesador & Sincronizador",
+  //         key: "processor",
+  //         onClick: () => router.push("/tools/syncprocess"),
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     label: "Picking",
+  //     key: "picking",
+  //     icon: getIcon("Truck"),
+  //     onClick: () => router.push("/tools/picking"),
+  //   },
+  // ];
+
+  const items: MenuItem[] = [
+    {
+      label: "QI",
+      key: "dashboard",
+      icon: getIcon("Gauge"),
+      onClick: () => router.push("/dashboard"),
+    },
+    {
+      label: "Dolibarr",
+      key: "dol",
+      icon: getIcon("Toolbox"),
+      onClick: () => router.push("/dolibarr"),
+    },
+    {
+      label: "Ecommerce",
+      key: "magento",
+      icon: getIcon("Cart"),
+      onClick: () => router.push("/magento"),
+    },
+  ];
+
   return (
     <>
-      <div className="px-2">
+      <div className={mode == 'horizontal' ? 'w-xl' : ''}>
         {/* <Space>
           {areas.map((item) => (
             <>
-              <NavButton area={item} style={path.includes(`/${item.label.toLocaleLowerCase()}`)  ? 'active' : 'inactive'}>{item.label}</NavButton>
+              <NavButton area={..item} style={path.includes(`/${item.label.toLocaleLowerCase()}`)  ? 'active' : 'inactive'}>{item.label}</NavButton>
             </>
           ))}
         </Space> */}
-        <Menu items={obtenerMenu()} mode="horizontal" />
+        <Menu items={items} mode={mode} />
       </div>
     </>
   );

@@ -10,10 +10,10 @@ type TitleProps = {
   level?: (typeof TITLE_ELE_LIST)[number];
 };
 
-function MainTitle({ children }: PropsWithChildren) {
+function MainTitle({ children, style }: TitleProps) {
   return (
     <>
-      <Title level={2} className="font-bold text-primary">
+      <Title level={2} className="font-bold text-primary" style={style}>
         {children}
       </Title>
     </>

@@ -8,15 +8,20 @@ import { authService } from "@/modules/auth/services/authService";
 
 const providers: Provider[] = [
   Credentials({
+    id: 'dolibarr-sso',
+    name: 'Dolibarr SSO',
     credentials: {
-      username: { label: "Usuario" },
-      password: { label: "Contraseña", type: "password" },
+       username: { label: "Usuario" },
+       password: { label: "Contraseña", type: "password" },
+      //user: { type: 'object' }
     },
     authorize: async (credentials) => {
       try {
         const { username, password } = await signInSchema.parseAsync(credentials);
 
-        const user = await authService.authenticate(username, password);
+        //const user = await authService.authenticate(username, password);
+        const user = credentials.username;
+        console.log('user de auth ', user)
 
         if (!user) {
           throw new Error("Usuario inválido.");

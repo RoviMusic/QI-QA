@@ -34,4 +34,14 @@ function MainButton({ onPress, icon, disabled = false, children }: ButtonProps) 
   );
 }
 
-export { CircleButton, MainButton };
+function LargeButton({onPress, children}: ButtonProps) {
+  return(
+    <>
+    <div className="bg-black text-white p-5 rounded-3xl text-center hover:bg-gray-700 hover:cursor-pointer" onClick={onPress}>
+      {children}
+    </div>
+    </>
+  )
+}
+
+export { CircleButton, MainButton, LargeButton };

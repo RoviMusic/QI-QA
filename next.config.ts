@@ -43,6 +43,11 @@ const nextConfig: NextConfig = {
         source: "/:path*.php",
         destination: "http://192.168.0.234/rovimusic/:path*.php",
       },
+      // Capturar TODAS las rutas JS
+      {
+        source: "/:path*.js",
+        destination: "http://192.168.0.234/rovimusic/:path*.js",
+      },
     ];
   },
 
