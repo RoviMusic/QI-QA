@@ -1,4 +1,4 @@
-import GlassCard from "@/components/core/GlassCard";
+import { GlassCard } from "@/components/core/GlassCard";
 import { Subtitle } from "@/components/core/Titulo";
 import { Col, Flex, Form, Input, Row } from "antd";
 import { useTranslations } from "next-intl";

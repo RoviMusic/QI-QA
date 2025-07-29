@@ -1,5 +1,5 @@
-'use client'
-import GlassCard from "@/components/core/GlassCard";
+"use client";
+import { GlassCard } from "@/components/core/GlassCard";
 import { DefaultTitle, LabelTitle, MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";
@@ -59,61 +59,59 @@ const dataErrors: ListType[] = getItemsError(3);
 export default function Processor() {
   return (
     <>
-      <Container>
-        <Flex gap={20} vertical>
-          <Flex gap={10} align="center" justify="space-between">
-            <Space>
-              <MainTitle>Procesador de órdenes</MainTitle>
-              <Badge status="success" text="Procesador en funcionamiento" />
-            </Space>
+      <Flex gap={20} vertical>
+        <Flex gap={10} align="center" justify="space-between">
+          <Space>
+            <MainTitle>Procesador de órdenes</MainTitle>
+            <Badge status="success" text="Procesador en funcionamiento" />
+          </Space>
 
-            <GlassCard>
-              <Flex vertical>
-                <LabelTitle>Filtrar por:</LabelTitle>
+          <GlassCard>
+            <Flex vertical>
+              <LabelTitle>Filtrar por:</LabelTitle>
 
-                <Radio.Group
-                  options={[
-                    { value: "meli", label: "Mercado Libre" },
-                    { value: "ama", label: "Amazon" },
-                    { value: "wl", label: "Walmart" },
-                    { value: "cop", label: "Coppel" },
-                  ]}
-                />
-              </Flex>
-            </GlassCard>
-          </Flex>
-
-          <Row gutter={[20, 20]}>
-            <Col xl={8} lg={8} md={12} sm={24} xs={24}>
-              <GlassCard>
-                <ItemsList
-                  title="Órdenes procesadas"
-                  items={dataProcessed}
-                  type="Processed"
-                />
-              </GlassCard>
-            </Col>
-            <Col xl={8} lg={8} md={12} sm={24} xs={24}>
-              <GlassCard>
-                <ItemsList
-                  title="Órdenes pendientes"
-                  items={dataPending}
-                  type="Pending"
-                />
-              </GlassCard>
-            </Col>
-            <Col xl={8} lg={8} md={24} sm={24} xs={24}>
-              <GlassCard style={{ border: "2px solid #FA312B" }}>
-                <ItemsList
-                  title="Órdenes con error"
-                  items={dataErrors}
-                  type="Error"
-                />
-              </GlassCard>
-            </Col>
-          </Row>
+              <Radio.Group
+                options={[
+                  { value: "meli", label: "Mercado Libre" },
+                  { value: "ama", label: "Amazon" },
+                  { value: "wl", label: "Walmart" },
+                  { value: "cop", label: "Coppel" },
+                ]}
+              />
+            </Flex>
+          </GlassCard>
         </Flex>
-      </Container>
+
+        <Row gutter={[20, 20]}>
+          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
+            <GlassCard>
+              <ItemsList
+                title="Órdenes por procesar"
+                items={dataProcessed}
+                type="Processed"
+              />
+            </GlassCard>
+          </Col>
+          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
+            <GlassCard>
+              <ItemsList
+                title="Órdenes sincronizadas"
+                items={dataPending}
+                type="Pending"
+              />
+            </GlassCard>
+          </Col>
+          <Col xl={8} lg={8} md={24} sm={24} xs={24}>
+            <GlassCard style={{ border: "2px solid #FA312B" }}>
+              <ItemsList
+                title="Errores"
+                items={dataErrors}
+                type="Error"
+              />
+            </GlassCard>
+          </Col>
+        </Row>
+      </Flex>
     </>
   );
 }

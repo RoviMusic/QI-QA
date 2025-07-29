@@ -3,11 +3,22 @@ import LoadingOverlay from "@achmadk/react-loading-overlay/nextjs";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { PropsWithChildren } from "react";
 
-export default function LoadingAnimation({ children }: PropsWithChildren) {
+type Props = {
+  children: React.ReactNode;
+  isActive: boolean;
+}
+
+export default function LoadingAnimation({ children, isActive }: Props) {
   return (
     <LoadingOverlay
-      active={false}
+      active={isActive}
       text="Cargando..."
+      styles={{
+        overlay: (base) => ({
+          ...base,
+          height: "100vh",
+        }),
+      }}
       spinner={
         <DotLottieReact
           renderConfig={{ autoResize: true }}

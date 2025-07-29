@@ -1,4 +1,4 @@
-import GlassCard from "@/components/core/GlassCard";
+import { GlassCard } from "@/components/core/GlassCard";
 import { DefaultTitle, Subtitle } from "@/components/core/Titulo";
 import {
   Button,

@@ -1,5 +1,5 @@
 "use client";
-import GlassCard from "@/components/core/GlassCard";
+import {GlassCard} from "@/components/core/GlassCard";
 import { DefaultTitle, LabelTitle, MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";

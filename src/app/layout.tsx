@@ -51,7 +51,7 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning className="h-full">
       <body suppressHydrationWarning className="h-full">
         <AppProviders IntlLocale={locale} messages={messages}>
-          <LoadingAnimation>{children}</LoadingAnimation>
+          {children}
         </AppProviders>
       </body>
     </html>

@@ -1,5 +1,5 @@
 "use client";
-import GlassCard from "@/components/core/GlassCard";
+import { GlassCard } from "@/components/core/GlassCard";
 import { CatalogType } from "../types/catalogTypes";
 import { Col, Flex, Row, Space, Typography } from "antd";
 import CategoriesBreadCrumb from "@/components/core/CategoriesBreadcrumb";

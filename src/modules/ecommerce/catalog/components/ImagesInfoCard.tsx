@@ -1,4 +1,4 @@
-import GlassCard from "@/components/core/GlassCard";
+import { GlassCard } from "@/components/core/GlassCard";
 import { Subtitle } from "@/components/core/Titulo";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -11,7 +11,7 @@ import Link from "next/link";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-export default function AreaMenu({ mode = 'horizontal' }: MenuProps) {
+export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
   const areas = MenuDummy;
   const pathname = usePathname();
   const [path, setPath] = useState<string>(pathname);
@@ -126,9 +126,34 @@ export default function AreaMenu({ mode = 'horizontal' }: MenuProps) {
   const items: MenuItem[] = [
     {
       label: "QI",
-      key: "dashboard",
+      key: "qi",
       icon: getIcon("Gauge"),
-      onClick: () => router.push("/dashboard"),
+      //onClick: () => router.push("/dashboard"),
+      children: [
+        {
+          label: "Dashboard",
+          key: "dashboard",
+          icon: getIcon("Gauge"),
+          onClick: () => router.push("/dashboard"),
+        },
+        {
+          label: "Tools",
+          key: "tools",
+          icon: getIcon("Toolbox"),
+          children: [
+            {
+              label: "Sincronizador y Procesador",
+              key: "syncprocess",
+              onClick: () => router.push("/tools/syncprocess"),
+            },
+            {
+              label: "Fullfilment",
+              key: "picking",
+              onClick: () => router.push("/tools/fullfilment"),
+            },
+          ],
+        },
+      ],
     },
     {
       label: "Dolibarr",
@@ -146,7 +171,7 @@ export default function AreaMenu({ mode = 'horizontal' }: MenuProps) {
 
   return (
     <>
-      <div className={mode == 'horizontal' ? 'w-xl' : ''}>
+      <div className={mode == "horizontal" ? "w-xl" : ""}>
         {/* <Space>
           {areas.map((item) => (
             <>

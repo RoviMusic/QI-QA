@@ -2,7 +2,7 @@
 // **** Ant Design configuration ****
 import "@ant-design/v5-patch-for-react-19";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { ConfigProvider } from "antd";
+import { App, ConfigProvider } from "antd";
 import { defaultTheme } from "@/styles/antdConfig";
 import locale from "antd/locale/es_ES";
 // **** end ****
@@ -30,13 +30,15 @@ export default function AppProviders({
   return (
     <>
       <NextIntlClientProvider locale={IntlLocale} messages={messages}>
-        <ConfigProvider theme={defaultTheme} locale={locale}>
-          <QueryClientProvider client={queryClient}>
-            <LoadingStoreProvider>
-              <AntdRegistry>{children}</AntdRegistry>
-            </LoadingStoreProvider>
-          </QueryClientProvider>
-        </ConfigProvider>
+        <AntdRegistry>
+          <ConfigProvider theme={defaultTheme} locale={locale}>
+            <QueryClientProvider client={queryClient}>
+              <LoadingStoreProvider>
+                <App>{children}</App>
+              </LoadingStoreProvider>
+            </QueryClientProvider>
+          </ConfigProvider>
+        </AntdRegistry>
       </NextIntlClientProvider>
     </>
   );

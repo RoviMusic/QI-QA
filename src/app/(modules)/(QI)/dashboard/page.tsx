@@ -1,6 +1,6 @@
 "use client";
 
-import GlassCard from "@/components/core/GlassCard";
+import {GlassCard, GlassCardHoverable} from "@/components/core/GlassCard";
 import { MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import { getIcon } from "@/lib/utils";
@@ -18,22 +18,22 @@ export default function DashboardPage() {
           align="middle"
           style={{ height: "100%" }}
         >
-          <Col onClick={() => router.push('ecommerce/catalog')}>
-            <GlassCard >
+          <Col xxl={8} xl={8}>
+            <GlassCardHoverable onPress={() => router.push('tools/syncprocess')}>
               <Flex vertical justify="center" align="center">
-                <MainTitle>{getIcon("Store")}</MainTitle>
-                <MainTitle>Catálogo</MainTitle>
+                <MainTitle>{getIcon("Rotate")}</MainTitle>
+                <MainTitle>Sincronizador y Procesador</MainTitle>
               </Flex>
-            </GlassCard>
+            </GlassCardHoverable>
           </Col>
 
-          <Col onClick={() => router.push('tools/picking')}>
-            <GlassCard>
+          <Col xxl={8} xl={8}>
+            <GlassCardHoverable onPress={() => router.push('tools/picking')}>
               <Flex vertical justify="center" align="center">
                 <MainTitle>{getIcon("Truck")}</MainTitle>
-                <MainTitle>Picking</MainTitle>
+                <MainTitle>Fullfilment</MainTitle>
               </Flex>
-            </GlassCard>
+            </GlassCardHoverable>
           </Col>
         </Row>
       </Container>

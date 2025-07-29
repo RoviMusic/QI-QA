@@ -10,7 +10,7 @@ incluye el componente del loginForm, componente para seleccionar el lenguaje del
 import LoginForm from "@/modules/auth/components/loginForm";
 import { Particles } from "@/components/magicui/particles";
 import LocaleSelect from "@/components/LocaleSelect";
-import GlassCard from "@/components/core/GlassCard";
+import { GlassCard } from "@/components/core/GlassCard";
 
 import { auth, signIn } from "@/lib/auth";
 import { redirect } from "next/navigation";

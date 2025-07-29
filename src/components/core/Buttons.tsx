@@ -1,5 +1,5 @@
 import { getIcon } from "@/lib/utils";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { ReactNode } from "react";
 
 type ButtonProps = {
@@ -7,21 +7,29 @@ type ButtonProps = {
   children?: ReactNode;
   icon?: string;
   disabled?: boolean | undefined;
+  tooltip?: string;
 };
 
-function CircleButton({ onPress, icon }: ButtonProps) {
+function CircleButton({ onPress, icon, tooltip }: ButtonProps) {
   return (
     <>
-      <Button
-        shape="circle"
-        icon={getIcon(icon ?? "Default")}
-        onClick={onPress}
-      />
+      <Tooltip title={tooltip}>
+        <Button
+          shape="circle"
+          icon={getIcon(icon ?? "Default")}
+          onClick={onPress}
+        />
+      </Tooltip>
     </>
   );
 }
 
-function MainButton({ onPress, icon, disabled = false, children }: ButtonProps) {
+function MainButton({
+  onPress,
+  icon,
+  disabled = false,
+  children,
+}: ButtonProps) {
   return (
     <Button
       onClick={onPress}
@@ -34,14 +42,17 @@ function MainButton({ onPress, icon, disabled = false, children }: ButtonProps) 
   );
 }
 
-function LargeButton({onPress, children}: ButtonProps) {
-  return(
+function LargeButton({ onPress, children }: ButtonProps) {
+  return (
     <>
-    <div className="bg-black text-white p-5 rounded-3xl text-center hover:bg-gray-700 hover:cursor-pointer" onClick={onPress}>
-      {children}
-    </div>
+      <div
+        className="bg-black text-white p-5 rounded-3xl text-center hover:bg-gray-700 hover:cursor-pointer"
+        onClick={onPress}
+      >
+        {children}
+      </div>
     </>
-  )
+  );
 }
 
 export { CircleButton, MainButton, LargeButton };

@@ -1,5 +1,5 @@
 "use client";
-import GlassCard from "@/components/core/GlassCard";
+import { GlassCard } from "@/components/core/GlassCard";
 import { MainTitle } from "@/components/core/Titulo";
 import { Col, Flex, Form, Input, Row, Space } from "antd";
 import { useTranslations } from "next-intl";

@@ -1,5 +1,5 @@
 "use client";
-import GlassCard from "@/components/core/GlassCard";
+import { GlassCard } from "@/components/core/GlassCard";
 import { DefaultTitle, LabelTitle, MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";
@@ -107,54 +107,52 @@ export default function Sync() {
 
   return (
     <>
-      <Container>
-        <Flex gap={20} vertical>
-          <Flex gap={10} align="center">
-            <MainTitle>Sincronizador de ordenes</MainTitle>
-            <Badge status="success" text="Sincronizador en funcionamiento"/>
-          </Flex>
-          <Row gutter={[20, 20]}>
-            {dataSync.map((item) => (
-              <Col key={item._id} xl={6} lg={6} md={3} sm={6} xs={6}>
-                <GlassCard>
-                  <Flex vertical gap={20}>
-                    <Space direction="vertical">
-                      <DefaultTitle level={3}>{item.market}</DefaultTitle>
-                      <DefaultTitle>
-                        Última sincronización:{" "}
-                        {item.lastSync.toLocaleTimeString()}
-                      </DefaultTitle>
-                    </Space>
-                    <Statistic
-                      title="Elementos sincronizados"
-                      value={item.totalSyncItems}
-                      style={{ textAlign: "center" }}
-                      valueStyle={{
-                        textAlign: "center",
-                        color: "green",
-                        fontWeight: "bold",
-                      }}
-                      suffix={"/" + item.totalItems}
-                    />
-
-                    <Space
-                      onClick={() => openError(item.errors)}
-                      className="hover:underline hover:cursor-pointer"
-                    >
-                      <DefaultTitle
-                        level={5}
-                        style={{ color: "#FF5652", fontWeight: "bold" }}
-                      >
-                        Errores encontrados: {item.errors.length}
-                      </DefaultTitle>
-                    </Space>
-                  </Flex>
-                </GlassCard>
-              </Col>
-            ))}
-          </Row>
+      <Flex gap={20} vertical>
+        <Flex gap={10} align="center">
+          <MainTitle>Sincronizador de publicaciones</MainTitle>
+          <Badge status="success" text="Sincronizador en funcionamiento" />
         </Flex>
-      </Container>
+        <Row gutter={[20, 20]}>
+          {dataSync.map((item) => (
+            <Col key={item._id} xl={6} lg={6} md={3} sm={6} xs={6}>
+              <GlassCard>
+                <Flex vertical gap={20}>
+                  <Space direction="vertical">
+                    <DefaultTitle level={3}>{item.market}</DefaultTitle>
+                    <DefaultTitle>
+                      Última sincronización:{" "}
+                      {item.lastSync.toLocaleTimeString()}
+                    </DefaultTitle>
+                  </Space>
+                  <Statistic
+                    title="Elementos sincronizados"
+                    value={item.totalSyncItems}
+                    style={{ textAlign: "center" }}
+                    valueStyle={{
+                      textAlign: "center",
+                      color: "green",
+                      fontWeight: "bold",
+                    }}
+                    suffix={"/" + item.totalItems}
+                  />
+
+                  <Space
+                    onClick={() => openError(item.errors)}
+                    className="hover:underline hover:cursor-pointer"
+                  >
+                    <DefaultTitle
+                      level={5}
+                      style={{ color: "#FF5652", fontWeight: "bold" }}
+                    >
+                      Errores encontrados: {item.errors.length}
+                    </DefaultTitle>
+                  </Space>
+                </Flex>
+              </GlassCard>
+            </Col>
+          ))}
+        </Row>
+      </Flex>
 
       <Modal
         title={<DefaultTitle level={4}>Listado de errores</DefaultTitle>}

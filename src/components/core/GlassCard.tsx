@@ -1,12 +1,13 @@
 import { CSSProperties, ReactNode } from "react";
 import styles from "@/styles/GlassCard.module.css";
 
-interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface GlassCardProps{
   children: ReactNode;
   style?: CSSProperties;
+  onPress?: () => void;
 }
 
-export default function GlassCard({ children, style }: GlassCardProps) {
+function GlassCard({ children, style }: GlassCardProps) {
   return (
     <>
       <div style={style} className={styles.glass}>
@@ -15,3 +16,15 @@ export default function GlassCard({ children, style }: GlassCardProps) {
     </>
   );
 }
+
+function GlassCardHoverable({ children, style, onPress }: GlassCardProps) {
+  return (
+    <>
+      <div style={style} className={styles.glassHoverable} onClick={onPress}>
+        {children}
+      </div>
+    </>
+  );
+}
+
+export { GlassCard, GlassCardHoverable };

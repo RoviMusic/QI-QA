@@ -10,8 +10,6 @@ class ApiClient {
   private defaultTimeout: number = 10000; // 10 segundos
 
   constructor(baseURL: string, timeout?: number) {
-    console.log(process.env.AUTH_API_URL)
-    console.warn(baseURL)
     this.baseURL = baseURL.replace(/\/$/, ''); // Remover slash final
     if (timeout) this.defaultTimeout = timeout;
   }
@@ -98,6 +96,6 @@ class ApiError extends Error {
 }
 
 // Instancias para diferentes APIs
-export const authApi = new ApiClient('http://192.168.0.234:8000')
-
+export const authApi = new ApiClient(process.env.NEXT_PUBLIC_AUTH_API_URL!)
+export const mainApi = new ApiClient(process.env.NEXT_PUBLIC_MAIN_API_URL!);   
 export { ApiError };

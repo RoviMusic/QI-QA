@@ -40,7 +40,10 @@ const defaultTheme: ThemeConfig = {
     },
     Button: {
       colorBgContainerDisabled: '#D9D9D9'
-    }
+    },
+    Form: {
+      itemMarginBottom: 0
+    },
   },
 };
 

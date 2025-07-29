@@ -1,7 +1,7 @@
 "use client";
 import { Anchor, Button, Col, Flex, Form, Row } from "antd";
 import { useState } from "react";
-import GlassCard from "@/components/core/GlassCard";
+import { GlassCard } from "@/components/core/GlassCard";
 import { useOnWindowResize } from "@/shared/hooks/useOnWindowResize";
 import BasicInfoCard from "./BasicInfoCard";
 import DescriptionsCard from "./DescriptionsCard";

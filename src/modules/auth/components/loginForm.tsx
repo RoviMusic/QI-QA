@@ -30,7 +30,7 @@ export default function LoginForm({
       .dolibarAuth(values)
       .then((res) => {
         if(res){
-          router.push('/dashboard')
+          router.push('/dolibarr')
         }
       })
       .catch((e) => {
