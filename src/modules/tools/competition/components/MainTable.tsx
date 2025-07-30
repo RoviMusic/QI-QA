@@ -16,113 +16,113 @@ export default function MainTable() {
 
   useEffect(() => {
     //getMainData();
-    getMainDataWithStreaming();
+    //getMainDataWithStreaming();
   }, []);
 
-  //   async function getMainData() {
-  //     setLoading(true);
-  //     try {
-  //       var hash: any = {};
-  //       var stored;
-  //       var products: any = { list: [] };
-  //       const auth_data = await competenciaService.authMLToken();
-  //       ml.init((url: any, init: any) =>
-  //         url.searchParams.set("access_token", auth_data.access_token)
-  //       );
-  //       const data = await competenciaService.couchData();
+    async function getMainData() {
+      setLoading(true);
+      try {
+        var hash: any = {};
+        var stored;
+        var products: any = { list: [] };
+        const auth_data = await competenciaService.authMLToken();
+        ml.init((url: any, init: any) =>
+          url.searchParams.set("access_token", auth_data.access_token)
+        );
+        const data = await competenciaService.couchData();
 
-  //       stored = Object.fromEntries(data.rows.map((e: any) => [e.id, e.doc]));
+        stored = Object.fromEntries(data.rows.map((e: any) => [e.id, e.doc]));
 
-  //       const params = { status: "active,paused", orders: "sold_quantity_desc" };
+        const params = { status: "active,paused", orders: "sold_quantity_desc" };
 
-  //       const mlAny = ml as any;
-  //       console.warn("Empieza carga de productos...");
-  //       for await (const e of mlAny.publications.user_search(params)) {
-  //         e.group_nick = mlAny.publications.group_names[e.group];
-  //         e.competition_price = 0;
-  //         console.log("producto? ", e);
-  //         if (!(e.sku in hash)) {
-  //           const obj = {
-  //             id: e.sku,
-  //             brand: e.brand,
-  //             title: e.title,
-  //             sold: e.sold,
-  //             status: e.status,
-  //             publications: [e],
-  //             check: "",
-  //             competition: [{}]
-  //           };
-  //           const info = stored[obj.id];
-  //           obj.check = info?.check ? "ok" : "bad";
-  //           hash[obj.id] = obj;
-  //           const infoComp = await getPriceCompetition(e.title)
-  //           obj.competition = infoComp ?? [{}];
-  //           products.list.push(obj);
-  //         } else {
-  //           const obj = hash[e.sku];
-  //           obj.sold += e.sold;
-  //           obj.publications.push(e);
-  //         }
-  //       }
-  //       setDataProduct(products.list);
-  //       console.warn("Termina carga de productos...");
-  //       console.log("datos cargados ", products.list);
-  //     } catch (error) {
-  //       console.error("Error ", error);
-  //       setDataProduct([]);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
+        const mlAny = ml as any;
+        console.warn("Empieza carga de productos...");
+        for await (const e of mlAny.publications.user_search(params)) {
+          e.group_nick = mlAny.publications.group_names[e.group];
+          e.competition_price = 0;
+          console.log("producto? ", e);
+          if (!(e.sku in hash)) {
+            const obj = {
+              id: e.sku,
+              brand: e.brand,
+              title: e.title,
+              sold: e.sold,
+              status: e.status,
+              publications: [e],
+              check: "",
+              competition: [{}]
+            };
+            const info = stored[obj.id];
+            obj.check = info?.check ? "ok" : "bad";
+            hash[obj.id] = obj;
+            const infoComp = await getPriceCompetition(e.title)
+            obj.competition = infoComp ?? [{}];
+            products.list.push(obj);
+          } else {
+            const obj = hash[e.sku];
+            obj.sold += e.sold;
+            obj.publications.push(e);
+          }
+        }
+        setDataProduct(products.list);
+        console.warn("Termina carga de productos...");
+        console.log("datos cargados ", products.list);
+      } catch (error) {
+        console.error("Error ", error);
+        setDataProduct([]);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  //   async function getPriceCompetition(element: any) {
-  //     const map = (e: any) => {
-  //       return {
-  //         id: e.id,
-  //         title: e.title,
-  //         price: e.price,
-  //         link: e.link,
-  //         picture: e.picture,
-  //       };
-  //     };
+    async function getPriceCompetition(element: any) {
+      const map = (e: any) => {
+        return {
+          id: e.id,
+          title: e.title,
+          price: e.price,
+          link: e.link,
+          picture: e.picture,
+        };
+      };
 
-  //     const params = {
-  //       query: element,
-  //       pages: "1",
-  //       delay: "1",
-  //     };
-  //     const queryParams = new URLSearchParams(params).toString();
+      const params = {
+        query: element,
+        pages: "1",
+        delay: "1",
+      };
+      const queryParams = new URLSearchParams(params).toString();
 
-  //     try {
-  //       // Llamada a la API (ruta relativa al mismo origen)
-  //       const resp = await fetch(`http://187.189.243.250:3500/searchFilter?${queryParams}`, {
-  //         method: "GET",
-  //         headers: { "Content-Type": "application/json" },
-  //       });
-  //       console.log('llamada competition ', resp);
-  //       if (!resp.ok) {
-  //         console.error("API error:", resp.status, resp.statusText);
-  //         return [];
-  //       }
+      try {
+        // Llamada a la API (ruta relativa al mismo origen)
+        const resp = await fetch(`http://187.189.243.250:3500/searchFilter?${queryParams}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log('llamada competition ', resp);
+        if (!resp.ok) {
+          console.error("API error:", resp.status, resp.statusText);
+          return [];
+        }
 
-  //       // Extraemos el JSON (un array de productos)
-  //       const data = await resp.json();
-  //       console.log(data);
+        // Extraemos el JSON (un array de productos)
+        const data = await resp.json();
+        console.log(data);
 
-  //       // Si no hay resultados, nos salimos
-  //       if (!Array.isArray(data) || data.length === 0) {
-  //         console.log("No hay productos para mostrar");
-  //         return [];
-  //       }
+        // Si no hay resultados, nos salimos
+        if (!Array.isArray(data) || data.length === 0) {
+          console.log("No hay productos para mostrar");
+          return [];
+        }
 
-  //       let mapeo = data.map(map);
-  //       console.log('mapeo ', mapeo)
-  //       return mapeo
+        let mapeo = data.map(map);
+        console.log('mapeo ', mapeo)
+        return mapeo
 
-  //     } catch (error) {
-  //       console.error("idk man ", error);
-  //     }
-  //   }
+      } catch (error) {
+        console.error("idk man ", error);
+      }
+    }
 
   async function getMainDataWithStreaming() {
     setLoading(true);

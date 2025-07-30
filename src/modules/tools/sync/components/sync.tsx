@@ -1,6 +1,6 @@
 "use client";
 import { GlassCard } from "@/components/core/GlassCard";
-import { DefaultTitle, LabelTitle, MainTitle } from "@/components/core/Titulo";
+import { DefaultTitle, LabelTitle, MainTitle, MutedSubtitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";
 import { ErrorType } from "@/shared/types/sharedTypes";
@@ -105,6 +105,11 @@ export default function Sync() {
     setOpenModalErrors(false);
   };
 
+  const getPercentage = (total: number, items: number) => {
+    if (total === 0) return 0;
+    return ((items / total) * 100).toFixed(2);
+  };
+
   return (
     <>
       <Flex gap={20} vertical>
@@ -124,17 +129,24 @@ export default function Sync() {
                       {item.lastSync.toLocaleTimeString()}
                     </DefaultTitle>
                   </Space>
-                  <Statistic
-                    title="Elementos sincronizados"
-                    value={item.totalSyncItems}
-                    style={{ textAlign: "center" }}
-                    valueStyle={{
-                      textAlign: "center",
-                      color: "green",
-                      fontWeight: "bold",
-                    }}
-                    suffix={"/" + item.totalItems}
-                  />
+
+                  <Flex vertical justify="center" align="center">
+                    <Statistic
+                      title="Elementos sincronizados"
+                      value={
+                        getPercentage(item.totalItems, item.totalSyncItems) +
+                        "%"
+                      }
+                      style={{ textAlign: "center" }}
+                      valueStyle={{
+                        textAlign: "center",
+                        color: "green",
+                        fontWeight: "bold",
+                      }}
+                    />
+
+                    <LabelTitle>{item.totalSyncItems}/{item.totalItems}</LabelTitle>
+                  </Flex>
 
                   <Space
                     onClick={() => openError(item.errors)}

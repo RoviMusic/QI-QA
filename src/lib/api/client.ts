@@ -98,4 +98,5 @@ class ApiError extends Error {
 // Instancias para diferentes APIs
 export const authApi = new ApiClient(process.env.NEXT_PUBLIC_AUTH_API_URL!)
 export const mainApi = new ApiClient(process.env.NEXT_PUBLIC_MAIN_API_URL!);   
+export const processApi = new ApiClient(process.env.NEXT_PUBLIC_PROCESS_API_URL!);
 export { ApiError };

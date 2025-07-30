@@ -4,7 +4,7 @@ import { DinamicTable } from "@/components/core/Tables";
 import { MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import { getIcon } from "@/lib/utils";
-import { ColumnsWithActionsType } from "@/shared/types/tableTypes";
+import { DinamicColumnsType } from "@/shared/types/tableTypes";
 import {
   App,
   Button,
@@ -25,58 +25,58 @@ const { RangePicker } = DatePicker;
 
 type SpecialDatesType = {
   id: string;
-  "Fecha inicial": Date;
-  "Fecha final": Date;
-  Título: string;
+  start_date: Date;
+  end_date: Date;
+  title: string;
 };
 
 const rows: SpecialDatesType[] = [
   {
-    "Fecha inicial": dayjs("2023-01-01").toDate(),
-    "Fecha final": dayjs("2023-01-31").toDate(),
-    Título: "Buen fin 2023",
+    start_date: dayjs("2023-01-01").toDate(),
+    end_date: dayjs("2023-01-31").toDate(),
+    title: "Buen fin 2023",
     id: "1",
   },
   {
-    "Fecha inicial": dayjs("2023-02-01").toDate(),
-    "Fecha final": dayjs("2023-02-28").toDate(),
-    Título: "Prime day",
+    start_date: dayjs("2023-02-01").toDate(),
+    end_date: dayjs("2023-02-28").toDate(),
+    title: "Prime day",
     id: "2",
   },
   {
-    "Fecha inicial": dayjs("2023-01-01").toDate(),
-    "Fecha final": dayjs("2023-01-31").toDate(),
-    Título: "Otra fecha promocional",
+    start_date: dayjs("2023-01-01").toDate(),
+    end_date: dayjs("2023-01-31").toDate(),
+    title: "Otra fecha promocional",
     id: "3",
   },
   {
-    "Fecha inicial": dayjs("2023-02-01").toDate(),
-    "Fecha final": dayjs("2023-02-28").toDate(),
-    Título: "Hot sale",
+    start_date: dayjs("2023-02-01").toDate(),
+    end_date: dayjs("2023-02-28").toDate(),
+    title: "Hot sale",
     id: "4",
   },
   {
-    "Fecha inicial": dayjs("2024-01-01").toDate(),
-    "Fecha final": dayjs("2024-01-31").toDate(),
-    Título: "Buen fin 2024",
+    start_date: dayjs("2024-01-01").toDate(),
+    end_date: dayjs("2024-01-31").toDate(),
+    title: "Buen fin 2024",
     id: "5",
   },
   {
-    "Fecha inicial": dayjs("2024-02-01").toDate(),
-    "Fecha final": dayjs("2024-02-28").toDate(),
-    Título: "Prime day 2024",
+    start_date: dayjs("2024-02-01").toDate(),
+    end_date: dayjs("2024-02-28").toDate(),
+    title: "Prime day 2024",
     id: "6",
   },
   {
-    "Fecha inicial": dayjs("2023-01-01").toDate(),
-    "Fecha final": dayjs("2023-01-31").toDate(),
-    Título: "Otra fecha promocional 2023",
+    start_date: dayjs("2023-01-01").toDate(),
+    end_date: dayjs("2023-01-31").toDate(),
+    title: "Otra fecha promocional 2023",
     id: "7",
   },
   {
-    "Fecha inicial": dayjs("2025-02-01").toDate(),
-    "Fecha final": dayjs("2025-02-28").toDate(),
-    Título: "Hot sale 2025",
+    start_date: dayjs("2025-02-01").toDate(),
+    end_date: dayjs("2025-02-28").toDate(),
+    title: "Hot sale 2025",
     id: "8",
   },
 ];
@@ -92,9 +92,9 @@ export default function FullfilmentSettingsPage() {
     const rangeValue = values["dateRange"];
 
     const specialDate: SpecialDatesType = {
-      "Fecha inicial": rangeValue[0].toDate().toDateString(),
-      "Fecha final": rangeValue[1].toDate().toDateString(),
-      Título: values["title"],
+      start_date: rangeValue[0].toDate().toDateString(),
+      end_date: rangeValue[1].toDate().toDateString(),
+      title: values["title"],
       id: `special-${Date.now()}`, // el id vendra del backend
     };
 
@@ -104,7 +104,7 @@ export default function FullfilmentSettingsPage() {
     notification.open({
       type: "success",
       message: "Configuración guardada",
-      description: `Se ha guardado la configuración para el rango de fechas: ${specialDate["Fecha inicial"]} - ${specialDate["Fecha final"]}`,
+      description: `Se ha guardado la configuración para el rango de fechas: ${specialDate.start_date} - ${specialDate.end_date}`,
       key,
     });
     rows.push(specialDate);
@@ -123,13 +123,14 @@ export default function FullfilmentSettingsPage() {
     );
   }, [rows, searchTerm]);
 
-  const columns: ColumnsWithActionsType[] = [
-    { column_id: "Fecha inicial", type: "date" },
-    { column_id: "Fecha final", type: "date" },
-    { column_id: "Título", type: "string" },
+  const columns: DinamicColumnsType[] = [
+    { column_id: "start_date", type: "date", title: "Fecha inicial" },
+    { column_id: "end_date", type: "date", title: "Fecha final" },
+    { column_id: "title", type: "string", title: "Título" },
     {
-      column_id: "Acciones",
+      column_id: "actions",
       type: "actions",
+      title: "Acciones",
       actions: [
         {
           icon: "Pen",
@@ -220,7 +221,7 @@ export default function FullfilmentSettingsPage() {
       </Flex>
 
       <Modal
-        title={"Editar fecha " + selectedRow?.Título}
+        title={"Editar fecha " + selectedRow?.title}
         open={openEditModal}
         footer={null}
         width={1000}
@@ -233,10 +234,10 @@ export default function FullfilmentSettingsPage() {
           layout="vertical"
           initialValues={{
             dateRange: [
-              dayjs(selectedRow?.["Fecha inicial"]),
-              dayjs(selectedRow?.["Fecha final"]),
+              dayjs(selectedRow?.start_date),
+              dayjs(selectedRow?.end_date),
             ],
-            title: selectedRow?.Título,
+            title: selectedRow?.title,
           }}
           onFinish={(values) => {
             console.log("Updated values:", values);

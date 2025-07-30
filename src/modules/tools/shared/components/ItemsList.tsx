@@ -9,21 +9,22 @@ import { Flex, List, Modal, Space } from "antd";
 import { useRouter } from "next/navigation";
 import VirtualList from "rc-virtual-list";
 import { useState } from "react";
-import { ListType, markets } from "../../process/components/processor";
+import { markets } from "../../process/components/processorDev";
+import { DataProcessorType } from "../../process/types/processorTypes";
 
 type ItemsListProps = {
   title: string;
   type: "Processed" | "Error" | "Pending";
-  items: ListType[];
+  items: DataProcessorType[];
 };
 
 // ml: #FFE600 wl #0071DC copp #1C42E8 ama #F3A847
 
 export default function ItemsList({ title, items, type }: ItemsListProps) {
   const [openModalErrors, setOpenModalErrors] = useState<boolean>(false);
-  const [dataError, setDataError] = useState<ListType | null>(null);
+  const [dataError, setDataError] = useState<DataProcessorType | null>(null);
 
-  const handleClick = (data: ListType) => {
+  const handleClick = (data: DataProcessorType) => {
     switch (type) {
       case "Processed":
         window.open("http://192.168.0.234/rovimusic/", "_blank");
@@ -85,10 +86,10 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
           </DefaultTitle>
         </Space>
         <List>
-          <VirtualList data={items} height={450} itemHeight={47} itemKey="_id">
-            {(item: ListType) => (
+          <VirtualList data={items} height={450} itemHeight={47} itemKey="sale_id">
+            {(item: DataProcessorType) => (
               <List.Item
-                key={item._id}
+                key={item.sale_id}
                 className="hover:cursor-pointer hover:bg-gray-300"
                 onClick={() => handleClick(item)}
               >
@@ -103,14 +104,11 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
                     </DefaultTitle>
                     <Space direction="vertical">
                       <p>{item.message}</p>
-                      {item.pickingNumber && (
-                        <p>Número de picking: {item.pickingNumber}</p>
-                      )}
                     </Space>
                   </Flex>
 
                   <MutedSubtitle>
-                    {item.sale_date?.toLocaleTimeString()}
+                    {}
                   </MutedSubtitle>
                 </Flex>
               </List.Item>

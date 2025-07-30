@@ -1,7 +1,7 @@
 //File that serves as a constant for using FontAwesome icons
 //you can add styles as props
 //to use it just send the icon name, example: Folder
-import { faBars, faCartShopping, faChartSimple, faChevronLeft, faCircleQuestion, faFolder, faGauge, faGear, faGears, faListOl, faMinus, faPen, faPeopleArrows, faPlus, faRotate, faScrewdriverWrench, faStore, faTags, faToolbox, faTrash, faTruck } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faCartShopping, faChartSimple, faChevronLeft, faCircleInfo, faCircleQuestion, faCode, faFolder, faGauge, faGear, faGears, faListOl, faMinus, faPen, faPeopleArrows, faPlus, faRotate, faScrewdriverWrench, faStore, faTags, faToolbox, faTrash, faTruck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { JSX } from "react";
 
@@ -26,4 +26,6 @@ export const iconComponents: Record<string, (props?: any) => JSX.Element> = {
     'Pen': (props: any) => <FontAwesomeIcon icon={faPen} {...props}/>,
     'Trash': (props: any) => <FontAwesomeIcon icon={faTrash} {...props}/>,
     'Left': (props: any) => <FontAwesomeIcon icon={faChevronLeft} {...props}/>,
+    'Code': (props: any) => <FontAwesomeIcon icon={faCode} {...props}/>,
+    'Circle-Info': (props: any) => <FontAwesomeIcon icon={faCircleInfo} {...props}/>,
 } 

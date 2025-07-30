@@ -8,7 +8,6 @@ export default function SyncProcessPage() {
     <>
       <Container>
         <Flex vertical gap={50}>
-          <Sync />
           <Processor />
         </Flex>
       </Container>

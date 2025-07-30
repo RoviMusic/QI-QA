@@ -1,62 +1,177 @@
 "use client";
 import { GlassCard } from "@/components/core/GlassCard";
+import { DinamicTable } from "@/components/core/Tables";
 import { DefaultTitle, LabelTitle, MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";
+import { LogisticTypeEnum } from "@/shared/enums/LogisticTypeEnum";
+import { MarketsType } from "@/shared/enums/MarketEnum";
+import { DinamicColumnsType } from "@/shared/types/tableTypes";
 import { Badge, Col, Flex, Modal, Radio, Row, Space } from "antd";
 import dayjs from "dayjs";
 
-export type ListType = {
-  _id: string;
-  sale_id: string;
-  market: string;
-  sale_date: Date | null;
-  message: string;
-  pickingNumber?: number;
+type DataProcessorType = {
+  order_number: string;
+  shipping_type: LogisticTypeEnum;
+  marketplace: MarketsType;
+  sku: string | string[];
+  admin_orders: {
+    oc: string;
+    invoice: string;
+    ov?: string | string[];
+  };
+  picking_Status: PickingStatusType[];
+  tracking_number: string;
 };
 
-export type markets = "Mercado Libre" | "Amazon" | "Walmart" | "Coppel";
-
-function getRandomMarketCompact(): markets {
-  const markets: markets[] = ["Mercado Libre", "Amazon", "Walmart", "Coppel"];
-  return markets[Math.floor(Math.random() * markets.length)];
-}
-
-// fake data generator
-const getItemsProcessed = (count: number): ListType[] =>
-  Array.from({ length: count }, (v, k) => ({
-    _id: `${k}`,
-    sale_id: Math.ceil(Math.random() * 90000).toString(),
-    sale_date: dayjs().toDate(),
-    message: `Order processed`,
-    pickingNumber: Math.ceil(Math.random() * 90000),
-    market: getRandomMarketCompact(),
-  }));
-
-const getItemsPending = (count: number): ListType[] =>
-  Array.from({ length: count }, (v, k) => ({
-    _id: `${k}`,
-    sale_id: Math.ceil(Math.random() * 90000).toString(),
-    sale_date: dayjs().toDate(),
-    message: `Order pending`,
-    market: getRandomMarketCompact(),
-  }));
-
-const getItemsError = (count: number): ListType[] =>
-  Array.from({ length: count }, (v, k) => ({
-    _id: `${k}`,
-    sale_id: Math.ceil(Math.random() * 90000).toString(),
-    sale_date: dayjs().toDate(),
-    message:
-      " 'MercadoLibreConnector' object has no attribute 'getProductBySku ",
-    market: getRandomMarketCompact(),
-  }));
-
-const dataProcessed: ListType[] = getItemsProcessed(10);
-const dataPending: ListType[] = getItemsPending(5);
-const dataErrors: ListType[] = getItemsError(3);
+type PickingStatusType = {
+  sku: string;
+  merchandise_receipt: string;
+  pending_validation: string;
+  pending_receipt: string;
+  received: string;
+};
 
 export default function Processor() {
+  const columnsDummy: DinamicColumnsType[] = [
+    {
+      title: "No. de orden",
+      column_id: "order_number",
+      type: "link",
+      actions: [
+        {
+          onPress: (record) => {
+            //enviar a numero de orden en dolibarr
+            console.log("Order details:", record);
+          },
+        },
+      ],
+    },
+    {
+      title: "Tipo de envío",
+      column_id: "shipping_type",
+      type: "string",
+    },
+    {
+      title: "Marketplace",
+      column_id: "marketplace",
+      type: "string",
+    },
+    {
+      title: "Orden de venta/Factura",
+      column_id: "admin_orders",
+      type: "link",
+      align: "center",
+      // actions: [
+      //   {
+      //     onPress: (record) => {
+      //       //enviar a orden de venta en dolibarr
+      //       console.log("Order details:", record);
+      //     },
+      //   },
+      // ],
+    },
+    {
+      title: "Picking",
+      column_id: "picking_Status",
+      type: "link",
+      align: "center",
+      // actions: [
+      //   {
+      //     onPress: (record) => {
+      //       //enviar a picking en dolibarr
+      //       console.log("Picking details:", record);
+      //     },
+      //   },
+      // ],
+    },
+    {
+      title: "Número de envío",
+      column_id: "tracking_number",
+      type: "link",
+      align: "center",
+      actions: [
+        {
+          onPress: (record) => {
+            //enviar a número de envío en dolibarr
+            console.log("Tracking details:", record);
+          },
+        },
+      ],
+    },
+  ];
+
+  const dataDummy: DataProcessorType[] = [
+    {
+      order_number: "123456",
+      shipping_type: LogisticTypeEnum.CS,
+      marketplace: "Meli",
+      sku: "SKU-123456",
+      admin_orders: {
+        oc: "OC-123456",
+        invoice: "INV-123456",
+      },
+      picking_Status: [
+        {
+          sku: "SKU-123456",
+          merchandise_receipt: "Pick-123",
+          pending_validation: "Pend-123",
+          pending_receipt: "Pend-Rec-123",
+          received: "Rec-123",
+        },
+      ],
+      tracking_number: "TRACK-123456",
+    },
+    {
+      order_number: "5467596",
+      shipping_type: LogisticTypeEnum.CD,
+      marketplace: "Meli",
+      sku: "SKU-123456",
+      admin_orders: {
+        oc: "OC-123456",
+        invoice: "INV-123456",
+        ov: "OV-123456",
+      },
+      picking_Status: [
+        {
+          sku: "SKU-123456",
+          merchandise_receipt: "Pick-123",
+          pending_validation: "Pend-123",
+          pending_receipt: "Pend-Rec-123",
+          received: "Rec-123",
+        },
+      ],
+      tracking_number: "TRACK-123456",
+    },
+    {
+      order_number: "573392028",
+      shipping_type: LogisticTypeEnum.CS,
+      marketplace: "Meli",
+      sku: ["SKU-123456", "SKU-654321"],
+      admin_orders: {
+        oc: "OC-123456",
+        invoice: "INV-123456",
+      },
+      picking_Status: [
+        {
+          sku: "SKU-123456",
+          merchandise_receipt: "Pick-123",
+          pending_validation: "Pend-123",
+          pending_receipt: "Pend-Rec-123",
+          received: "Rec-123",
+        },
+        {
+          sku: "SKU-654321",
+          merchandise_receipt: "Pick-123",
+          pending_validation: "Pend-123",
+          pending_receipt: "Pend-Rec-123",
+          received: "Rec-123",
+        },
+      ],
+      tracking_number: "TRACK-123456",
+    },
+  ];
+
   return (
     <>
       <Flex gap={20} vertical>
@@ -81,36 +196,9 @@ export default function Processor() {
             </Flex>
           </GlassCard>
         </Flex>
-
-        <Row gutter={[20, 20]}>
-          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
-            <GlassCard>
-              <ItemsList
-                title="Órdenes por procesar"
-                items={dataProcessed}
-                type="Processed"
-              />
-            </GlassCard>
-          </Col>
-          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
-            <GlassCard>
-              <ItemsList
-                title="Órdenes sincronizadas"
-                items={dataPending}
-                type="Pending"
-              />
-            </GlassCard>
-          </Col>
-          <Col xl={8} lg={8} md={24} sm={24} xs={24}>
-            <GlassCard style={{ border: "2px solid #FA312B" }}>
-              <ItemsList
-                title="Errores"
-                items={dataErrors}
-                type="Error"
-              />
-            </GlassCard>
-          </Col>
-        </Row>
+        <GlassCard>
+          <DinamicTable columns={columnsDummy} dataSource={dataDummy} />
+        </GlassCard>
       </Flex>
     </>
   );

@@ -1,18 +1,12 @@
 export type DinamicColumnsType = {
     column_id: string;
-    type: "string" | "int" | "price" | "date" | "float";
-    title: string;
-    decimals?: number; // Para precios y flotantes
-}
-
-export type ColumnsWithActionsType = {
-    column_id: string;
-    type: "string" | "int" | "float" | "price" | "date" | "actions";
+    type: "string" | "int" | "float" | "price" | "date" | "actions" | "link";
     title: string;
     decimals?: number; // Para precios y flotantes
     actions?: {
-        icon: string;
+        icon?: string;
         onPress: (record: any) => void;
         tooltip?: string;
     }[];
+    align?: "left" | "center" | "right"; // Para alinear el contenido de la columna
 }

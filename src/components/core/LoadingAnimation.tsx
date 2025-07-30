@@ -16,12 +16,12 @@ export default function LoadingAnimation({ children, isActive }: Props) {
       styles={{
         overlay: (base) => ({
           ...base,
-          height: "100vh",
+          //height: "100vh",
         }),
       }}
       spinner={
         <DotLottieReact
-          renderConfig={{ autoResize: true }}
+          //renderConfig={{ autoResize: true }}
           src="/animations/loadingG.json"
           loop
           autoplay

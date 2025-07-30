@@ -153,6 +153,18 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
             },
           ],
         },
+        {
+          label: 'Developer',
+          key: 'dev',
+          icon: getIcon("Code"),
+          children: [
+            {
+              label: "S&P",
+              key: "sip",
+              onClick: () => router.push("/developer/syp"),
+            },
+          ]
+        }
       ],
     },
     {
