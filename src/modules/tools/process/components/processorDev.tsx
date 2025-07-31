@@ -1,13 +1,20 @@
 "use client";
 import { GlassCard } from "@/components/core/GlassCard";
-import { DefaultTitle, LabelTitle, MainTitle } from "@/components/core/Titulo";
-import Container from "@/components/layout/Container";
+import { LabelTitle, MainTitle } from "@/components/core/Titulo";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";
-import { Badge, Col, Flex, Modal, Radio, Row, Space } from "antd";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import {
+  App,
+  Badge,
+  Checkbox,
+  Col,
+  Flex,
+  Row,
+  Space,
+} from "antd";
+import { useEffect, useMemo, useState } from "react";
 import { processService } from "../services/processorService";
 import { DataProcessorType } from "../types/processorTypes";
+import type { GetProp } from "antd";
 
 export type markets = "Mercado Libre" | "Amazon" | "Walmart" | "Coppel";
 
@@ -15,20 +22,88 @@ export default function ProcessorDev() {
   const [dataProcessed, setDataProcessed] = useState<DataProcessorType[]>([]);
   const [dataPending, setDataPending] = useState<DataProcessorType[]>([]);
   const [dataErrors, setDataErrors] = useState<DataProcessorType[]>([]);
+  const [selectedMarkets, setSelectedMarkets] = useState<string[]>([
+    "meli",
+    "amazon",
+    "wl",
+    "cop",
+  ]);
+  const { notification } = App.useApp();
 
   useEffect(() => {
     processService
       .getProcesser()
       .then((data) => {
-        console.warn(" data fetched:", data.meli);
-        setDataProcessed(data.meli.processed);
-        setDataPending(data.meli.pending);
-        setDataErrors(data.meli.error);
+        console.warn(" data fetched:", data);
+
+        // Helper para agregar el market a cada item
+        const addMarket = (items: any[] | undefined, market: string) =>
+          (items || []).map((item) => ({ ...item, market }));
+
+        const processedData = [
+          ...addMarket(data.meli?.processed, "Mercado Libre"),
+          ...addMarket(data.amazon?.processed, "Amazon"),
+          ...addMarket(data.wl?.processed, "Walmart"),
+          ...addMarket(data.cop?.processed, "Coppel"),
+        ];
+        const pendingData = [
+          ...addMarket(data.meli?.pending, "Mercado Libre"),
+          ...addMarket(data.amazon?.pending, "Amazon"),
+          ...addMarket(data.wl?.pending, "Walmart"),
+          ...addMarket(data.cop?.pending, "Coppel"),
+        ];
+        const errorsData = [
+          ...addMarket(data.meli?.errors, "Mercado Libre"),
+          ...addMarket(data.amazon?.errors, "Amazon"),
+          ...addMarket(data.wl?.errors, "Walmart"),
+          ...addMarket(data.cop?.errors, "Coppel"),
+        ];
+
+        setDataProcessed(processedData);
+        setDataPending(pendingData);
+        setDataErrors(errorsData);
       })
       .catch((error) => {
-        console.error("Error fetching fullfilment data:", error);
+        console.error("Error fetching data:", error);
+        notification.open({
+          type: "error",
+          message: "Hubo un error",
+          description: `No se pudo obtener la información del procesador: ${error.message}`,
+        });
       });
   }, []);
+
+  const marketMap: Record<string, string> = {
+    meli: "Mercado Libre",
+    amazon: "Amazon",
+    wl: "Walmart",
+    cop: "Coppel",
+  };
+
+  const filterByMarket = (items: DataProcessorType[]) =>
+    items.filter((item) => {
+      // Busca el valor (meli, amazon, etc) correspondiente al market del item
+      return selectedMarkets.some((key) => item.market === marketMap[key]);
+    });
+
+  const filteredProcessed = useMemo(
+    () => filterByMarket(dataProcessed),
+    [dataProcessed, selectedMarkets]
+  );
+  const filteredPending = useMemo(
+    () => filterByMarket(dataPending),
+    [dataPending, selectedMarkets]
+  );
+  const filteredErrors = useMemo(
+    () => filterByMarket(dataErrors),
+    [dataErrors, selectedMarkets]
+  );
+
+  const onChange: GetProp<typeof Checkbox.Group, "onChange"> = (
+    checkedValues
+  ) => {
+    setSelectedMarkets(checkedValues as string[]);
+  };
 
   return (
     <>
@@ -43,10 +118,11 @@ export default function ProcessorDev() {
             <Flex vertical>
               <LabelTitle>Filtrar por:</LabelTitle>
 
-              <Radio.Group
+              <Checkbox.Group
+                onChange={onChange}
                 options={[
                   { value: "meli", label: "Mercado Libre" },
-                  { value: "ama", label: "Amazon" },
+                  { value: "amazon", label: "Amazon" },
                   { value: "wl", label: "Walmart" },
                   { value: "cop", label: "Coppel" },
                 ]}
@@ -58,14 +134,14 @@ export default function ProcessorDev() {
         <Row gutter={[20, 20]}>
           <Col xl={8} lg={8} md={24} sm={24} xs={24}>
             <GlassCard style={{ border: "2px solid #FA312B" }}>
-              <ItemsList title="Errores" items={dataErrors} type="Error" />
+              <ItemsList title="Errores" items={filteredErrors} type="Error" />
             </GlassCard>
           </Col>
           <Col xl={8} lg={8} md={12} sm={24} xs={24}>
             <GlassCard>
               <ItemsList
                 title="Órdenes por procesar"
-                items={dataProcessed}
+                items={filteredProcessed}
                 type="Processed"
               />
             </GlassCard>
@@ -74,7 +150,7 @@ export default function ProcessorDev() {
             <GlassCard>
               <ItemsList
                 title="Órdenes sincronizadas"
-                items={dataPending}
+                items={filteredPending}
                 type="Pending"
               />
             </GlassCard>

@@ -1,7 +1,8 @@
 import { mainApi, processApi } from "@/lib/api/client";
+import { ProcessorType } from "../types/processorTypes";
 
 export class ProcessService {
-  async getProcesser(): Promise<any> {
+  async getProcesser(): Promise<ProcessorType> {
     try {
       const response = await processApi.get<any>('');
 

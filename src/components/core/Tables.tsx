@@ -178,7 +178,7 @@ function DinamicTable({ columns, dataSource }: Props) {
           defaultPageSize: 100,
         }}
         tableLayout="auto"
-        scroll={{ x: "max-content" }}
+        scroll={{ x: "max-content", y: 'calc(100vh - 400px)' }}
       />
     </div>
   );
