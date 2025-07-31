@@ -2,10 +2,8 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { MainTitle } from "../../../components/core/Titulo";
-import { providerMap, signIn } from "@/lib/auth";
 import { Button, Divider, Input, Form } from "antd";
 import { useTranslations } from "next-intl";
-import { AuthError } from "next-auth";
 import { redirect, useRouter } from "next/navigation";
 import { authService } from "../services/authService";
 
@@ -29,45 +27,17 @@ export default function LoginForm({
     authService
       .dolibarAuth(values)
       .then((res) => {
+
+        console.warn("response auth ", res);
         if(res){
           router.push('/dolibarr')
+          //console.log('ok')
         }
       })
       .catch((e) => {
         console.error("Error en auth ", e);
       });
   };
-
-  // const onFinish = async (values: LoginType) => {
-  //   try {
-  //     const response = await fetch(
-  //       "http://187.189.243.250:8001/api/sso/login",
-  //       {
-  //         method: "POST",
-  //         credentials: "include",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "Access-Control-Allow-Origin": "*",
-  //         },
-  //         body: JSON.stringify({ values }),
-  //       }
-  //     );
-
-  //     const data = await response.json();
-  //     console.log("dataaa? ", data);
-
-  //     if (data.success) {
-  //       const dolibarrWindow = window.open(data.redirect_url, "_blank");
-
-  //       // Esperar a que la página cargue para inyectar cookies
-  //       dolibarrWindow!.onload = () => {
-  //         document.cookie = `DOLSESSID=${data.cookies.DOLSESSID}; path=/`;
-  //       };
-  //     }
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //   }
-  // };
 
   const onFinishFailed = (error: any) => {
     console.error(error);

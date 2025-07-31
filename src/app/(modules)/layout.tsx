@@ -11,7 +11,7 @@ export default async function MainLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  //const session = await auth();
 
   //if(!session?.user) return redirect('/')
 

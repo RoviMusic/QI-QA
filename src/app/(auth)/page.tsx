@@ -12,43 +12,8 @@ import { Particles } from "@/components/magicui/particles";
 import LocaleSelect from "@/components/LocaleSelect";
 import { GlassCard } from "@/components/core/GlassCard";
 
-import { auth, signIn } from "@/lib/auth";
-import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
-  const session = await auth();
-
-  // if (!session) {
-  //   const checkSession = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `${process.env.AUTH_API_URL}api/check-dolibarr-session`,
-  //         {
-  //           // credentials: 'include' es crucial para enviar las cookies al backend
-  //           credentials: "include",
-  //         }
-  //       );
-
-  //       const data = await response.json();
-  //       console.warn(data)
-
-  //       if (data.isAuthenticated) {
-  //         console.log("AUTH EN DOL ", data);
-  //         await signIn("credentials", {
-  //           user: JSON.stringify(data.user),
-  //         });
-  //         //redirect("/dashboard");
-  //       } else {
-  //         console.warn("NOT AUTH");
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to check session:", error);
-  //     }
-  //   };
-  //   checkSession();
-  // } else {
-  //   console.log("ALREADY AUTH");
-  // }
 
   return (
     <>
