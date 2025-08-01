@@ -2,15 +2,7 @@
 import { GlassCard } from "@/components/core/GlassCard";
 import { LabelTitle, MainTitle } from "@/components/core/Titulo";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";
-import {
-  App,
-  Badge,
-  Checkbox,
-  Col,
-  Flex,
-  Row,
-  Space,
-} from "antd";
+import { App, Badge, Checkbox, Col, Flex, Row, Space } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { processService } from "../services/processorService";
 import { DataProcessorType } from "../types/processorTypes";
@@ -102,7 +94,12 @@ export default function ProcessorDev() {
   const onChange: GetProp<typeof Checkbox.Group, "onChange"> = (
     checkedValues
   ) => {
-    setSelectedMarkets(checkedValues as string[]);
+    console.log("Selected markets:", checkedValues);
+    if ((checkedValues as string[]).length === 0) {
+      setSelectedMarkets(Object.keys(marketMap));
+    } else {
+      setSelectedMarkets(checkedValues as string[]);
+    }
   };
 
   return (

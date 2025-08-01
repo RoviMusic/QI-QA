@@ -11,6 +11,7 @@ export class FullfilmentService {
       const response = await mainApi.get<FullfilmentResponseType>(
         "/fulfillment_p1", {timeout: 60000 * 5}
       );
+      console.log("Fulfillment data fetched:", response);
 
       if (!response.success) {
         console.error("Error fetching fulfillment data:", response.message);
@@ -20,6 +21,7 @@ export class FullfilmentService {
       return {
         data: response.data || [],
         columns: response.columns || [],
+        authToken: response.authToken || "",
       };
     } catch (error) {
       console.error("Error fetching fulfillment data:", error);
@@ -27,9 +29,9 @@ export class FullfilmentService {
     }
   }
 
-  async processFulfillmentItem(inventory_id: string): Promise<void> {
+  async processFulfillmentItem(inventory_id: string, authToken: string): Promise<void> {
     try {
-      const response: any = await mainApi.post(`fulfillment_p2?inventory_id=${inventory_id}`,{timeout: 60000 * 5} );
+      const response: any = await mainApi.post(`fulfillment?inventory_id=${inventory_id}&authToken=${authToken}`, {timeout: 60000*5} );
       //console.warn("Fulfillment item processed:", response);
       if (!response.success) {
         console.error("Error processing fulfillment item:", response.message);

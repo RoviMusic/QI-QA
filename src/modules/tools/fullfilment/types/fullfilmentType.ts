@@ -5,9 +5,11 @@ export type FullfilmentResponseType = {
     data?: any[];
     columns?: any[];
     message?: string;
+    authToken: string;
 }
 
 export type FullfilmentType = {
     data: any[];
     columns: DinamicColumnsType[];
+    authToken: string
 }

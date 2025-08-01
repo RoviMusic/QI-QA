@@ -121,6 +121,7 @@ function renderColumns(record: DinamicColumnsType, text: any) {
 }
 
 function DinamicTable({ columns, dataSource }: Props) {
+  
   function getColumns(columns: DinamicColumnsType[]) {
     const cols: TableProps<any>["columns"] = [];
     columns.map((col) => {
@@ -178,7 +179,7 @@ function DinamicTable({ columns, dataSource }: Props) {
           defaultPageSize: 100,
         }}
         tableLayout="auto"
-        scroll={{ x: "max-content", y: 'calc(100vh - 400px)' }}
+        scroll={{ x: "max-content" }}
       />
     </div>
   );
