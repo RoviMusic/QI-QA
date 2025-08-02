@@ -121,7 +121,6 @@ function renderColumns(record: DinamicColumnsType, text: any) {
 }
 
 function DinamicTable({ columns, dataSource }: Props) {
-  
   function getColumns(columns: DinamicColumnsType[]) {
     const cols: TableProps<any>["columns"] = [];
     columns.map((col) => {

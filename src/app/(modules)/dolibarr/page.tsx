@@ -1,17 +1,23 @@
 "use client";
+import { App } from "antd";
 import { useEffect, useRef, useState } from "react";
+import { cookieStorageService } from "@/shared/services/cookieStorageService";
+import { localStorageService } from "@/shared/services/localStorageService";
 
 export default function DolibarrPage() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [loginStatus, setLoginStatus] = useState("loading"); // loading, login_required, logged_in
   const [loginAttempts, setLoginAttempts] = useState(0);
+  const [alreadyLogout, setAlreadyLogout] = useState(false);
+  const { notification } = App.useApp();
+  
 
   const DOLIBARR_CREDENTIALS = {
-    username: "it.rm",
-    password: "cualquiera",
+    username: localStorageService.getItem('user'),
+    password: localStorageService.getItem('pass'),
   };
 
-  // CSS personalizado (manteniendo lo anterior)
+  // CSS personalizado
   const customCSS = `
     #mainbody, #id-right, .side-nav, .vmenu, #blockvmenusearch, .blockvmenu{
       background: transparent !important;
@@ -76,11 +82,6 @@ export default function DolibarrPage() {
         usernameField.value = DOLIBARR_CREDENTIALS.username;
         passwordField.value = DOLIBARR_CREDENTIALS.password;
 
-        // Si hay campo de base de datos
-        const dbField =
-          iframeDoc.querySelector('select[name="selectlang"]') ||
-          iframeDoc.querySelector('select[name="entity"]');
-
         // Disparar eventos de cambio para que Dolibarr detecte los valores
         usernameField.dispatchEvent(new Event("input", { bubbles: true }));
         usernameField.dispatchEvent(new Event("change", { bubbles: true }));
@@ -90,7 +91,7 @@ export default function DolibarrPage() {
         console.log("Credenciales ingresadas, enviando formulario...");
 
         // Ocultar visualmente el formulario
-        loginForm.classList.add("login-form-hidden");
+        //loginForm.classList.add("login-form-hidden");
 
         // Enviar formulario
         setTimeout(() => {
@@ -112,10 +113,20 @@ export default function DolibarrPage() {
         console.log("Username field:", usernameField);
         console.log("Password field:", passwordField);
         console.log("Form:", loginForm);
+        notification.open({
+          type: "error",
+          message: "Error al iniciar sesión",
+          description: `No se pudo obtener la información del formulario de login. Por favor, verifica las credenciales.`,
+        });
         return false;
       }
     } catch (error) {
       console.error("Error durante auto-login:", error);
+      notification.open({
+        type: "error",
+        message: "Error al iniciar sesión",
+        description: `Error durante auto-login ${error}.`,
+      });
       return false;
     }
   };
@@ -133,7 +144,6 @@ export default function DolibarrPage() {
       }
 
       customStyleElement.innerHTML = customCSS;
-      console.log("CSS personalizado aplicado");
     } catch (error) {
       console.log("No se puede inyectar CSS debido a CORS");
     }
@@ -149,11 +159,12 @@ export default function DolibarrPage() {
         iframe.contentDocument || iframe.contentWindow?.document;
       const currentUrl = iframe.contentWindow?.location.href;
 
-      console.log("Iframe cargado:", currentUrl);
-
       // Inyectar CSS siempre
       setTimeout(() => injectCustomCSS(iframeDoc), 100);
+      //cachar cuando hayamos echo un logout manual dentro de qi 
+      if(alreadyLogout){
 
+      }
       // Verificar si estamos en página de login
       if (isLoginPage(iframeDoc)) {
         console.log("Página de login detectada");
@@ -176,7 +187,7 @@ export default function DolibarrPage() {
         console.log("Usuario ya logueado o página principal");
         setLoginStatus("logged_in");
 
-        // Configurar navegación (código anterior)
+        // Configurar navegación
         setupNavigation(iframeDoc, iframe);
       }
     } catch (error) {
@@ -185,7 +196,7 @@ export default function DolibarrPage() {
     }
   };
 
-  // Función para configurar navegación (código anterior)
+  // Función para configurar navegación
   const setupNavigation = (iframeDoc: any, iframe: any) => {
     // Función para extraer parámetros de URL
     const extractMenuParams = (url: any) => {
@@ -198,21 +209,27 @@ export default function DolibarrPage() {
     // Función para actualizar la URL del iframe
     const updateIframeUrl = (newUrl: any) => {
       if (iframe && iframe.src !== newUrl) {
-        console.log("Actualizando iframe URL a:", newUrl);
         iframe.src = newUrl;
       }
     };
 
     // Interceptar clics en enlaces
     const links = iframeDoc.querySelectorAll("a[href]");
+
     links.forEach((link: any) => {
+      if (link.className && link.className.includes("dropdown-toggle")) {
+        // Skip dropdown-toggle links
+        return;
+      }
       link.addEventListener("click", (e: any) => {
         const href = link.getAttribute("href");
+        if(href.includes('logout')){
+          console.warn('logoutttt')
+        }
         if (href && !href.startsWith("http")) {
           e.preventDefault();
 
           let newUrl = href;
-          console.log("href original:", href);
 
           if (!href.startsWith("/")) {
             newUrl = "/erp/" + href;
@@ -225,8 +242,6 @@ export default function DolibarrPage() {
               newUrl = href.replace(/^\//, "/erp/");
             }
           }
-
-          console.log("nueva URL construida:", newUrl);
           updateIframeUrl(newUrl);
         }
       });
@@ -262,16 +277,16 @@ export default function DolibarrPage() {
   }, [loginAttempts]);
 
   // Función para login manual
-  const manualLogin = () => {
-    try {
-      const iframe = iframeRef.current;
-      const iframeDoc =
-        iframe?.contentDocument || iframe?.contentWindow?.document;
-      performAutoLogin(iframeDoc);
-    } catch (error) {
-      console.error("Error en login manual:", error);
-    }
-  };
+  // const manualLogin = () => {
+  //   try {
+  //     const iframe = iframeRef.current;
+  //     const iframeDoc =
+  //       iframe?.contentDocument || iframe?.contentWindow?.document;
+  //     performAutoLogin(iframeDoc);
+  //   } catch (error) {
+  //     console.error("Error en login manual:", error);
+  //   }
+  // };
 
   return (
     <>
@@ -316,7 +331,7 @@ export default function DolibarrPage() {
             src="/erp/index.php?mainmenu=home"
             width="100%"
             height="100%"
-            title="Example Website"
+            title="Dolibarr v20 iframe"
             onLoad={() => console.log("Iframe cargado")}
           ></iframe>
         </div>

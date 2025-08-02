@@ -1,5 +1,7 @@
 import { authApi } from "@/lib/api/client";
 import { LoginResponse, LoginType } from "../types/loginTypes";
+import { cookieStorageService } from "@/shared/services/cookieStorageService";
+import { localStorageService } from "@/shared/services/localStorageService";
 
 export class AuthService {
   async dolibarAuth(formData: LoginType): Promise<any> {
@@ -14,6 +16,8 @@ export class AuthService {
         console.error("Authentication failed:", response);
         return null;
       }
+      localStorageService.setItem('user', formData.user)
+      localStorageService.setItem('pass', formData.pass)
       const { user } = response;
       console.log('user auth ', user)
 
@@ -21,7 +25,7 @@ export class AuthService {
 
     } catch (error) {
       console.error("Authentication error ", error);
-      return error;
+      return null;
     }
   }
 }

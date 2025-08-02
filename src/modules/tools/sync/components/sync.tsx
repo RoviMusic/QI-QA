@@ -113,13 +113,13 @@ export default function Sync() {
   return (
     <>
       <Flex gap={20} vertical>
-        <Flex gap={10} align="center">
+        <Flex gap={10} align="center" wrap>
           <MainTitle>Sincronizador de publicaciones</MainTitle>
           <Badge status="success" text="Sincronizador en funcionamiento" />
         </Flex>
         <Row gutter={[20, 20]}>
           {dataSync.map((item) => (
-            <Col key={item._id} xl={6} lg={6} md={3} sm={6} xs={6}>
+            <Col key={item._id} xl={6} lg={6} md={12} sm={24} xs={24}>
               <GlassCard>
                 <Flex vertical gap={20}>
                   <Space direction="vertical">

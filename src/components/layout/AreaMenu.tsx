@@ -151,6 +151,11 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
               key: "picking",
               onClick: () => router.push("/tools/fullfilment"),
             },
+            {
+              label: "Publicaciones Creadas",
+              key: "createdL",
+              onClick: () => router.push("/tools/createdListings"),
+            },
           ],
         },
         {

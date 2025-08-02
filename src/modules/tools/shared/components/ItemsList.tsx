@@ -11,6 +11,7 @@ import VirtualList from "rc-virtual-list";
 import { useState } from "react";
 import { markets } from "../../process/components/processorDev";
 import { DataProcessorType } from "../../process/types/processorTypes";
+import dayjs from "dayjs";
 
 type ItemsListProps = {
   title: string;
@@ -34,6 +35,7 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
         //open modal
         setOpenModalErrors(true);
         setDataError(data);
+        console.log('data error ', data)
         break;
 
       case "Pending":
@@ -48,24 +50,24 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
   };
 
   const getColor = (market: markets) => {
-    let color = '#000';
-    switch(market){
-        case 'Amazon':
-            color = '#F3A847';
-            break;
-        case 'Coppel':
-            color = '#1C42E8';
-            break;
-        case 'Mercado Libre':
-            color = '#FFD100';
-            break;
-        case 'Walmart':
-            color = '#0071DC';
-            break;
+    let color = "#000";
+    switch (market) {
+      case "Amazon":
+        color = "#F3A847";
+        break;
+      case "Coppel":
+        color = "#1C42E8";
+        break;
+      case "Mercado Libre":
+        color = "#F2A516";
+        break;
+      case "Walmart":
+        color = "#0071DC";
+        break;
     }
 
     return color;
-  }
+  };
 
   return (
     <>
@@ -86,7 +88,12 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
           </DefaultTitle>
         </Space>
         <List>
-          <VirtualList data={items} height={450} itemHeight={47} itemKey="sale_id">
+          <VirtualList
+            data={items}
+            height={450}
+            itemHeight={47}
+            itemKey="sale_id"
+          >
             {(item: DataProcessorType) => (
               <List.Item
                 key={item.sale_id}
@@ -97,19 +104,31 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
                   style={{ width: "100%" }}
                   justify="space-between"
                   align="center"
+                  gap={20}
                 >
                   <Flex vertical>
-                    <DefaultTitle style={{color: getColor(item.market as markets)}}>
+                    <DefaultTitle
+                      style={{ color: getColor(item.market as markets) }}
+                    >
                       Número de orden: {item.sale_id} de {item.market}
                     </DefaultTitle>
                     <Space direction="vertical">
+                      {item.order_reference && (
+                        <Space>
+                          <strong>Órden de venta:</strong>
+                          <p>{item.order_reference}</p>
+                        </Space>
+                      )}
                       <p>{item.message}</p>
                     </Space>
                   </Flex>
 
-                  <MutedSubtitle>
-                    {}
-                  </MutedSubtitle>
+                  <Flex vertical wrap>
+                    <MutedSubtitle>Fecha de venta:</MutedSubtitle>
+                    <MutedSubtitle>
+                      {dayjs(item.sale_date).format("DD/MM/YYYY")}
+                    </MutedSubtitle>
+                  </Flex>
                 </Flex>
               </List.Item>
             )}
@@ -118,7 +137,7 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
       </Flex>
 
       <Modal
-        title={<DefaultTitle level={4}>Detalle del error</DefaultTitle>}
+        title={<DefaultTitle level={4}>🚨Detalle del error🚨</DefaultTitle>}
         open={openModalErrors}
         onCancel={handleCloseModal}
         footer={null}
@@ -132,7 +151,7 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
           </Flex>
           <MutedSubtitle>
             Intento de procesamiento a las{" "}
-            {dataError?.sale_date?.toLocaleTimeString()}
+            {dayjs(dataError?.sale_date).format("HH:mm:s [del] DD/MM/YYYY")}
           </MutedSubtitle>
           <p>{dataError?.message}</p>
         </Flex>

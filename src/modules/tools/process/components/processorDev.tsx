@@ -2,10 +2,10 @@
 import { GlassCard } from "@/components/core/GlassCard";
 import { LabelTitle, MainTitle } from "@/components/core/Titulo";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";
-import { App, Badge, Checkbox, Col, Flex, Row, Space } from "antd";
+import { App, Badge, Checkbox, Col, Flex, Input, Row, Space } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { processService } from "../services/processorService";
-import { DataProcessorType } from "../types/processorTypes";
+import { DataProcessorType, dummyData } from "../types/processorTypes";
 import type { GetProp } from "antd";
 
 export type markets = "Mercado Libre" | "Amazon" | "Walmart" | "Coppel";
@@ -20,6 +20,7 @@ export default function ProcessorDev() {
     "wl",
     "cop",
   ]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const { notification } = App.useApp();
 
   useEffect(() => {
@@ -45,10 +46,10 @@ export default function ProcessorDev() {
           ...addMarket(data.cop?.pending, "Coppel"),
         ];
         const errorsData = [
-          ...addMarket(data.meli?.errors, "Mercado Libre"),
-          ...addMarket(data.amazon?.errors, "Amazon"),
-          ...addMarket(data.wl?.errors, "Walmart"),
-          ...addMarket(data.cop?.errors, "Coppel"),
+          ...addMarket(data.meli?.error, "Mercado Libre"),
+          ...addMarket(data.amazon?.error, "Amazon"),
+          ...addMarket(data.wl?.error, "Walmart"),
+          ...addMarket(data.cop?.error, "Coppel"),
         ];
 
         setDataProcessed(processedData);
@@ -102,31 +103,84 @@ export default function ProcessorDev() {
     }
   };
 
+  const searchFilteredData = useMemo(() => {
+    if (!searchTerm.trim()) return dummyData;
+
+    const searchValue = searchTerm.toLowerCase();
+
+    // Helper para filtrar arrays de órdenes por coincidencia en cualquier campo string
+    const filterOrders = (orders?: any[]) =>
+      (orders || []).filter((order) =>
+        Object.values(order).some((val) =>
+          String(val).toLowerCase().includes(searchValue)
+        )
+      );
+
+    return {
+      meli: {
+        processed: filterOrders(dummyData.meli?.processed),
+        pending: filterOrders(dummyData.meli?.pending),
+        error: filterOrders(dummyData.meli?.error),
+      },
+      amazon: {
+        processed: filterOrders(dummyData.amazon?.processed),
+        pending: filterOrders(dummyData.amazon?.pending),
+        error: filterOrders(dummyData.amazon?.error),
+      },
+      wl: {
+        processed: filterOrders(dummyData.wl?.processed),
+        pending: filterOrders(dummyData.wl?.pending),
+        error: filterOrders(dummyData.wl?.error),
+      },
+      cop: {
+        processed: filterOrders(dummyData.cop?.processed),
+        pending: filterOrders(dummyData.cop?.pending),
+        error: filterOrders(dummyData.cop?.error),
+      },
+    };
+  }, [searchTerm, dummyData]);
+
   return (
     <>
       <Flex gap={20} vertical>
-        <Flex gap={10} align="center" justify="space-between">
-          <Space>
-            <MainTitle>Procesador de órdenes</MainTitle>
-            <Badge status="success" text="Procesador en funcionamiento" />
-          </Space>
-
-          <GlassCard>
-            <Flex vertical>
-              <LabelTitle>Filtrar por:</LabelTitle>
-
-              <Checkbox.Group
-                onChange={onChange}
-                options={[
-                  { value: "meli", label: "Mercado Libre" },
-                  { value: "amazon", label: "Amazon" },
-                  { value: "wl", label: "Walmart" },
-                  { value: "cop", label: "Coppel" },
-                ]}
-              />
-            </Flex>
-          </GlassCard>
+        <Flex gap={10} align="center" wrap>
+          <MainTitle>Procesador de órdenes</MainTitle>
+          <Badge status="success" text="Procesador en funcionamiento" />
         </Flex>
+
+        <GlassCard>
+          <Row gutter={[20, 20]} justify="space-between">
+            <Col xl={10} lg={12} md={24} sm={24} xs={24}>
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <LabelTitle>
+                  Buscar por órden de compra u órden de venta:{" "}
+                </LabelTitle>
+                <Input
+                  placeholder="Buscar..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  allowClear
+                />
+              </Space>
+            </Col>
+
+            <Col>
+              <Flex vertical>
+                <LabelTitle>Filtrar por:</LabelTitle>
+
+                <Checkbox.Group
+                  onChange={onChange}
+                  options={[
+                    { value: "meli", label: "Mercado Libre" },
+                    { value: "amazon", label: "Amazon" },
+                    { value: "wl", label: "Walmart" },
+                    { value: "cop", label: "Coppel" },
+                  ]}
+                />
+              </Flex>
+            </Col>
+          </Row>
+        </GlassCard>
 
         <Row gutter={[20, 20]}>
           <Col xl={8} lg={8} md={24} sm={24} xs={24}>

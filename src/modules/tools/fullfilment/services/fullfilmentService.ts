@@ -43,6 +43,29 @@ export class FullfilmentService {
       throw error;
     }
   }
+
+  async getFulfillmentAllTogether(): Promise<FullfilmentType> {
+    try {
+      const response = await mainApi.post<FullfilmentResponseType>(
+        "/fulfillment", {timeout: 60000 * 5}
+      );
+      console.log("Fulfillment data fetched:", response);
+
+      if (!response.success) {
+        console.error("Error fetching fulfillment data:", response.message);
+        throw new Error(response.message || "Failed to fetch fulfillment data");
+      }
+
+      return {
+        data: response.data || [],
+        columns: response.columns || [],
+        authToken: response.authToken || "",
+      };
+    } catch (error) {
+      console.error("Error fetching fulfillment data:", error);
+      throw error;
+    }
+  }
 }
 
 export const fullfilmentService = new FullfilmentService();

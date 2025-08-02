@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { MainTitle } from "../../../components/core/Titulo";
-import { Button, Divider, Input, Form } from "antd";
+import { Button, Divider, Input, Form, App } from "antd";
 import { useTranslations } from "next-intl";
 import { redirect, useRouter } from "next/navigation";
 import { authService } from "../services/authService";
@@ -10,6 +10,8 @@ import { authService } from "../services/authService";
 import FormItem from "antd/es/form/FormItem";
 import Password from "antd/es/input/Password";
 import { LoginType } from "../types/loginTypes";
+import { useEffect } from "react";
+import { localStorageService } from "@/shared/services/localStorageService";
 
 const SIGNIN_ERROR_URL = "/error";
 
@@ -19,6 +21,7 @@ export default function LoginForm({
 }: React.ComponentProps<"div">) {
   const t = useTranslations("LoginPage");
   const router = useRouter()
+  const { notification } = App.useApp();
 
   // TEMPORAL ANTES DEL HTTPS
   const [form] = Form.useForm<LoginType>();
@@ -31,17 +34,26 @@ export default function LoginForm({
         console.warn("response auth ", res);
         if(res){
           router.push('/dolibarr')
-          //console.log('ok')
+          console.log('ok')
         }
       })
       .catch((e) => {
         console.error("Error en auth ", e);
+        notification.open({
+          type: "error",
+          message: "Error al iniciar sesión",
+          description: `No se pudo iniciar sesión.`,
+        });
       });
   };
 
   const onFinishFailed = (error: any) => {
     console.error(error);
   };
+
+  // useEffect(() => {
+  //   localStorageService.clear();
+  // },)
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

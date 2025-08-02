@@ -10,3 +10,15 @@ export type DinamicColumnsType = {
     }[];
     align?: "left" | "center" | "right"; // Para alinear el contenido de la columna
 }
+
+export type GenericTableType = {
+    data: any[];
+    columns: DinamicColumnsType[]
+}
+
+export type GenericResponseTableType = {
+    success: boolean;
+    data?: any[];
+    columns?: DinamicColumnsType[];
+    message?: string;
+}

@@ -10,6 +10,7 @@ import { DinamicColumnsType } from "@/shared/types/tableTypes";
 import { App, Flex, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { set } from "zod";
 
 export default function FullfilmentPage() {
   const router = useRouter();
@@ -44,25 +45,39 @@ export default function FullfilmentPage() {
   }, []);
 
   async function fetchData() {
+    setLoading(true);
     let timeStart = Date.now();
-    const extradata = await fetch(
-      "http://192.168.0.234:8000/fulfillment",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
-    );
-    const extraData = await extradata.json();
-    console.log("Fullfilment data fetched:", extraData);
-    setColumns(extraData.columns);
-    setData(extraData.data);
+    try {
+      // const extradata = await fetch("http://192.168.0.234:8000/fulfillment", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "Access-Control-Allow-Origin": "*",
+      //   },
+      // });
+      // const extraData = await extradata.json();
+      const extraData = await fullfilmentService.getFulfillmentAllTogether();
+      console.log("Fullfilment data fetched:", extraData);
+      setColumns(extraData.columns ?? []);
+      setData(extraData.data ?? []);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      notification.open({
+        type: "error",
+        message: "Error al obtener los datos",
+        description: `No se pudo obtener la información de fullfilment: ${err}`,
+      });
+      setColumns([]);
+      setData([]);
+      setLoading(false);
+      return;
+    }
 
     let timeEnd = Date.now();
     let totalTime = (timeEnd - timeStart) / 1000; // Convertir a segundos
     console.log(`Total processing time: ${totalTime} seconds`);
+    setLoading(false);
   }
 
   async function getDataProcessed(datos: any, authToken: string) {
@@ -300,7 +315,7 @@ export default function FullfilmentPage() {
                 allowClear
                 style={{ marginBottom: 20, width: "50%" }}
               />
-              <DinamicTable columns={columns} dataSource={data} />
+              <DinamicTable columns={columns} dataSource={filteredData} />
             </GlassCard>
           </Flex>
         </Container>
