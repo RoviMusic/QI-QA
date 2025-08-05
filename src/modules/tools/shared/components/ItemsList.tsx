@@ -35,7 +35,7 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
         //open modal
         setOpenModalErrors(true);
         setDataError(data);
-        console.log('data error ', data)
+        console.log("data error ", data);
         break;
 
       case "Pending":
@@ -150,10 +150,17 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
             </DefaultTitle>
           </Flex>
           <MutedSubtitle>
-            Intento de procesamiento a las{" "}
+            Fecha de venta:{" "}
             {dayjs(dataError?.sale_date).format("HH:mm:s [del] DD/MM/YYYY")}
           </MutedSubtitle>
-          <p>{dataError?.message}</p>
+
+          <Space direction="vertical">
+            <LabelTitle>Mensaje del error:</LabelTitle>
+            <p>{dataError?.message}</p>
+          </Space>
+
+          <LabelTitle>Detalles:</LabelTitle>
+          
         </Flex>
       </Modal>
     </>
