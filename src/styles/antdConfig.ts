@@ -3,7 +3,7 @@ import { ThemeConfig } from "antd";
 const defaultTheme: ThemeConfig = {
   token: {
     colorPrimary: "#FAB627",
-    colorLink: "#FAB627",
+    //colorLink: "#FAB627",
   },
   components: {
     Layout: {

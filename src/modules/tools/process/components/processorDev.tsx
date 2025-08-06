@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { processService } from "../services/processorService";
 import { DataProcessorType, dummyData } from "../types/processorTypes";
 import type { GetProp } from "antd";
+import LoadingAnimation from "@/components/core/LoadingAnimation";
 
 export type markets = "Mercado Libre" | "Amazon" | "Walmart" | "Coppel";
 
@@ -22,13 +23,13 @@ export default function ProcessorDev() {
   ]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { notification } = App.useApp();
+  const [loading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    setIsLoading(true);
     processService
       .getProcesser()
       .then((data) => {
-        console.warn(" data fetched:", data);
-
         // Helper para agregar el market a cada item
         const addMarket = (items: any[] | undefined, market: string) =>
           (items || []).map((item) => ({ ...item, market }));
@@ -55,6 +56,8 @@ export default function ProcessorDev() {
         setDataProcessed(processedData);
         setDataPending(pendingData);
         setDataErrors(errorsData);
+        console.warn(" data fetched:", errorsData);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -63,6 +66,7 @@ export default function ProcessorDev() {
           message: "Hubo un error",
           description: `No se pudo obtener la información del procesador: ${error.message}`,
         });
+        setIsLoading(false);
       });
   }, []);
 
@@ -103,111 +107,104 @@ export default function ProcessorDev() {
     }
   };
 
-  const searchFilteredData = useMemo(() => {
-    if (!searchTerm.trim()) return dummyData;
+  // Helper para filtrar por término de búsqueda en cualquier campo string
+  const filterBySearch = (items: DataProcessorType[]) =>
+    !searchTerm.trim()
+      ? items
+      : items.filter((item) =>
+          Object.values(item).some((val) =>
+            String(val).toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
 
-    const searchValue = searchTerm.toLowerCase();
-
-    // Helper para filtrar arrays de órdenes por coincidencia en cualquier campo string
-    const filterOrders = (orders?: any[]) =>
-      (orders || []).filter((order) =>
-        Object.values(order).some((val) =>
-          String(val).toLowerCase().includes(searchValue)
-        )
-      );
-
-    return {
-      meli: {
-        processed: filterOrders(dummyData.meli?.processed),
-        pending: filterOrders(dummyData.meli?.pending),
-        error: filterOrders(dummyData.meli?.error),
-      },
-      amazon: {
-        processed: filterOrders(dummyData.amazon?.processed),
-        pending: filterOrders(dummyData.amazon?.pending),
-        error: filterOrders(dummyData.amazon?.error),
-      },
-      wl: {
-        processed: filterOrders(dummyData.wl?.processed),
-        pending: filterOrders(dummyData.wl?.pending),
-        error: filterOrders(dummyData.wl?.error),
-      },
-      cop: {
-        processed: filterOrders(dummyData.cop?.processed),
-        pending: filterOrders(dummyData.cop?.pending),
-        error: filterOrders(dummyData.cop?.error),
-      },
-    };
-  }, [searchTerm, dummyData]);
+  // Aplica ambos filtros: mercado y búsqueda
+  const displayedProcessed = useMemo(
+    () => filterBySearch(filteredProcessed),
+    [filteredProcessed, searchTerm]
+  );
+  const displayedPending = useMemo(
+    () => filterBySearch(filteredPending),
+    [filteredPending, searchTerm]
+  );
+  const displayedErrors = useMemo(
+    () => filterBySearch(filteredErrors),
+    [filteredErrors, searchTerm]
+  );
 
   return (
     <>
-      <Flex gap={20} vertical>
-        <Flex gap={10} align="center" wrap>
-          <MainTitle>Procesador de órdenes</MainTitle>
-          <Badge status="success" text="Procesador en funcionamiento" />
-        </Flex>
+      <LoadingAnimation isActive={loading}>
+        <Flex gap={20} vertical>
+          <Flex gap={10} align="center" wrap>
+            <MainTitle>Procesador de órdenes</MainTitle>
+            <Badge status="success" text="Procesador en funcionamiento" />
+          </Flex>
 
-        <GlassCard>
-          <Row gutter={[20, 20]} justify="space-between">
-            <Col xl={10} lg={12} md={24} sm={24} xs={24}>
-              <Space direction="vertical" style={{ width: "100%" }}>
-                <LabelTitle>
-                  Buscar por órden de compra u órden de venta:{" "}
-                </LabelTitle>
-                <Input
-                  placeholder="Buscar..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  allowClear
+          <GlassCard>
+            <Row gutter={[20, 20]} justify="space-between">
+              <Col xl={10} lg={12} md={24} sm={24} xs={24}>
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  <LabelTitle>
+                    Buscar por órden de compra u órden de venta:{" "}
+                  </LabelTitle>
+                  <Input
+                    placeholder="Buscar..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    allowClear
+                  />
+                </Space>
+              </Col>
+
+              <Col>
+                <Flex vertical>
+                  <LabelTitle>Filtrar por:</LabelTitle>
+
+                  <Checkbox.Group
+                    onChange={onChange}
+                    options={[
+                      { value: "meli", label: "Mercado Libre" },
+                      { value: "amazon", label: "Amazon" },
+                      { value: "wl", label: "Walmart" },
+                      { value: "cop", label: "Coppel" },
+                    ]}
+                  />
+                </Flex>
+              </Col>
+            </Row>
+          </GlassCard>
+
+          <Row gutter={[20, 20]}>
+            <Col xl={8} lg={8} md={24} sm={24} xs={24}>
+              <GlassCard style={{ border: "2px solid #FA312B" }}>
+                <ItemsList
+                  title="Errores"
+                  items={displayedErrors}
+                  type="Error"
                 />
-              </Space>
+              </GlassCard>
             </Col>
-
-            <Col>
-              <Flex vertical>
-                <LabelTitle>Filtrar por:</LabelTitle>
-
-                <Checkbox.Group
-                  onChange={onChange}
-                  options={[
-                    { value: "meli", label: "Mercado Libre" },
-                    { value: "amazon", label: "Amazon" },
-                    { value: "wl", label: "Walmart" },
-                    { value: "cop", label: "Coppel" },
-                  ]}
+            <Col xl={8} lg={8} md={12} sm={24} xs={24}>
+              <GlassCard>
+                <ItemsList
+                  title="Órdenes por procesar"
+                  items={displayedProcessed}
+                  type="Processed"
                 />
-              </Flex>
+              </GlassCard>
+            </Col>
+            <Col xl={8} lg={8} md={12} sm={24} xs={24}>
+              <GlassCard>
+                <ItemsList
+                  title="Órdenes sincronizadas"
+                  items={displayedPending}
+                  type="Pending"
+                />
+              </GlassCard>
             </Col>
           </Row>
-        </GlassCard>
-
-        <Row gutter={[20, 20]}>
-          <Col xl={8} lg={8} md={24} sm={24} xs={24}>
-            <GlassCard style={{ border: "2px solid #FA312B" }}>
-              <ItemsList title="Errores" items={filteredErrors} type="Error" />
-            </GlassCard>
-          </Col>
-          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
-            <GlassCard>
-              <ItemsList
-                title="Órdenes por procesar"
-                items={filteredProcessed}
-                type="Processed"
-              />
-            </GlassCard>
-          </Col>
-          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
-            <GlassCard>
-              <ItemsList
-                title="Órdenes sincronizadas"
-                items={filteredPending}
-                type="Pending"
-              />
-            </GlassCard>
-          </Col>
-        </Row>
-      </Flex>
+        </Flex>
+      </LoadingAnimation>
     </>
   );
 }

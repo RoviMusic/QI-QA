@@ -1,13 +1,13 @@
+'use client'
 import { Layout } from "antd";
 import styles from "@/styles/MainLayout.module.css";
 import MainHeader from "@/components/layout/MainHeader";
 import MainContent from "@/components/layout/MainContent";
-
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { useEffect } from "react";
 import { localStorageService } from "@/shared/services/localStorageService";
+import { useRouter } from "next/navigation";
 
-export default async function MainLayout({
+export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -20,6 +20,15 @@ export default async function MainLayout({
   // console.warn('hola ', user)
 
   // if(user === null) return redirect('/')
+
+  // const router = useRouter()
+  // useEffect(() => {
+  //   const currentUser = localStorageService.getItem('user')
+
+  //   if(currentUser === null) {
+  //     router.replace('/')
+  //   }
+  // }, [])
 
   return (
     <>
