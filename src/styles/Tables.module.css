@@ -1,0 +1,11 @@
+.errorRow {
+    background-color: #FDE8E7;
+}
+
+.pendingRow{
+    background-color: #E7E7E7;
+}
+
+.processedRow{
+    background-color: #D3F4D5;
+}

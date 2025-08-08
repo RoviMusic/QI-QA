@@ -5,6 +5,9 @@ export interface IErrors extends Document {
     trigger: string;
     error: string;
     timestamp: Date;
+    metadata: {
+        publication_id: string;
+    }
 }
 
 export const ErrorsSchema: Schema<IErrors> = new Schema({

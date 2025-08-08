@@ -3,18 +3,24 @@ import { GlassCard } from "@/components/core/GlassCard";
 import { LabelTitle, MainTitle } from "@/components/core/Titulo";
 import ItemsList from "@/modules/tools/shared/components/ItemsList";
 import { App, Badge, Checkbox, Col, Flex, Input, Row, Space } from "antd";
-import { useEffect, useMemo, useState } from "react";
-import { processService } from "../services/processorService";
-import { DataProcessorType, dummyData } from "../types/processorTypes";
+import { useMemo, useState } from "react";
+import { DataProcessorType } from "../types/processorTypes";
 import type { GetProp } from "antd";
 import LoadingAnimation from "@/components/core/LoadingAnimation";
+import { IProcessor, IProcessorErrors, IProcessorPending } from "../types/processorMongoInterfaces";
 
 export type markets = "Mercado Libre" | "Amazon" | "Walmart" | "Coppel";
 
-export default function ProcessorDev() {
-  const [dataProcessed, setDataProcessed] = useState<DataProcessorType[]>([]);
-  const [dataPending, setDataPending] = useState<DataProcessorType[]>([]);
-  const [dataErrors, setDataErrors] = useState<DataProcessorType[]>([]);
+interface ProcessorDevProps {
+  processedData: IProcessor[];
+  errorsData: IProcessorErrors[];
+  pendingData: IProcessorPending[]
+}
+
+export default function ProcessorDev({ processedData, errorsData, pendingData }: ProcessorDevProps) {
+  const [dataProcessed, setDataProcessed] = useState<any[]>(processedData);
+  const [dataPending, setDataPending] = useState<any[]>(pendingData);
+  const [dataErrors, setDataErrors] = useState<any[]>(errorsData);
   const [selectedMarkets, setSelectedMarkets] = useState<string[]>([
     "meli",
     "amazon",
@@ -25,50 +31,60 @@ export default function ProcessorDev() {
   const { notification } = App.useApp();
   const [loading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    processService
-      .getProcesser()
-      .then((data) => {
-        // Helper para agregar el market a cada item
-        const addMarket = (items: any[] | undefined, market: string) =>
-          (items || []).map((item) => ({ ...item, market }));
+  // useEffect(() => {
+  //   const addMarket = (items: any[] | undefined, market: string) =>
+  //     (items || []).map((item) => ({ ...item, market }));
 
-        const processedData = [
-          ...addMarket(data.meli?.processed, "Mercado Libre"),
-          ...addMarket(data.amazon?.processed, "Amazon"),
-          ...addMarket(data.wl?.processed, "Walmart"),
-          ...addMarket(data.cop?.processed, "Coppel"),
-        ];
-        const pendingData = [
-          ...addMarket(data.meli?.pending, "Mercado Libre"),
-          ...addMarket(data.amazon?.pending, "Amazon"),
-          ...addMarket(data.wl?.pending, "Walmart"),
-          ...addMarket(data.cop?.pending, "Coppel"),
-        ];
-        const errorsData = [
-          ...addMarket(data.meli?.error, "Mercado Libre"),
-          ...addMarket(data.amazon?.error, "Amazon"),
-          ...addMarket(data.wl?.error, "Walmart"),
-          ...addMarket(data.cop?.error, "Coppel"),
-        ];
+  //   const processedData = [
+  //     ...addMarket(dataML, "Mercado Libre")
+  //   ]
+  //   setDataProcessed(processedData)
+  // }, []);
 
-        setDataProcessed(processedData);
-        setDataPending(pendingData);
-        setDataErrors(errorsData);
-        console.warn(" data fetched:", errorsData);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        notification.open({
-          type: "error",
-          message: "Hubo un error",
-          description: `No se pudo obtener la información del procesador: ${error.message}`,
-        });
-        setIsLoading(false);
-      });
-  }, []);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   processService
+  //     .getProcesser()
+  //     .then((data) => {
+  //       // Helper para agregar el market a cada item
+  //       const addMarket = (items: any[] | undefined, market: string) =>
+  //         (items || []).map((item) => ({ ...item, market }));
+
+  //       const processedData = [
+  //         ...addMarket(data.meli?.processed, "Mercado Libre"),
+  //         ...addMarket(data.amazon?.processed, "Amazon"),
+  //         ...addMarket(data.wl?.processed, "Walmart"),
+  //         ...addMarket(data.cop?.processed, "Coppel"),
+  //       ];
+  //       const pendingData = [
+  //         ...addMarket(data.meli?.pending, "Mercado Libre"),
+  //         ...addMarket(data.amazon?.pending, "Amazon"),
+  //         ...addMarket(data.wl?.pending, "Walmart"),
+  //         ...addMarket(data.cop?.pending, "Coppel"),
+  //       ];
+  //       const errorsData = [
+  //         ...addMarket(data.meli?.error, "Mercado Libre"),
+  //         ...addMarket(data.amazon?.error, "Amazon"),
+  //         ...addMarket(data.wl?.error, "Walmart"),
+  //         ...addMarket(data.cop?.error, "Coppel"),
+  //       ];
+
+  //       setDataProcessed(processedData);
+  //       setDataPending(pendingData);
+  //       setDataErrors(errorsData);
+  //       console.warn(" data fetched:", errorsData);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       notification.open({
+  //         type: "error",
+  //         message: "Hubo un error",
+  //         description: `No se pudo obtener la información del procesador: ${error.message}`,
+  //       });
+  //       setIsLoading(false);
+  //     });
+  // }, []);
 
   const marketMap: Record<string, string> = {
     meli: "Mercado Libre",
@@ -163,10 +179,24 @@ export default function ProcessorDev() {
                   <Checkbox.Group
                     onChange={onChange}
                     options={[
-                      { value: "meli", label: "Mercado Libre" },
-                      { value: "amazon", label: "Amazon" },
-                      { value: "wl", label: "Walmart" },
-                      { value: "cop", label: "Coppel" },
+                      {
+                        value: "meli",
+                        label: (
+                          <span className="text-[#F2A516]">Mercado Libre</span>
+                        ),
+                      },
+                      {
+                        value: "amazon",
+                        label: <span className="text-[#232F3E]">Amazon</span>,
+                      },
+                      {
+                        value: "wl",
+                        label: <span className="text-[#0071DC]">Walmart</span>,
+                      },
+                      {
+                        value: "cop",
+                        label: <span className="text-[#1C42E8]">Coppel</span>,
+                      },
                     ]}
                   />
                 </Flex>

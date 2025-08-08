@@ -39,7 +39,9 @@ const defaultTheme: ThemeConfig = {
       itemSelectedColor: '#fff'
     },
     Button: {
-      colorBgContainerDisabled: '#D9D9D9'
+      colorBgContainerDisabled: '#D9D9D9',
+      defaultBg: 'transparent',
+      defaultBorderColor: '#FAB627'
     },
     Form: {
       itemMarginBottom: 0

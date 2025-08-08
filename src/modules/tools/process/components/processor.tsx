@@ -1,93 +1,142 @@
 "use client";
 import { GlassCard } from "@/components/core/GlassCard";
 import { DinamicTable } from "@/components/core/Tables";
-import { DefaultTitle, LabelTitle, MainTitle } from "@/components/core/Titulo";
-import Container from "@/components/layout/Container";
-import ItemsList from "@/modules/tools/shared/components/ItemsList";
-import { LogisticTypeEnum } from "@/shared/enums/LogisticTypeEnum";
-import { MarketsType } from "@/shared/enums/MarketEnum";
+import {
+  DefaultTitle,
+  LabelTitle,
+  MainTitle,
+  MutedSubtitle,
+} from "@/components/core/Titulo";
+import { MarketsEnmu } from "@/shared/enums/MarketEnum";
 import { DinamicColumnsType } from "@/shared/types/tableTypes";
-import { Badge, Col, Flex, Modal, Radio, Row, Space } from "antd";
-import dayjs from "dayjs";
+import {
+  Badge,
+  Checkbox,
+  Col,
+  Flex,
+  Input,
+  Modal,
+  Radio,
+  Row,
+  Space,
+  Steps,
+  Typography,
+} from "antd";
+import { useEffect, useState } from "react";
+import type { GetProp } from "antd";
+const { Link } = Typography;
 
-type DataProcessorType = {
-  order_number: string;
-  shipping_type: LogisticTypeEnum;
-  marketplace: MarketsType;
-  sku: string | string[];
-  admin_orders: {
-    oc: string;
-    invoice: string;
-    ov?: string | string[];
-  };
-  picking_Status: PickingStatusType[];
-  tracking_number: string;
-};
+interface ProcessorProps {
+  data: any[];
+}
 
-type PickingStatusType = {
-  sku: string;
-  merchandise_receipt: string;
-  pending_validation: string;
-  pending_receipt: string;
-  received: string;
-};
-
-export default function Processor() {
-  const columnsDummy: DinamicColumnsType[] = [
+export default function Processor({ data }: ProcessorProps) {
+  const columns: DinamicColumnsType[] = [
     {
       title: "No. de orden",
-      column_id: "order_number",
+      column_id: "sale_id",
       type: "link",
       actions: [
         {
           onPress: (record) => {
-            //enviar a numero de orden en dolibarr
+            //enviar a numero de orden en market
             console.log("Order details:", record);
+            if (record.market === MarketsEnmu.Meli) {
+              window.open(
+                `${process.env.NEXT_PUBLIC_MELI_ORDERS_URL}/${record.sale_id}/detalle`,
+                "_blank"
+              );
+            }
           },
         },
       ],
     },
     {
+      title: "Fecha de venta",
+      column_id: "sale_date",
+      type: "date",
+    },
+    {
       title: "Tipo de envío",
-      column_id: "shipping_type",
+      column_id: "shipment_type",
       type: "string",
     },
     {
       title: "Marketplace",
-      column_id: "marketplace",
+      column_id: "market",
       type: "string",
     },
     {
-      title: "Orden de venta/Factura",
-      column_id: "admin_orders",
+      title: "Orden de venta",
+      column_id: "order_reference",
       type: "link",
       align: "center",
-      // actions: [
-      //   {
-      //     onPress: (record) => {
-      //       //enviar a orden de venta en dolibarr
-      //       console.log("Order details:", record);
-      //     },
-      //   },
-      // ],
+      actions: [
+        {
+          onPress: (record) => {
+            //enviar a orden de venta en dolibarr
+            console.log("Order details:", record);
+            window.open(
+              `${process.env.NEXT_PUBLIC_DOLIBARR_ORDERS_URL}id=${record.order_dolibarr_id}`,
+              "_blank"
+            );
+          },
+        },
+      ],
+    },
+    {
+      title: "Pack ID",
+      column_id: "pack_id",
+      type: "link",
+      align: "center",
+      actions: [
+        {
+          onPress: (record) => {
+            if (record.market === MarketsEnmu.Meli) {
+              window.open(
+                `${process.env.NEXT_PUBLIC_MELI_ORDERS_URL}/${record.pack_id}/detalle`,
+                "_blank"
+              );
+            }
+          },
+        },
+      ],
+    },
+    {
+      title: "Factura",
+      column_id: "invoice_reference",
+      type: "link",
+      align: "center",
+      actions: [
+        {
+          onPress: (record) => {
+            window.open(
+              `${process.env.NEXT_PUBLIC_DOLIBARR_INVOICE_URL}id=${record.invoice_id}`,
+              "_blank"
+            );
+          },
+        },
+      ],
     },
     {
       title: "Picking",
-      column_id: "picking_Status",
+      column_id: "picking_id",
       type: "link",
       align: "center",
-      // actions: [
-      //   {
-      //     onPress: (record) => {
-      //       //enviar a picking en dolibarr
-      //       console.log("Picking details:", record);
-      //     },
-      //   },
-      // ],
+      actions: [
+        {
+          onPress: (record) => {
+            window.open(
+              `${process.env.NEXT_PUBLIC_DOLIBARR_PICKING_URL}picking_id=${record.picking_id}`,
+              "_blank"
+            );
+          },
+        },
+      ],
     },
     {
       title: "Número de envío",
-      column_id: "tracking_number",
+      column_id: "shipment_reference",
       type: "link",
       align: "center",
       actions: [
@@ -95,82 +144,57 @@ export default function Processor() {
           onPress: (record) => {
             //enviar a número de envío en dolibarr
             console.log("Tracking details:", record);
+            window.open(
+              `${process.env.NEXT_PUBLIC_DOLIBARR_SHIPMENT_URL}id=${record.shipment_id}`,
+              "_blank"
+            );
           },
         },
       ],
     },
   ];
 
-  const dataDummy: DataProcessorType[] = [
-    {
-      order_number: "123456",
-      shipping_type: LogisticTypeEnum.CS,
-      marketplace: "Meli",
-      sku: "SKU-123456",
-      admin_orders: {
-        oc: "OC-123456",
-        invoice: "INV-123456",
-      },
-      picking_Status: [
-        {
-          sku: "SKU-123456",
-          merchandise_receipt: "Pick-123",
-          pending_validation: "Pend-123",
-          pending_receipt: "Pend-Rec-123",
-          received: "Rec-123",
-        },
-      ],
-      tracking_number: "TRACK-123456",
-    },
-    {
-      order_number: "5467596",
-      shipping_type: LogisticTypeEnum.CD,
-      marketplace: "Meli",
-      sku: "SKU-123456",
-      admin_orders: {
-        oc: "OC-123456",
-        invoice: "INV-123456",
-        ov: "OV-123456",
-      },
-      picking_Status: [
-        {
-          sku: "SKU-123456",
-          merchandise_receipt: "Pick-123",
-          pending_validation: "Pend-123",
-          pending_receipt: "Pend-Rec-123",
-          received: "Rec-123",
-        },
-      ],
-      tracking_number: "TRACK-123456",
-    },
-    {
-      order_number: "573392028",
-      shipping_type: LogisticTypeEnum.CS,
-      marketplace: "Meli",
-      sku: ["SKU-123456", "SKU-654321"],
-      admin_orders: {
-        oc: "OC-123456",
-        invoice: "INV-123456",
-      },
-      picking_Status: [
-        {
-          sku: "SKU-123456",
-          merchandise_receipt: "Pick-123",
-          pending_validation: "Pend-123",
-          pending_receipt: "Pend-Rec-123",
-          received: "Rec-123",
-        },
-        {
-          sku: "SKU-654321",
-          merchandise_receipt: "Pick-123",
-          pending_validation: "Pend-123",
-          pending_receipt: "Pend-Rec-123",
-          received: "Rec-123",
-        },
-      ],
-      tracking_number: "TRACK-123456",
-    },
-  ];
+  const [openDetail, setOpenDetail] = useState<boolean>(false);
+  const [dataDetail, setDataDetail] = useState<any | null>(null);
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedMarkets, setSelectedMarkets] = useState<string[]>([
+    "meli",
+    "amazon",
+    "wl",
+    "cop",
+  ]);
+
+  const marketMap: Record<string, string> = {
+    meli: "Mercado Libre",
+    amazon: "Amazon",
+    wl: "Walmart",
+    cop: "Coppel",
+  };
+
+  const onChange: GetProp<typeof Checkbox.Group, "onChange"> = (
+    checkedValues
+  ) => {
+    console.log("Selected markets:", checkedValues);
+    if ((checkedValues as string[]).length === 0) {
+      setSelectedMarkets(Object.keys(marketMap));
+    } else {
+      setSelectedMarkets(checkedValues as string[]);
+    }
+  };
+
+  const handleDetail = (data: any) => {
+    if (data.type === "errors") {
+      setOpenDetail(true);
+      setDataDetail(data);
+    }
+    console.warn(data);
+  };
+
+  const handleCloseDetail = () => {
+    setOpenDetail(false);
+    setDataDetail(null);
+  };
 
   return (
     <>
@@ -180,26 +204,142 @@ export default function Processor() {
             <MainTitle>Procesador de órdenes</MainTitle>
             <Badge status="success" text="Procesador en funcionamiento" />
           </Space>
-
-          <GlassCard>
-            <Flex vertical>
-              <LabelTitle>Filtrar por:</LabelTitle>
-
-              <Radio.Group
-                options={[
-                  { value: "meli", label: "Mercado Libre" },
-                  { value: "ama", label: "Amazon" },
-                  { value: "wl", label: "Walmart" },
-                  { value: "cop", label: "Coppel" },
-                ]}
-              />
-            </Flex>
-          </GlassCard>
         </Flex>
         <GlassCard>
-          <DinamicTable columns={columnsDummy} dataSource={dataDummy} />
+          <Row gutter={[20, 20]} justify="space-between">
+            <Col xl={10} lg={12} md={24} sm={24} xs={24}>
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <LabelTitle>Buscar </LabelTitle>
+                <Input
+                  placeholder="Buscar..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  allowClear
+                />
+              </Space>
+            </Col>
+
+            <Col>
+              <Flex vertical>
+                <LabelTitle>Filtrar por:</LabelTitle>
+
+                <Checkbox.Group
+                  onChange={onChange}
+                  options={[
+                    {
+                      value: "meli",
+                      label: (
+                        <span className="text-[#F2A516]">Mercado Libre</span>
+                      ),
+                    },
+                    {
+                      value: "amazon",
+                      label: <span className="text-[#232F3E]">Amazon</span>,
+                    },
+                    {
+                      value: "wl",
+                      label: <span className="text-[#0071DC]">Walmart</span>,
+                    },
+                    {
+                      value: "cop",
+                      label: <span className="text-[#1C42E8]">Coppel</span>,
+                    },
+                  ]}
+                />
+              </Flex>
+            </Col>
+          </Row>
+        </GlassCard>
+        <GlassCard>
+          <DinamicTable
+            columns={columns}
+            dataSource={data}
+            rowStyle
+            onRowClick={handleDetail}
+          />
         </GlassCard>
       </Flex>
+
+      <Modal
+        title={<DefaultTitle level={4}>Detalle del error</DefaultTitle>}
+        open={openDetail}
+        onCancel={handleCloseDetail}
+        footer={null}
+        width={800}
+      >
+        <Flex vertical gap={15}>
+          <Flex justify="space-between">
+            <LabelTitle># órden: {dataDetail?.sale_id}</LabelTitle>
+            <LabelTitle>Market: {dataDetail?.market}</LabelTitle>
+          </Flex>
+          <LabelTitle>Tipo de envío: {dataDetail?.shipment_type}</LabelTitle>
+          <MutedSubtitle>{dataDetail?.message}</MutedSubtitle>
+
+          <Steps
+            progressDot
+            size="small"
+            items={[
+              {
+                title: "Órden de venta",
+                description: (
+                  <Link
+                    href={`${process.env.NEXT_PUBLIC_DOLIBARR_ORDERS_URL}id=${dataDetail?.order_dolibarr_id}`}
+                    target="_blank"
+                  >
+                    {dataDetail?.order_reference}
+                  </Link>
+                ),
+              },
+              {
+                title: "Factura",
+                description: (
+                  <Link
+                    href={`${process.env.NEXT_PUBLIC_DOLIBARR_INVOICE_URL}id=${dataDetail?.invoice_id}`}
+                    target="_blank"
+                  >
+                    {dataDetail?.invoice_reference}
+                  </Link>
+                ),
+              },
+              {
+                title: "Picking",
+                description: (
+                  <Link
+                    href={`${process.env.NEXT_PUBLIC_DOLIBARR_PICKING_URL}picking_id=${dataDetail?.picking_id}`}
+                    target="_blank"
+                  >
+                    {dataDetail?.picking_id}
+                  </Link>
+                ),
+              },
+              {
+                title: "Órden de compra",
+                description: (
+                  <Link
+                    href={``}
+                    target="_blank"
+                  >
+                    {}
+                  </Link>
+                ),
+              },
+              {
+                title: "Número de envío (prov)",
+                description: (
+                  <Link
+                    href={`${process.env.NEXT_PUBLIC_DOLIBARR_SHIPMENT_URL}id=${dataDetail?.shipment_id}`}
+                    target="_blank"
+                  >
+                    {dataDetail?.shipment_reference}
+                  </Link>
+                ),
+              },
+            ]}
+          />
+
+          
+        </Flex>
+      </Modal>
     </>
   );
 }

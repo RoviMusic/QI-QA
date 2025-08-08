@@ -3,16 +3,15 @@ import {
   DefaultTitle,
   LabelTitle,
   MutedSubtitle,
-  Subtitle,
 } from "@/components/core/Titulo";
-import { Button, Flex, List, Modal, Space, Typography } from "antd";
-import { useRouter } from "next/navigation";
+import { Button, Flex, List, Modal, Space, Steps, Tooltip, Typography } from "antd";
 import VirtualList from "rc-virtual-list";
 import { useState } from "react";
 import { markets } from "../../process/components/processorDev";
 import { DataProcessorType } from "../../process/types/processorTypes";
 import dayjs from "dayjs";
 import { getIcon } from "@/lib/utils";
+import { CircleButton } from "@/components/core/Buttons";
 const { Link } = Typography;
 
 type ItemsListProps = {
@@ -21,11 +20,11 @@ type ItemsListProps = {
   items: DataProcessorType[];
 };
 
-// ml: #FFE600 wl #0071DC copp #1C42E8 ama #F3A847
-
 export default function ItemsList({ title, items, type }: ItemsListProps) {
   const [openModalErrors, setOpenModalErrors] = useState<boolean>(false);
   const [dataError, setDataError] = useState<DataProcessorType | null>(null);
+  const [openDetail, setOpenDetail] = useState<boolean>(false);
+  const [dataDetail, setDataDetail] = useState<any | null>(null)
 
   const handleModalError = (data: DataProcessorType) => {
     setOpenModalErrors(true);
@@ -61,7 +60,7 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
   const handleClickOC = (market: markets) => {
     switch (market) {
       case "Amazon":
-        window.open(process.env.NEXT_PUBLIC_AMAZON_ORDERS_URL, '_blank')
+        window.open(process.env.NEXT_PUBLIC_AMAZON_ORDERS_URL, "_blank");
         break;
       case "Mercado Libre":
         window.open(process.env.NEXT_PUBLIC_MELI_ORDERS_URL, "_blank");
@@ -72,6 +71,17 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
         break;
     }
   };
+
+  const handleDetail = (data: DataProcessorType) => {
+    setOpenDetail(true);
+    setDataDetail(data);
+    console.warn(data)
+  };
+
+  const handleCloseDetail = () => {
+    setOpenDetail(false)
+    setDataDetail(null)
+  }
 
   return (
     <>
@@ -100,58 +110,95 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
           >
             {(item: DataProcessorType, index: number) => (
               <List.Item key={index}>
-                <Flex
-                  style={{ width: "100%" }}
-                  justify="space-between"
-                  align="center"
-                  gap={20}
-                >
-                  <Flex vertical>
-                    <DefaultTitle
-                      style={{ color: getColor(item.market as markets) }}
-                    >
-                      Número de orden:{" "}
-                      <span onClick={() => handleClickOC(item.market!)} className="hover:cursor-pointer hover:underline">
-                        {item.sale_id} de {item.market}
-                      </span>
-                    </DefaultTitle>
-                    <Space direction="vertical">
-                      {item.order_reference && (
-                        <Space>
-                          <strong>Órden de venta:</strong>
-                          <Link
-                            href={process.env.NEXT_PUBLIC_DOLIBARR_ORDERS_URL}
-                            target="_blank"
-                          >
-                            {item.order_reference}
-                          </Link>
-                        </Space>
-                      )}
-
-                      {type === "Error" && (
+                <Tooltip>
+                  <Flex
+                    style={{ width: "100%" }}
+                    justify="space-between"
+                    align="center"
+                    gap={20}
+                    //className="hover:cursor-pointer hover:bg-neutral-200"
+                  >
+                    <Flex vertical>
+                      {item.sale_id ? (
                         <>
-                          <Button
-                            icon={getIcon("Circle-Info")}
-                            type="text"
-                            onClick={() => handleModalError(item)}
-                            style={{ color: "red" }}
+                          <DefaultTitle
+                            style={{ color: getColor(item.market as markets) }}
                           >
-                            Ver detalle
-                          </Button>
+                            # órden:{" "}
+                            <span
+                              onClick={() => handleClickOC(item.market!)}
+                              className="hover:cursor-pointer hover:underline"
+                            >
+                              {item.sale_id}
+                            </span>
+                          </DefaultTitle>
+                        </>
+                      ) : (
+                        <>
+                          <DefaultTitle
+                            style={{ color: getColor(item.market as markets) }}
+                          >
+                            Sin número de órden
+                          </DefaultTitle>
                         </>
                       )}
-                    </Space>
-                  </Flex>
 
-                  <Flex vertical wrap>
-                    <MutedSubtitle>Fecha de venta:</MutedSubtitle>
-                    <MutedSubtitle>
-                      {dayjs(item.sale_date).format(
-                        "HH:mm:ss [del] DD/MM/YYYY"
+                      {item.shipment_type && (
+                        <>
+                          <Space>
+                            <strong>Tipo de envío:</strong>
+                            <p>{item.shipment_type.toUpperCase()}</p>
+                          </Space>
+                        </>
                       )}
-                    </MutedSubtitle>
+
+                      <Space direction="vertical">
+                        {item.order_reference && (
+                          <Space>
+                            <strong>Órden de venta:</strong>
+                            <Link
+                              href={process.env.NEXT_PUBLIC_DOLIBARR_ORDERS_URL}
+                              target="_blank"
+                            >
+                              {item.order_reference}
+                            </Link>
+                          </Space>
+                        )}
+
+                        {type === "Error" && (
+                          <>
+                            <CircleButton
+                              icon={"Triangle-Exclamation"}
+                              onPress={() => handleModalError(item)}
+                              color="red"
+                              tooltip="Ver detalle del error"
+                            />
+                          </>
+                        )}
+
+                        {type === "Processed" && (
+                          <>
+                            <CircleButton
+                              onPress={() => handleDetail(item)}
+                              icon="Eye"
+                              tooltip="Ver detalle"
+                              color="#FAB627"
+                            />
+                          </>
+                        )}
+                      </Space>
+                    </Flex>
+
+                    <Flex vertical wrap>
+                      <MutedSubtitle>Fecha de venta:</MutedSubtitle>
+                      <MutedSubtitle>
+                        {dayjs(item.sale_date).format(
+                          "HH:mm:ss [del] DD/MM/YYYY"
+                        )}
+                      </MutedSubtitle>
+                    </Flex>
                   </Flex>
-                </Flex>
+                </Tooltip>
               </List.Item>
             )}
           </VirtualList>
@@ -182,6 +229,33 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
           </Space>
 
           <LabelTitle>Detalles:</LabelTitle>
+        </Flex>
+      </Modal>
+
+      <Modal
+        title={<DefaultTitle level={4}>Detalles</DefaultTitle>}
+        open={openDetail}
+        onCancel={handleCloseDetail}
+        footer={null}
+      >
+        <Flex vertical gap={10}>
+          <Steps progressDot direction="vertical" items={[
+            {
+              title: 'Órden de venta'
+            },
+            {
+              title: 'Factura'
+            },
+            {
+              title: 'Picking'
+            },
+            {
+              title: 'Órden de compra'
+            },
+            {
+              title: 'Número de envío (prov)'
+            }
+          ]}/>
         </Flex>
       </Modal>
     </>

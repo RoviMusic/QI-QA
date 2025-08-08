@@ -8,9 +8,10 @@ type ButtonProps = {
   icon?: string;
   disabled?: boolean | undefined;
   tooltip?: string;
+  color?: string;
 };
 
-function CircleButton({ onPress, icon, tooltip }: ButtonProps) {
+function CircleButton({ onPress, icon, tooltip, color }: ButtonProps) {
   return (
     <>
       <Tooltip title={tooltip}>
@@ -18,6 +19,7 @@ function CircleButton({ onPress, icon, tooltip }: ButtonProps) {
           shape="circle"
           icon={getIcon(icon ?? "Default")}
           onClick={onPress}
+          style={{color: color ?? ''}}
         />
       </Tooltip>
     </>

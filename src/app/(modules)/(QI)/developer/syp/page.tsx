@@ -1,28 +1,59 @@
 import Container from "@/components/layout/Container";
 import ProcessorDev from "@/modules/tools/process/components/processorDev";
+import {
+  GetErrorsMeli,
+  GetPendingMeli,
+  GetProcesserMeli,
+} from "@/modules/tools/process/services/processorService";
 import Sync from "@/modules/tools/sync/components/sync";
-import { GetSyncErrors, GetSyncSummary } from "@/modules/tools/sync/services/syncService";
+import {
+  GetCicleError,
+  GetSync48hErrors,
+  GetSyncSummary,
+} from "@/modules/tools/sync/services/syncService";
 import { Flex } from "antd";
 
 export default async function DevSipPage() {
-  const syncErrors = await GetSyncErrors();
+  const syncErrors = await GetSync48hErrors();
   const syncSummary = await GetSyncSummary();
-  
-
-  const filteredSyncErrors = syncErrors.filter((error: any) =>
-    syncSummary.some((summary: any) =>
-      error.timestamp >= summary.start_time && error.timestamp <= summary.end_time
-    )
+  const cicleErrors = await GetCicleError(
+    syncSummary[0].start_time,
+    syncSummary[0].end_time
   );
 
-  console.log('sync e ', filteredSyncErrors)
+  const processorData = await GetProcesserMeli();
+  const errorsMeliData = await GetErrorsMeli();
+  const pendingMeliData = await GetPendingMeli();
+
+  // const filteredSyncErrors = syncErrors.filter((error: any) =>
+  //   syncSummary.some((summary: any) =>
+  //     error.timestamp >= summary.start_time && error.timestamp <= summary.end_time
+  //   )
+  // );
+
+  // const filteredSyncErrors = syncErrors.filter((error: any) =>
+  //   syncSummary.some((summary: any) =>
+  //     error.timestamp >= summary.timestamp && error.timestamp <= summary.end_time
+  //   )
+  // );
+
+  const addMarket = (items: any[] | undefined, market: string) =>
+    (items || []).map((item) => ({ ...item, market }));
+
+  const processedData = [...addMarket(processorData, "Mercado Libre")];
+  const errorsData = [...addMarket(errorsMeliData, 'Mercado Libre')];
+  const pendingData = [...addMarket(pendingMeliData, 'Mercado Libre')]
 
   return (
     <>
       <Container>
         <Flex vertical gap={50}>
-          <Sync syncErrors={filteredSyncErrors} syncSummary={syncSummary}/>
-          <ProcessorDev />
+          <Sync
+            syncTotalErrors={syncErrors}
+            syncSummary={syncSummary[0]}
+            syncCicleErrors={cicleErrors}
+          />
+          <ProcessorDev processedData={processedData} errorsData={errorsData} pendingData={pendingData}/>
         </Flex>
       </Container>
     </>

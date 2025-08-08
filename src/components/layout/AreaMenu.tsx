@@ -156,6 +156,11 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
               key: "createdL",
               onClick: () => router.push("/tools/createdListings"),
             },
+            {
+              label: "Pérdidas en publicaciones",
+              key: "publicationsLosses",
+              onClick: () => router.push("/tools/publicationsLosses"),
+            },
           ],
         },
         {

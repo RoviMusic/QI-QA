@@ -17,16 +17,17 @@ import { ISummary } from "../models/SummaryModel";
 import VirtualList from "rc-virtual-list";
 
 interface SyncProps {
-  syncErrors: IErrors[];
-  syncSummary: ISummary[];
+  syncTotalErrors: IErrors[];
+  syncSummary: ISummary;
+  syncCicleErrors: IErrors[];
 }
 
-export default function Sync({ syncErrors, syncSummary }: SyncProps) {
-  const [errors, setErrors] = useState<ErrorType[]>();
+export default function Sync({ syncTotalErrors, syncSummary, syncCicleErrors }: SyncProps) {
+  const [errors, setErrors] = useState<IErrors[]>();
   const [openModalErrors, setOpenModalErrors] = useState<boolean>(false);
   //const [dataSync, setDataSync] = useState<any[]>([]);
 
-  const openError = (errors: ErrorType[]) => {
+  const openError = (errors: IErrors[]) => {
     setErrors(errors);
     setOpenModalErrors(true);
   };
@@ -36,13 +37,6 @@ export default function Sync({ syncErrors, syncSummary }: SyncProps) {
     setOpenModalErrors(false);
   };
 
-  const getPercentage = (total: number, items: number) => {
-    if (total === 0) return 0;
-    return ((items / total) * 100).toFixed(2);
-  };
-
-
-
   return (
     <>
       <Flex gap={20} vertical>
@@ -50,7 +44,7 @@ export default function Sync({ syncErrors, syncSummary }: SyncProps) {
           <MainTitle>Sincronizador de publicaciones</MainTitle>
         </Flex>
         <Row gutter={[20, 20]}>
-          <Col xl={8}>
+          <Col xl={8} lg={8} md={12} sm={24} xs={24}>
             <GlassCard>
               <Flex gap={15} justify="space-between">
                 <DefaultTitle level={3}>Meli</DefaultTitle>
@@ -60,30 +54,66 @@ export default function Sync({ syncErrors, syncSummary }: SyncProps) {
                 />
               </Flex>
 
-              <List>
-                <VirtualList
-                  data={syncSummary}
-                  itemKey="_id"
-                  height={450}
-                  itemHeight={20}
-                >
+              <Flex vertical gap={5} style={{ width: "100%" }}>
+                <DefaultTitle>
+                  Última sincronización:{" "}
+                  {dayjs(syncSummary.start_time).format("DD/MM/YYYY [a las] HH:mm:ss")}
+                </DefaultTitle>
+                <Flex justify="space-between" wrap align="center">
+                  <MutedSubtitle>
+                    Duración: {syncSummary.duration_minutes.toFixed(2)} minutos
+                  </MutedSubtitle>
+                  <DefaultTitle
+                    level={4}
+                    style={{ color: "#FF5652", fontWeight: "bold" }}
+                  >
+                    {syncCicleErrors.length} errores
+                  </DefaultTitle>
+                </Flex>
+
+                <Flex justify="center" align="center" vertical>
+                  <Statistic
+                    title="Elementos sincronizados"
+                    value={syncSummary.success_rate_percent.toFixed(2)}
+                    style={{ textAlign: "center" }}
+                    valueStyle={{
+                      textAlign: "center",
+                      color: "green",
+                      fontWeight: "bold",
+                    }}
+                    suffix="%"
+                  />
+
+                  <LabelTitle>
+                    Sincronizados: {syncSummary.success_count}/{syncSummary.total_processed}
+                  </LabelTitle>
+                </Flex>
+              </Flex>
+
+              {/* <List>
+                <VirtualList data={syncSummary} itemKey="_id" itemHeight={20}>
                   {(item: ISummary) => (
                     <List.Item>
-                      <Flex vertical gap={10} style={{ width: "100%" }}>
-                        <Flex justify="space-between" wrap>
-                          <DefaultTitle>
-                            Última sincronización:{" "}
-                            {dayjs(item.start_time).format(
-                              "DD/MM/YYYY [a las] HH:mm:ss"
-                            )}
-                          </DefaultTitle>
-
+                      <Flex vertical gap={5} style={{ width: "100%" }}>
+                        <DefaultTitle>
+                          Última sincronización:{" "}
+                          {dayjs(item.start_time).format(
+                            "DD/MM/YYYY [a las] HH:mm:ss"
+                          )}
+                        </DefaultTitle>
+                        <Flex justify="space-between" wrap align="center">
                           <MutedSubtitle>
                             Duración: {item.duration_minutes.toFixed(2)} minutos
                           </MutedSubtitle>
+                          <DefaultTitle
+                            level={4}
+                            style={{ color: "#FF5652", fontWeight: "bold" }}
+                          >
+                            {syncErrors.length} errores
+                          </DefaultTitle>
                         </Flex>
 
-                        <Flex justify="center" align="center">
+                        <Flex justify="center" align="center" vertical>
                           <Statistic
                             title="Elementos sincronizados"
                             value={item.success_rate_percent.toFixed(2)}
@@ -96,79 +126,33 @@ export default function Sync({ syncErrors, syncSummary }: SyncProps) {
                             suffix="%"
                           />
 
-                          {/* <Flex gap={10}>
-                            <MutedSubtitle>
-                              Sincronizados: {item.total_processed} elementos
-                            </MutedSubtitle>
-                            <MutedSubtitle>
-                              De: {item.success_count}
-                            </MutedSubtitle>
-                          </Flex> */}
+                          <LabelTitle>
+                            Sincronizados: {item.total_processed}/
+                            {item.success_count}
+                          </LabelTitle>
                         </Flex>
                       </Flex>
                     </List.Item>
                   )}
                 </VirtualList>
-              </List>
+              </List> */}
 
-              <Space
-                //onClick={() => openError(item.errors)}
+              {/* <Space
+                onClick={() => openError(syncTotalErrors)}
                 className="hover:underline hover:cursor-pointer"
+                align="center"
+                style={{ textAlign: "center" }}
               >
                 <DefaultTitle
-                  level={5}
+                  level={4}
                   style={{ color: "#FF5652", fontWeight: "bold" }}
                 >
-                  Se encontraron {syncErrors.length} errores durante los ciclos
+                  {syncTotalErrors.length} errores en 48 hrs
                 </DefaultTitle>
               </Space>
+              <MutedSubtitle>Promedio: 30:06 minutos</MutedSubtitle> */}
             </GlassCard>
           </Col>
-          {/* {syncSummary.map((item) => (
-            <Col key={item._id} xl={6} lg={6} md={12} sm={24} xs={24}>
-              <GlassCard>
-                <Flex vertical gap={20}>
-                  <Space direction="vertical">
-                    <DefaultTitle level={3}>{item.market}</DefaultTitle>
-                    <DefaultTitle>
-                      Última sincronización:{" "}
-                      {item.lastSync.toLocaleTimeString()}
-                    </DefaultTitle>
-                  </Space>
-
-                  <Flex vertical justify="center" align="center">
-                    <Statistic
-                      title="Elementos sincronizados"
-                      value={
-                        getPercentage(item.totalItems, item.totalSyncItems) +
-                        "%"
-                      }
-                      style={{ textAlign: "center" }}
-                      valueStyle={{
-                        textAlign: "center",
-                        color: "green",
-                        fontWeight: "bold",
-                      }}
-                    />
-
-                    <LabelTitle>{item.totalSyncItems}/{item.totalItems}</LabelTitle>
-                  </Flex>
-
-                  <Space
-                    onClick={() => openError(item.errors)}
-                    className="hover:underline hover:cursor-pointer"
-                  >
-                    <DefaultTitle
-                      level={5}
-                      style={{ color: "#FF5652", fontWeight: "bold" }}
-                    >
-                      Errores encontrados: {item.errors.length}
-                    </DefaultTitle>
-                  </Space>
-                </Flex>
-              </GlassCard>
-            </Col>
-          ))} */}
         </Row>
       </Flex>
 
@@ -182,8 +166,13 @@ export default function Sync({ syncErrors, syncSummary }: SyncProps) {
           {errors?.map((err) => (
             <List.Item key={err.id}>
               <Flex vertical gap={5}>
-                <LabelTitle>Número de orden: {err.key}</LabelTitle>
-                <p>{err.message}</p>
+                <LabelTitle>
+                  MLM: {String(err.metadata.publication_id)}
+                </LabelTitle>
+                <MutedSubtitle>
+                  {dayjs(err.timestamp).toDate().toISOString()}
+                </MutedSubtitle>
+                <p>{err.error}</p>
               </Flex>
             </List.Item>
           ))}
