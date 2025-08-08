@@ -7,9 +7,6 @@ import { useEffect } from "react";
 import { localStorageService } from "@/shared/services/localStorageService";
 import { useRouter } from "next/navigation";
 
-import dayjs from 'dayjs';
-var utc = require("dayjs/plugin/utc");
-dayjs.extend(utc);
 
 export default function MainLayout({
   children,

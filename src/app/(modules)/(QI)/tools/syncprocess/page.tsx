@@ -1,3 +1,4 @@
+import AutoRefresher from "@/components/Autorefresher";
 import Container from "@/components/layout/Container";
 import Processor from "@/modules/tools/process/components/processor";
 import {
@@ -11,6 +12,11 @@ import {
   GetSyncSummary,
 } from "@/modules/tools/sync/services/syncService";
 import { Flex } from "antd";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default async function SyncProcessPage() {
   const meliData = await GetAllMeliData();
@@ -32,7 +38,15 @@ export default async function SyncProcessPage() {
 
   return (
     <>
+      <AutoRefresher intervalMinutes={15} />
       <Container>
+        <p>
+          Última actualización de página:{" "}
+          {dayjs
+            .utc()
+            .tz("America/Mexico_City")
+            .format("DD/MM/YYYY [a las] HH:mm:ss a")}
+        </p>
         <Flex vertical gap={50}>
           <Sync
             syncTotalErrors={syncErrors}
