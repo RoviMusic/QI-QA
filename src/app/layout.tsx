@@ -10,7 +10,6 @@ library.add(fas);
 //********* Internationalization configuration *******/
 import { getLocale, getMessages } from "next-intl/server";
 //********* end  ******/
-import LoadingAnimation from "@/components/core/LoadingAnimation";
 import AppProviders from "@/providers/AppProviders";
 
 // Official Neue Haas Display font import

@@ -25,17 +25,6 @@ export default async function DevSipPage() {
   const errorsMeliData = await GetErrorsMeli();
   const pendingMeliData = await GetPendingMeli();
 
-  // const filteredSyncErrors = syncErrors.filter((error: any) =>
-  //   syncSummary.some((summary: any) =>
-  //     error.timestamp >= summary.start_time && error.timestamp <= summary.end_time
-  //   )
-  // );
-
-  // const filteredSyncErrors = syncErrors.filter((error: any) =>
-  //   syncSummary.some((summary: any) =>
-  //     error.timestamp >= summary.timestamp && error.timestamp <= summary.end_time
-  //   )
-  // );
 
   const addMarket = (items: any[] | undefined, market: string) =>
     (items || []).map((item) => ({ ...item, market }));

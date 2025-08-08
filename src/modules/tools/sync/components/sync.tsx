@@ -11,6 +11,8 @@ import ItemsList from "@/modules/tools/shared/components/ItemsList";
 import { ErrorType } from "@/shared/types/sharedTypes";
 import { Badge, Col, Flex, List, Modal, Row, Space, Statistic } from "antd";
 import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 import { useState } from "react";
 import { IErrors } from "../models/ErrorsModel";
 import { ISummary } from "../models/SummaryModel";
@@ -22,7 +24,11 @@ interface SyncProps {
   syncCicleErrors: IErrors[];
 }
 
-export default function Sync({ syncTotalErrors, syncSummary, syncCicleErrors }: SyncProps) {
+export default function Sync({
+  syncTotalErrors,
+  syncSummary,
+  syncCicleErrors,
+}: SyncProps) {
   const [errors, setErrors] = useState<IErrors[]>();
   const [openModalErrors, setOpenModalErrors] = useState<boolean>(false);
   //const [dataSync, setDataSync] = useState<any[]>([]);
@@ -57,18 +63,25 @@ export default function Sync({ syncTotalErrors, syncSummary, syncCicleErrors }: 
               <Flex vertical gap={5} style={{ width: "100%" }}>
                 <DefaultTitle>
                   Última sincronización:{" "}
-                  {dayjs(syncSummary.start_time).format("DD/MM/YYYY [a las] HH:mm:ss")}
+                  {dayjs(syncSummary.start_time).format(
+                    "DD/MM/YYYY [a las] HH:mm:ss"
+                  )}
                 </DefaultTitle>
                 <Flex justify="space-between" wrap align="center">
                   <MutedSubtitle>
                     Duración: {syncSummary.duration_minutes.toFixed(2)} minutos
                   </MutedSubtitle>
-                  <DefaultTitle
-                    level={4}
-                    style={{ color: "#FF5652", fontWeight: "bold" }}
+                  <div
+                    onClick={() => openError(syncCicleErrors)}
+                    className="hover:underline hover:cursor-pointer"
                   >
-                    {syncCicleErrors.length} errores
-                  </DefaultTitle>
+                    <DefaultTitle
+                      level={4}
+                      style={{ color: "#FF5652", fontWeight: "bold" }}
+                    >
+                      {syncCicleErrors.length} errores
+                    </DefaultTitle>
+                  </div>
                 </Flex>
 
                 <Flex justify="center" align="center" vertical>
@@ -85,7 +98,8 @@ export default function Sync({ syncTotalErrors, syncSummary, syncCicleErrors }: 
                   />
 
                   <LabelTitle>
-                    Sincronizados: {syncSummary.success_count}/{syncSummary.total_processed}
+                    Sincronizados: {syncSummary.success_count}/
+                    {syncSummary.total_processed}
                   </LabelTitle>
                 </Flex>
               </Flex>
@@ -163,14 +177,14 @@ export default function Sync({ syncTotalErrors, syncSummary, syncCicleErrors }: 
         footer={null}
       >
         <List>
-          {errors?.map((err) => (
-            <List.Item key={err.id}>
+          {errors?.map((err, index) => (
+            <List.Item key={index}>
               <Flex vertical gap={5}>
                 <LabelTitle>
                   MLM: {String(err.metadata.publication_id)}
                 </LabelTitle>
                 <MutedSubtitle>
-                  {dayjs(err.timestamp).toDate().toISOString()}
+                  {dayjs.utc(err.timestamp).format("DD/MM/YYYY [a las] HH:mm:ss a")}
                 </MutedSubtitle>
                 <p>{err.error}</p>
               </Flex>

@@ -37,7 +37,6 @@ export default function Processor({ data }: ProcessorProps) {
       title: "No. de orden",
       column_id: "sale_id",
       type: "link",
-
       actions: [
         {
           onPress: (record) => {
@@ -175,11 +174,22 @@ export default function Processor({ data }: ProcessorProps) {
     "cop",
   ]);
 
+  const [selectedShippingTypes, setSelectedShippingTypes] = useState<string[]>(
+    []
+  );
+
   const marketMap: Record<string, string> = {
     meli: "Mercado Libre",
     amazon: "Amazon",
     wl: "Walmart",
     cop: "Coppel",
+  };
+
+  const shippingTypeMap: Record<string, string> = {
+    fulfillment: "fulfillment",
+    drop_off: "drop_off",
+    cross_docking: "cross_docking",
+    no_shipping: "Sin tipo de envío",
   };
 
   const filterByMarket = (items: any[]) =>
@@ -188,9 +198,36 @@ export default function Processor({ data }: ProcessorProps) {
       return selectedMarkets.some((key) => item.market === marketMap[key]);
     });
 
+  const filterByShippingType = (items: any[]) => {
+    // Si no hay tipos de envío seleccionados, mostrar todos los datos
+    if (selectedShippingTypes.length === 0) {
+      return items;
+    }
+
+    return items.filter((item) => {
+      // Verificar si "Sin tipo de envío" está seleccionado
+      const includeNoShipping = selectedShippingTypes.includes("no_shipping");
+
+      // Si el item no tiene shippingType (vacío, null, undefined)
+      if (!item.shipment_type || item.shipment_type.trim() === "") {
+        return includeNoShipping; // Solo incluir si "Sin tipo de envío" está seleccionado
+      }
+
+      // Para items con shippingType válido, buscar en los tipos normales (excluyendo "no-shipping")
+      return selectedShippingTypes
+        .filter((key) => key !== "no_shipping") // Excluir la opción especial
+        .some((key) => item.shipment_type === shippingTypeMap[key]);
+    });
+  };
+
   const filterMarket = useMemo(
     () => filterByMarket(data),
     [data, selectedMarkets]
+  );
+
+  const filterMarketAndShipping = useMemo(
+    () => filterByShippingType(filterMarket),
+    [filterMarket, selectedShippingTypes]
   );
 
   const onChangeMarket: GetProp<typeof Checkbox.Group, "onChange"> = (
@@ -204,6 +241,13 @@ export default function Processor({ data }: ProcessorProps) {
     }
   };
 
+  const onChangeShippingType: GetProp<typeof Checkbox.Group, "onChange"> = (
+    checkedValues
+  ) => {
+    // Si no hay ninguno seleccionado, el array estará vacío y se mostrarán todos los datos
+    setSelectedShippingTypes(checkedValues as string[]);
+  };
+
   const filterBySearch = (items: any[]) =>
     !searchTerm.trim()
       ? items
@@ -215,11 +259,9 @@ export default function Processor({ data }: ProcessorProps) {
 
   // Aplica ambos filtros: mercado y búsqueda
   const displayedData = useMemo(
-    () => filterBySearch(filterMarket),
-    [filterMarket, searchTerm]
+    () => filterBySearch(filterMarketAndShipping),
+    [filterMarketAndShipping, searchTerm]
   );
-
-  const onChangeShipment: GetProp<typeof Checkbox.Group, "onChange"> = ( checkedShip ) => {}
 
   const handleDetail = (data: any) => {
     if (data.type === "errors") {
@@ -285,22 +327,24 @@ export default function Processor({ data }: ProcessorProps) {
                 />
 
                 <Checkbox.Group
-                  onChange={onChangeShipment}
+                  onChange={onChangeShippingType}
                   options={[
                     {
-                      value: "fullfilment",
-                      label: (
-                        <span>Fullfilment</span>
-                      ),
+                      value: "fulfillment",
+                      label: <span>Fullfilment</span>,
                     },
                     {
                       value: "cross_docking",
-                      label: <span >Cross Docking</span>,
+                      label: <span>Cross Docking</span>,
                     },
                     {
                       value: "drop_off",
                       label: <span>Drop Off</span>,
                     },
+                    {
+                      value: "no_shipping",
+                      label: "Sin tipo de envío"
+                    }
                   ]}
                 />
               </Flex>
