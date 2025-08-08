@@ -31,61 +31,6 @@ export default function ProcessorDev({ processedData, errorsData, pendingData }:
   const { notification } = App.useApp();
   const [loading, setIsLoading] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   const addMarket = (items: any[] | undefined, market: string) =>
-  //     (items || []).map((item) => ({ ...item, market }));
-
-  //   const processedData = [
-  //     ...addMarket(dataML, "Mercado Libre")
-  //   ]
-  //   setDataProcessed(processedData)
-  // }, []);
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   processService
-  //     .getProcesser()
-  //     .then((data) => {
-  //       // Helper para agregar el market a cada item
-  //       const addMarket = (items: any[] | undefined, market: string) =>
-  //         (items || []).map((item) => ({ ...item, market }));
-
-  //       const processedData = [
-  //         ...addMarket(data.meli?.processed, "Mercado Libre"),
-  //         ...addMarket(data.amazon?.processed, "Amazon"),
-  //         ...addMarket(data.wl?.processed, "Walmart"),
-  //         ...addMarket(data.cop?.processed, "Coppel"),
-  //       ];
-  //       const pendingData = [
-  //         ...addMarket(data.meli?.pending, "Mercado Libre"),
-  //         ...addMarket(data.amazon?.pending, "Amazon"),
-  //         ...addMarket(data.wl?.pending, "Walmart"),
-  //         ...addMarket(data.cop?.pending, "Coppel"),
-  //       ];
-  //       const errorsData = [
-  //         ...addMarket(data.meli?.error, "Mercado Libre"),
-  //         ...addMarket(data.amazon?.error, "Amazon"),
-  //         ...addMarket(data.wl?.error, "Walmart"),
-  //         ...addMarket(data.cop?.error, "Coppel"),
-  //       ];
-
-  //       setDataProcessed(processedData);
-  //       setDataPending(pendingData);
-  //       setDataErrors(errorsData);
-  //       console.warn(" data fetched:", errorsData);
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //       notification.open({
-  //         type: "error",
-  //         message: "Hubo un error",
-  //         description: `No se pudo obtener la información del procesador: ${error.message}`,
-  //       });
-  //       setIsLoading(false);
-  //     });
-  // }, []);
-
   const marketMap: Record<string, string> = {
     meli: "Mercado Libre",
     amazon: "Amazon",

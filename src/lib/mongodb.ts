@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = "mongodb://Quah2Aitie:aetah9Theewaiqu9ohbuil@187.189.243.250:27017/?authSource=admin";
+const MONGODB_URI = process.env.MONGODB_URI;
 console.warn('mongo uri ', MONGODB_URI)
 
 if (!MONGODB_URI) {

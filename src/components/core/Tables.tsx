@@ -116,7 +116,7 @@ function renderColumns(record: DinamicColumnsType, text: any, data: any) {
     );
   } else if (record.type === "link" && record.actions) {
     return (
-      <Button type="link" onClick={() => record.actions![0].onPress(data)}>
+      <Button size="small" type="link" onClick={() => record.actions![0].onPress(data)}>
         {text}
       </Button>
     );
@@ -138,7 +138,7 @@ function DinamicTable({
         title: col.title.toLocaleUpperCase(),
         dataIndex: col.column_id,
         key: col.column_id,
-        width: "auto",
+        //width: "auto",
         align:
           col.align ||
           col.type === "actions" ||
@@ -208,8 +208,8 @@ function DinamicTable({
           position: ["topRight"],
           defaultPageSize: 100,
         }}
-        tableLayout="auto"
-        scroll={{ x: "max-content" }}
+        tableLayout="fixed"
+        //scroll={{ x: "max-content" }}
         rowClassName={(record) => {
           return rowStyle ? getRowClass(record) : "";
         }}
@@ -218,6 +218,7 @@ function DinamicTable({
             ? {onClick: (event) => { onRowClick(record)}}
             : {};
         }}
+        sticky={true}
       />
     </div>
   );

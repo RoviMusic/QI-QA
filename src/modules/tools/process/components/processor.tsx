@@ -16,14 +16,15 @@ import {
   Flex,
   Input,
   Modal,
-  Radio,
   Row,
   Space,
   Steps,
   Typography,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { GetProp } from "antd";
+import dayjs from "dayjs";
+import JsonView from "@uiw/react-json-view";
 const { Link } = Typography;
 
 interface ProcessorProps {
@@ -36,12 +37,13 @@ export default function Processor({ data }: ProcessorProps) {
       title: "No. de orden",
       column_id: "sale_id",
       type: "link",
+
       actions: [
         {
           onPress: (record) => {
             //enviar a numero de orden en market
             console.log("Order details:", record);
-            if (record.market === MarketsEnmu.Meli) {
+            if (record.market === MarketsEnmu.Meli && record.sale_id) {
               window.open(
                 `${process.env.NEXT_PUBLIC_MELI_ORDERS_URL}/${record.sale_id}/detalle`,
                 "_blank"
@@ -76,10 +78,12 @@ export default function Processor({ data }: ProcessorProps) {
           onPress: (record) => {
             //enviar a orden de venta en dolibarr
             console.log("Order details:", record);
-            window.open(
-              `${process.env.NEXT_PUBLIC_DOLIBARR_ORDERS_URL}id=${record.order_dolibarr_id}`,
-              "_blank"
-            );
+            if (record.order_dolibarr_id) {
+              window.open(
+                `${process.env.NEXT_PUBLIC_DOLIBARR_ORDERS_URL}id=${record.order_dolibarr_id}`,
+                "_blank"
+              );
+            }
           },
         },
       ],
@@ -92,7 +96,7 @@ export default function Processor({ data }: ProcessorProps) {
       actions: [
         {
           onPress: (record) => {
-            if (record.market === MarketsEnmu.Meli) {
+            if (record.market === MarketsEnmu.Meli && record.pack_id) {
               window.open(
                 `${process.env.NEXT_PUBLIC_MELI_ORDERS_URL}/${record.pack_id}/detalle`,
                 "_blank"
@@ -110,10 +114,12 @@ export default function Processor({ data }: ProcessorProps) {
       actions: [
         {
           onPress: (record) => {
-            window.open(
-              `${process.env.NEXT_PUBLIC_DOLIBARR_INVOICE_URL}id=${record.invoice_id}`,
-              "_blank"
-            );
+            if (record.invoice_id) {
+              window.open(
+                `${process.env.NEXT_PUBLIC_DOLIBARR_INVOICE_URL}id=${record.invoice_id}`,
+                "_blank"
+              );
+            }
           },
         },
       ],
@@ -126,10 +132,12 @@ export default function Processor({ data }: ProcessorProps) {
       actions: [
         {
           onPress: (record) => {
-            window.open(
-              `${process.env.NEXT_PUBLIC_DOLIBARR_PICKING_URL}picking_id=${record.picking_id}`,
-              "_blank"
-            );
+            if (record.picking_id) {
+              window.open(
+                `${process.env.NEXT_PUBLIC_DOLIBARR_PICKING_URL}picking_id=${record.picking_id}`,
+                "_blank"
+              );
+            }
           },
         },
       ],
@@ -144,10 +152,12 @@ export default function Processor({ data }: ProcessorProps) {
           onPress: (record) => {
             //enviar a número de envío en dolibarr
             console.log("Tracking details:", record);
-            window.open(
-              `${process.env.NEXT_PUBLIC_DOLIBARR_SHIPMENT_URL}id=${record.shipment_id}`,
-              "_blank"
-            );
+            if (record.shipment_id) {
+              window.open(
+                `${process.env.NEXT_PUBLIC_DOLIBARR_SHIPMENT_URL}id=${record.shipment_id}`,
+                "_blank"
+              );
+            }
           },
         },
       ],
@@ -172,7 +182,18 @@ export default function Processor({ data }: ProcessorProps) {
     cop: "Coppel",
   };
 
-  const onChange: GetProp<typeof Checkbox.Group, "onChange"> = (
+  const filterByMarket = (items: any[]) =>
+    items.filter((item) => {
+      // Busca el valor (meli, amazon, etc) correspondiente al market del item
+      return selectedMarkets.some((key) => item.market === marketMap[key]);
+    });
+
+  const filterMarket = useMemo(
+    () => filterByMarket(data),
+    [data, selectedMarkets]
+  );
+
+  const onChangeMarket: GetProp<typeof Checkbox.Group, "onChange"> = (
     checkedValues
   ) => {
     console.log("Selected markets:", checkedValues);
@@ -183,12 +204,28 @@ export default function Processor({ data }: ProcessorProps) {
     }
   };
 
+  const filterBySearch = (items: any[]) =>
+    !searchTerm.trim()
+      ? items
+      : items.filter((item) =>
+          Object.values(item).some((val) =>
+            String(val).toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
+
+  // Aplica ambos filtros: mercado y búsqueda
+  const displayedData = useMemo(
+    () => filterBySearch(filterMarket),
+    [filterMarket, searchTerm]
+  );
+
+  const onChangeShipment: GetProp<typeof Checkbox.Group, "onChange"> = ( checkedShip ) => {}
+
   const handleDetail = (data: any) => {
     if (data.type === "errors") {
       setOpenDetail(true);
       setDataDetail(data);
     }
-    console.warn(data);
   };
 
   const handleCloseDetail = () => {
@@ -220,11 +257,11 @@ export default function Processor({ data }: ProcessorProps) {
             </Col>
 
             <Col>
-              <Flex vertical>
+              <Flex vertical gap={10}>
                 <LabelTitle>Filtrar por:</LabelTitle>
 
                 <Checkbox.Group
-                  onChange={onChange}
+                  onChange={onChangeMarket}
                   options={[
                     {
                       value: "meli",
@@ -246,6 +283,26 @@ export default function Processor({ data }: ProcessorProps) {
                     },
                   ]}
                 />
+
+                <Checkbox.Group
+                  onChange={onChangeShipment}
+                  options={[
+                    {
+                      value: "fullfilment",
+                      label: (
+                        <span>Fullfilment</span>
+                      ),
+                    },
+                    {
+                      value: "cross_docking",
+                      label: <span >Cross Docking</span>,
+                    },
+                    {
+                      value: "drop_off",
+                      label: <span>Drop Off</span>,
+                    },
+                  ]}
+                />
               </Flex>
             </Col>
           </Row>
@@ -253,7 +310,7 @@ export default function Processor({ data }: ProcessorProps) {
         <GlassCard>
           <DinamicTable
             columns={columns}
-            dataSource={data}
+            dataSource={displayedData}
             rowStyle
             onRowClick={handleDetail}
           />
@@ -261,64 +318,113 @@ export default function Processor({ data }: ProcessorProps) {
       </Flex>
 
       <Modal
-        title={<DefaultTitle level={4}>Detalle del error</DefaultTitle>}
+        title={
+          <DefaultTitle level={4}>
+            Detalle de la órden {dataDetail?.sale_id}
+          </DefaultTitle>
+        }
         open={openDetail}
         onCancel={handleCloseDetail}
         footer={null}
         width={800}
       >
-        <Flex vertical gap={15}>
-          <Flex justify="space-between">
-            <LabelTitle># órden: {dataDetail?.sale_id}</LabelTitle>
-            <LabelTitle>Market: {dataDetail?.market}</LabelTitle>
+        <Flex vertical gap={20}>
+          <Flex vertical gap={10}>
+            <p>Market: {dataDetail?.market}</p>
+            <p>
+              Fecha de venta:{" "}
+              {dayjs(dataDetail?.sale_date).format(
+                "DD/MM/YYYY [a las] HH:mm:ss a"
+              )}
+            </p>
+            {dataDetail?.shipment_type ? (
+              <>
+                <p>Tipo de envío: {dataDetail?.shipment_type}</p>
+              </>
+            ) : (
+              <>
+                <Space>
+                  <p>Tipo de envío:</p>
+                  <MutedSubtitle>Sin dato</MutedSubtitle>
+                </Space>
+              </>
+            )}
           </Flex>
-          <LabelTitle>Tipo de envío: {dataDetail?.shipment_type}</LabelTitle>
-          <MutedSubtitle>{dataDetail?.message}</MutedSubtitle>
+
+          <p className="text-red-400 mb-3">{dataDetail?.message}</p>
 
           <Steps
             progressDot
             size="small"
+            current={-1}
             items={[
               {
                 title: "Órden de venta",
                 description: (
-                  <Link
-                    href={`${process.env.NEXT_PUBLIC_DOLIBARR_ORDERS_URL}id=${dataDetail?.order_dolibarr_id}`}
-                    target="_blank"
-                  >
-                    {dataDetail?.order_reference}
-                  </Link>
+                  <>
+                    {dataDetail?.order_reference ? (
+                      <>
+                        <Link
+                          href={`${process.env.NEXT_PUBLIC_DOLIBARR_ORDERS_URL}id=${dataDetail?.order_dolibarr_id}`}
+                          target="_blank"
+                        >
+                          {dataDetail?.order_reference}
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <MutedSubtitle>Sin dato</MutedSubtitle>
+                      </>
+                    )}
+                  </>
                 ),
               },
               {
                 title: "Factura",
                 description: (
-                  <Link
-                    href={`${process.env.NEXT_PUBLIC_DOLIBARR_INVOICE_URL}id=${dataDetail?.invoice_id}`}
-                    target="_blank"
-                  >
-                    {dataDetail?.invoice_reference}
-                  </Link>
+                  <>
+                    {dataDetail?.invoice_reference ? (
+                      <>
+                        <Link
+                          href={`${process.env.NEXT_PUBLIC_DOLIBARR_INVOICE_URL}id=${dataDetail?.invoice_id}`}
+                          target="_blank"
+                        >
+                          {dataDetail?.invoice_reference}
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <MutedSubtitle>Sin dato</MutedSubtitle>
+                      </>
+                    )}
+                  </>
                 ),
               },
               {
                 title: "Picking",
                 description: (
-                  <Link
-                    href={`${process.env.NEXT_PUBLIC_DOLIBARR_PICKING_URL}picking_id=${dataDetail?.picking_id}`}
-                    target="_blank"
-                  >
-                    {dataDetail?.picking_id}
-                  </Link>
+                  <>
+                    {dataDetail?.picking_id ? (
+                      <>
+                        <Link
+                          href={`${process.env.NEXT_PUBLIC_DOLIBARR_PICKING_URL}picking_id=${dataDetail?.picking_id}`}
+                          target="_blank"
+                        >
+                          {dataDetail?.picking_id}
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <MutedSubtitle>Sin dato</MutedSubtitle>
+                      </>
+                    )}
+                  </>
                 ),
               },
               {
                 title: "Órden de compra",
                 description: (
-                  <Link
-                    href={``}
-                    target="_blank"
-                  >
+                  <Link href={``} target="_blank">
                     {}
                   </Link>
                 ),
@@ -326,18 +432,33 @@ export default function Processor({ data }: ProcessorProps) {
               {
                 title: "Número de envío (prov)",
                 description: (
-                  <Link
-                    href={`${process.env.NEXT_PUBLIC_DOLIBARR_SHIPMENT_URL}id=${dataDetail?.shipment_id}`}
-                    target="_blank"
-                  >
-                    {dataDetail?.shipment_reference}
-                  </Link>
+                  <>
+                    {dataDetail?.shipment_reference ? (
+                      <>
+                        <Link
+                          href={`${process.env.NEXT_PUBLIC_DOLIBARR_SHIPMENT_URL}id=${dataDetail?.shipment_id}`}
+                          target="_blank"
+                        >
+                          {dataDetail?.shipment_reference}
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <MutedSubtitle>Sin dato</MutedSubtitle>
+                      </>
+                    )}
+                  </>
                 ),
               },
             ]}
           />
 
-          
+          <DefaultTitle>Detalle técnico:</DefaultTitle>
+          <JsonView
+            value={dataDetail?.order}
+            collapsed={1}
+            displayDataTypes={false}
+          />
         </Flex>
       </Modal>
     </>
