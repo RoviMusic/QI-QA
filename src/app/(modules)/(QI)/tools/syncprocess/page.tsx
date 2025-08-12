@@ -40,13 +40,13 @@ export default async function SyncProcessPage() {
     <>
       <AutoRefresher intervalMinutes={15} />
       <Container>
-        <p>
+        {/* <p>
           Última actualización de página:{" "}
           {dayjs
             .utc()
             .tz("America/Mexico_City")
             .format("DD/MM/YYYY [a las] HH:mm:ss a")}
-        </p>
+        </p> */}
         <Flex vertical gap={50}>
           <Sync
             syncTotalErrors={syncErrors}

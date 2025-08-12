@@ -25,6 +25,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { GetProp } from "antd";
 import dayjs from "dayjs";
 import JsonView from "@uiw/react-json-view";
+import tableStyles from "@/styles/Tables.module.css";
 const { Link } = Typography;
 
 interface ProcessorProps {
@@ -275,6 +276,24 @@ export default function Processor({ data }: ProcessorProps) {
     setDataDetail(null);
   };
 
+  const getRowClass = (type: any) => {
+    let classColor = "";
+    switch (type) {
+      case "processed":
+        classColor = tableStyles.processedRow;
+        break;
+
+      case "pending":
+        classColor = tableStyles.pendingRow;
+        break;
+
+      case "errors":
+        classColor = tableStyles.errorRow;
+        break;
+    }
+    return classColor;
+  };
+
   return (
     <>
       <Flex gap={20} vertical>
@@ -356,6 +375,7 @@ export default function Processor({ data }: ProcessorProps) {
             columns={columns}
             dataSource={displayedData}
             rowStyle
+            getRowClass={getRowClass}
             onRowClick={handleDetail}
           />
         </GlassCard>

@@ -20,6 +20,7 @@ type Props = {
   dataSource: any[];
   rowStyle?: boolean;
   onRowClick?: (record: any) => void;
+  getRowClass?: (type: any) => string;
 };
 
 function renderColumns(record: DinamicColumnsType, text: any, data: any) {
@@ -130,6 +131,7 @@ function DinamicTable({
   dataSource,
   rowStyle = false,
   onRowClick = undefined,
+  getRowClass
 }: Props) {
   function getColumns(columns: DinamicColumnsType[]) {
     const cols: TableProps<any>["columns"] = [];
@@ -169,23 +171,23 @@ function DinamicTable({
     return "large";
   };
 
-  const getRowClass = (record: any) => {
-    let type = "";
-    switch (record.type) {
-      case "processed":
-        type = styles.processedRow;
-        break;
+  // const getRowClass = (record: any) => {
+  //   let type = "";
+  //   switch (record.type) {
+  //     case "processed":
+  //       type = styles.processedRow;
+  //       break;
 
-      case "pending":
-        type = styles.pendingRow;
-        break;
+  //     case "pending":
+  //       type = styles.pendingRow;
+  //       break;
 
-      case "errors":
-        type = styles.errorRow;
-        break;
-    }
-    return type;
-  };
+  //     case "errors":
+  //       type = styles.errorRow;
+  //       break;
+  //   }
+  //   return type;
+  // };
 
   return (
     <div>
@@ -211,7 +213,7 @@ function DinamicTable({
         tableLayout="fixed"
         //scroll={{ x: "max-content" }}
         rowClassName={(record) => {
-          return rowStyle ? getRowClass(record) : "";
+          return rowStyle ? getRowClass!(record.type) : "";
         }}
         onRow={(record, rowIndex) => {
           return onRowClick

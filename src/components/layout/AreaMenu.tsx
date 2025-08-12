@@ -161,6 +161,11 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
               key: "publicationsLosses",
               onClick: () => router.push("/tools/publicationsLosses"),
             },
+            {
+              label: "Veerkamp Cart",
+              key: "veerkampCart",
+              onClick: () => router.push("/tools/veerkampCart"),
+            },
           ],
         },
         {
