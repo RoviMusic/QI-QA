@@ -12,6 +12,7 @@ import Password from "antd/es/input/Password";
 import { LoginType } from "../types/loginTypes";
 import { useEffect } from "react";
 import { localStorageService } from "@/shared/services/localStorageService";
+import { useUserStore } from "@/shared/stores/authStore";
 
 const SIGNIN_ERROR_URL = "/error";
 
@@ -22,6 +23,7 @@ export default function LoginForm({
   const t = useTranslations("LoginPage");
   const router = useRouter()
   const { notification } = App.useApp();
+  const setDataUser = useUserStore((state) => state.updateUser)
 
   // TEMPORAL ANTES DEL HTTPS
   const [form] = Form.useForm<LoginType>();
@@ -30,11 +32,9 @@ export default function LoginForm({
     authService
       .dolibarAuth(values)
       .then((res) => {
-
-        console.warn("response auth ", res);
         if(res){
+          setDataUser(res)
           router.push('/dolibarr')
-          console.log('ok')
         }
       })
       .catch((e) => {
@@ -42,7 +42,7 @@ export default function LoginForm({
         notification.open({
           type: "error",
           message: "Error al iniciar sesión",
-          description: `No se pudo iniciar sesión.`,
+          description: `No se pudo iniciar sesión. ${e.message}`,
         });
       });
   };

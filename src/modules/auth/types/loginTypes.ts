@@ -1,3 +1,5 @@
+import { UserType } from "@/shared/types/userTypes";
+
 export type LoginType = {
   user: string;
   pass: string;
@@ -13,15 +15,6 @@ export interface ExternalApiResponse {
 
 export interface LoginResponse {
   success: boolean,
-  user: {
-    id: string,
-    login: string,
-    entity: string,
-    admin: boolean,
-    name: string,
-    email: string,
-  },
-  dolibarr_url: string,
-  session_id: string,
+  user: UserType,
   message: string
 }

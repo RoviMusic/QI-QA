@@ -300,7 +300,7 @@ export default function Processor({ data }: ProcessorProps) {
         <Flex gap={10} align="center" justify="space-between">
           <Space>
             <MainTitle>Procesador de órdenes</MainTitle>
-            <Badge status="success" text="Procesador en funcionamiento" />
+            <Badge status="success" text="Procesador en funcionamiento (fake news)" />
           </Space>
         </Flex>
         <GlassCard>

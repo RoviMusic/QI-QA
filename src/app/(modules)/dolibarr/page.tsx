@@ -37,6 +37,10 @@ export default function DolibarrPage() {
       opacity: 0.5 !important;
       pointer-events: none !important;
     }
+
+    #topmenu-login-dropdown{
+      display: none
+    }
   `;
 
   // Función para detectar si estamos en la página de login
@@ -76,6 +80,13 @@ export default function DolibarrPage() {
         iframeDoc.querySelector('input[type="submit"]') ||
         iframeDoc.querySelector('button[type="submit"]') ||
         iframeDoc.querySelector(".button");
+
+      const dolibarrToken = iframeDoc.querySelector('input[name="token"]')
+
+      if(dolibarrToken){
+        console.warn(dolibarrToken.value)
+        localStorageService.setItem('dolibarrToken', dolibarrToken.value)
+      }
 
       if (usernameField && passwordField && loginForm) {
         // Llenar credenciales

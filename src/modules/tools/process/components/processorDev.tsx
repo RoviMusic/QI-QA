@@ -98,7 +98,7 @@ export default function ProcessorDev({ processedData, errorsData, pendingData }:
         <Flex gap={20} vertical>
           <Flex gap={10} align="center" wrap>
             <MainTitle>Procesador de órdenes</MainTitle>
-            <Badge status="success" text="Procesador en funcionamiento" />
+            <Badge status="success" text="Procesador en funcionamiento (fake news)" />
           </Flex>
 
           <GlassCard>

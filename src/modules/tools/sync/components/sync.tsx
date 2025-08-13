@@ -56,7 +56,7 @@ export default function Sync({
                 <DefaultTitle level={3}>Meli</DefaultTitle>
                 <Badge
                   status="success"
-                  text="Sincronizador en funcionamiento"
+                  text="Sincronizador en funcionamiento (fake news)"
                 />
               </Flex>
 
