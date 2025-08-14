@@ -11,6 +11,7 @@ import {
   faCircleQuestion,
   faCode,
   faEye,
+  faFilter,
   faFolder,
   faGauge,
   faGear,
@@ -67,5 +68,6 @@ export const iconComponents: Record<string, (props?: any) => JSX.Element> = {
   ),
   Eye: (props: any) => <FontAwesomeIcon icon={faEye} {...props} />,
   "Triangle-Exclamation": (props: any) => <FontAwesomeIcon icon={faTriangleExclamation} {...props} />,
-  Logout: (props: any) => <FontAwesomeIcon icon={faArrowRightFromBracket} {...props}/>
+  Logout: (props: any) => <FontAwesomeIcon icon={faArrowRightFromBracket} {...props}/>,
+  Filter: (props: any) => <FontAwesomeIcon icon={faFilter} {...props}/>
 };

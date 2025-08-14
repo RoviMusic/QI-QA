@@ -166,6 +166,22 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
               key: "veerkampCart",
               onClick: () => router.push("/tools/veerkampCart"),
             },
+            {
+              label: "Competencia",
+              key: "comp",
+              children: [
+                {
+                  label: 'Market prices',
+                  key: 'mktPrices',
+                  onClick: () => router.push("/tools/competition/marketPrices")
+                },
+                {
+                  label: 'Policía',
+                  key: 'policeman',
+                  onClick: () => router.push("/tools/competition/police")
+                }
+              ]
+            },
           ],
         },
         {

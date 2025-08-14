@@ -1,6 +1,6 @@
 export type DinamicColumnsType = {
     column_id: string;
-    type: "string" | "int" | "float" | "price" | "date" | "actions" | "link";
+    type: "string" | "int" | "float" | "price" | "date" | "actions" | "link" | "custom";
     title: string;
     decimals?: number; // Para precios y flotantes
     actions?: {
@@ -9,6 +9,7 @@ export type DinamicColumnsType = {
         tooltip?: string;
     }[];
     align?: "left" | "center" | "right"; // Para alinear el contenido de la columna
+    width?: string | number
 }
 
 export type GenericTableType = {

@@ -100,7 +100,6 @@ function renderColumns(record: DinamicColumnsType, text: any, data: any) {
   } else if (record.type === "float") {
     return Number(text).toFixed(record.decimals || 2);
   } else if (record.type === "date") {
-    
     return dayjs(text).format("DD/MM/YYYY [a las] HH:mm:ss a");
   } else if (record.type === "actions" && record.actions) {
     return (
@@ -117,7 +116,11 @@ function renderColumns(record: DinamicColumnsType, text: any, data: any) {
     );
   } else if (record.type === "link" && record.actions) {
     return (
-      <Button size="small" type="link" onClick={() => record.actions![0].onPress(data)}>
+      <Button
+        size="small"
+        type="link"
+        onClick={() => record.actions![0].onPress(data)}
+      >
         {text}
       </Button>
     );
@@ -126,69 +129,51 @@ function renderColumns(record: DinamicColumnsType, text: any, data: any) {
   return text;
 }
 
+const getTableSize = (columns: DinamicColumnsType[]) => {
+  if (columns.length > 8) {
+    return "small";
+  } else if (columns.length > 5) {
+    return "middle";
+  }
+  return "large";
+};
+
+const handleTotal = (total: number, range: [number, number]): JSX.Element => (
+  <p>Total {total} registros</p>
+);
+
+function getColumns(columns: DinamicColumnsType[]) {
+  const cols: TableProps<any>["columns"] = [];
+  columns.map((col) => {
+    cols.push({
+      title: col.title.toLocaleUpperCase(),
+      dataIndex: col.column_id,
+      key: col.column_id,
+      width: col.width || "auto",
+      align:
+        col.align ||
+        col.type === "actions" ||
+        col.type === "int" ||
+        col.type === "float"
+          ? "center"
+          : "left",
+
+      render: (text: any, record: any) => {
+        return renderColumns(col, text, record);
+      },
+    });
+  });
+
+  return cols;
+}
+
 function DinamicTable({
   columns,
   dataSource,
   rowStyle = false,
   onRowClick = undefined,
-  getRowClass
+  getRowClass,
 }: Props) {
-  function getColumns(columns: DinamicColumnsType[]) {
-    const cols: TableProps<any>["columns"] = [];
-    columns.map((col) => {
-      cols.push({
-        title: col.title.toLocaleUpperCase(),
-        dataIndex: col.column_id,
-        key: col.column_id,
-        //width: "auto",
-        align:
-          col.align ||
-          col.type === "actions" ||
-          col.type === "int" ||
-          col.type === "float"
-            ? "center"
-            : "left",
-
-        render: (text: any, record: any) => {
-          return renderColumns(col, text, record);
-        },
-      });
-    });
-
-    return cols;
-  }
-
-  const handleTotal = (total: number, range: [number, number]): JSX.Element => (
-    <p>Total {total} registros</p>
-  );
-
-  const getTableSize = () => {
-    if (columns.length > 8) {
-      return "small";
-    } else if (columns.length > 5) {
-      return "middle";
-    }
-    return "large";
-  };
-
-  // const getRowClass = (record: any) => {
-  //   let type = "";
-  //   switch (record.type) {
-  //     case "processed":
-  //       type = styles.processedRow;
-  //       break;
-
-  //     case "pending":
-  //       type = styles.pendingRow;
-  //       break;
-
-  //     case "errors":
-  //       type = styles.errorRow;
-  //       break;
-  //   }
-  //   return type;
-  // };
-
   return (
     <div>
       <Table
@@ -199,7 +184,7 @@ function DinamicTable({
         }}
         bordered
         //rowHoverable={false}
-        size={getTableSize()}
+        size={getTableSize(columns)}
         columns={getColumns(columns)}
         dataSource={dataSource}
         pagination={{
@@ -217,7 +202,11 @@ function DinamicTable({
         }}
         onRow={(record, rowIndex) => {
           return onRowClick
-            ? {onClick: (event) => { onRowClick(record)}}
+            ? {
+                onClick: (event) => {
+                  onRowClick(record);
+                },
+              }
             : {};
         }}
         sticky={true}
@@ -226,6 +215,6 @@ function DinamicTable({
   );
 }
 
-function AdvancedTable({ columns, dataSource }: Props) {}
+function ExpandibleTable({ columns, dataSource }: Props) {}
 
-export { DinamicTable, AdvancedTable };
+export { DinamicTable, ExpandibleTable };

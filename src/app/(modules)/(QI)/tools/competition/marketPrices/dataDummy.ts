@@ -1,3 +1,5 @@
+import { DinamicColumnsType } from "@/shared/types/tableTypes";
+
 export interface DataType {
     key: React.Key;
     sku: string;
@@ -27,6 +29,63 @@ export interface CompetenciaType {
     titulo: string;
     cantidadVentas: number;
 }
+
+export const columnsCompetition: DinamicColumnsType[] = [
+    {
+        column_id: 'sku',
+        title: 'ID',
+        type: 'int'
+    },
+    {
+        column_id: 'label',
+        title: 'Título',
+        type: 'string',
+        width: 500
+    },
+    {
+        column_id: 'estatus',
+        title: 'Estatus',
+        type: 'string',
+        align: 'center'
+    },
+    {
+        column_id: 'ventas',
+        title: 'Ventas',
+        type: 'int'
+    },
+    {
+        column_id: 'filtros',
+        title: 'Filtros',
+        type: 'actions',
+        align: 'center',
+        actions: [
+            {
+                onPress: (record) => {
+                    console.log('press ', record)
+                },
+                tooltip: 'Filtros',
+                icon: 'Filter'
+            }
+        ],
+        width: 80
+    },
+    {
+        column_id: 'comparar',
+        title: 'Comparar',
+        type: 'actions',
+        align: 'center',
+        actions: [
+            {
+                onPress: (record) => {
+                    console.log('press ', record)
+                },
+                tooltip: 'Comparar',
+                icon: 'People-Arrows'
+            }
+        ],
+        width: 100
+    }
+]
 
 export const data: DataType[] = [
     {

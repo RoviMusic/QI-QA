@@ -8,6 +8,8 @@ import { DefaultTitle, MutedSubtitle } from "./core/Titulo";
 import { getIcon } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { localStorageService } from "@/shared/services/localStorageService";
+import { authService } from "@/modules/auth/services/authService";
+import { logoutAction } from "@/modules/auth/actions/authActions";
 
 export default function UserCard() {
   const dataUser = useStore(useUserStore, (state) => state.user);
@@ -16,13 +18,10 @@ export default function UserCard() {
   const router = useRouter();
   const dolToken = localStorageService.getItem('dolibarrToken')
 
-  const handleLogout = () => {
-    localStorageService.removeItem('user');
-    localStorageService.removeItem('pass');
+  const handleLogout = async () => {
+   await logoutAction();
     //resetUser;
     //router.replace(`${logoutUrl}${localStorageService.getItem('dolibarrToken')}`)
-    localStorageService.removeItem('dolibarrToken')
-    router.replace('/')
   }
 
   return (

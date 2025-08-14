@@ -62,16 +62,19 @@ export default function MainHeader() {
               </Drawer>
             </>
           )}
-          <LocaleSelect />
-          
-          <Popover content={<UserCard />} trigger="click">
-            <Button shape="round" icon={<UserOutlined />} type="text">
-              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
-                <small style={{lineHeight: 'normal'}}>¡Hola!</small>
-                <p style={{lineHeight: 'normal'}}>{userName}</p>
-              </div>
-            </Button>
-          </Popover>
+          <Space>
+            <LocaleSelect />
+            
+            <Popover content={<UserCard />} trigger="click">
+              <Button shape="round" icon={<UserOutlined />} type="text">
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
+                  <small style={{lineHeight: 'normal'}}>¡Hola!</small>
+                  <p style={{lineHeight: 'normal'}}>{userName}</p>
+                </div>
+              </Button>
+            </Popover>
+
+          </Space>
         </Flex>
       </Header>
     </>

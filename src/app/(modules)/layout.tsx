@@ -1,14 +1,10 @@
-'use client'
 import { Layout } from "antd";
 import styles from "@/styles/MainLayout.module.css";
 import MainHeader from "@/components/layout/MainHeader";
 import MainContent from "@/components/layout/MainContent";
-import { useEffect } from "react";
-import { localStorageService } from "@/shared/services/localStorageService";
-import { useRouter } from "next/navigation";
+import AuthGuard from "@/components/AuthGuard";
 
-
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -17,22 +13,9 @@ export default function MainLayout({
 
   //if(!session?.user) return redirect('/')
 
-  // const user = localStorageService.getItem('user')
-  // console.warn('hola ', user)
-
-  // if(user === null) return redirect('/')
-
-  // const router = useRouter()
-  // useEffect(() => {
-  //   const currentUser = localStorageService.getItem('user')
-
-  //   if(currentUser === null) {
-  //     router.replace('/')
-  //   }
-  // }, [])
-
   return (
     <>
+    <AuthGuard>
       <Layout hasSider className={styles.layout}>
         <Layout className={styles.meshLayout}>
           <MainHeader />
@@ -40,6 +23,8 @@ export default function MainLayout({
           <MainContent>{children}</MainContent>
         </Layout>
       </Layout>
+      
+    </AuthGuard>
     </>
   );
 }
