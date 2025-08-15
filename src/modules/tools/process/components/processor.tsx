@@ -129,6 +129,7 @@ export default function Processor({ data }: ProcessorProps) {
       column_id: "picking_id",
       type: "link",
       align: "center",
+      width: 100,
       actions: [
         {
           onPress: (record) => {
@@ -376,7 +377,9 @@ export default function Processor({ data }: ProcessorProps) {
             dataSource={displayedData}
             rowStyle
             getRowClass={getRowClass}
-            onRowClick={handleDetail}
+            rowActions={
+              {onRowClick: handleDetail}
+            }
           />
         </GlassCard>
       </Flex>

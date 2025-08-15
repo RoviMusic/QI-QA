@@ -1,12 +1,12 @@
 "use client";
 import { DinamicColumnsType } from "@/shared/types/tableTypes";
-import { Button, Space, Table } from "antd";
+import { Button, Space, Table, Typography } from "antd";
 import type { TableProps } from "antd";
 import { CircleButton } from "./Buttons";
 import { formattedPriceNormalized } from "@/lib/formattedPrice";
-import { getIcon } from "@/lib/utils";
-import styles from "@/styles/Tables.module.css";
 import dayjs from "dayjs";
+import { TableText } from "./Titulo";
+const { Link } = Typography
 
 /**
  * DinamicTable component renders a table with dynamic columns and data.
@@ -19,114 +19,68 @@ type Props = {
   columns: DinamicColumnsType[];
   dataSource: any[];
   rowStyle?: boolean;
-  onRowClick?: (record: any) => void;
+  rowActions?: {
+    onRowClick?: (record: any) => void;
+    onRowHover?: (record: any) => void;
+  };
   getRowClass?: (type: any) => string;
+  hasPagination?: boolean;
 };
 
-function renderColumns(record: DinamicColumnsType, text: any, data: any) {
-  //console.log("Rendering column:", text);
-  // Handle arrays
-  // if (Array.isArray(text)) {
-  //   return text.length >= 2 ? (
-  //     <CircleButton
-  //       onPress={() => record.actions && record.actions[0].onPress(text)}
-  //       icon={"Circle-Info"}
-  //       tooltip="Ver detalles"
-  //     />
-  //   ) : (
-  //     <Space direction="vertical" size={5}>
-  //       {text.map((item: any, idx: number) => (
-  //         <div key={idx}>
-  //           {record.type === "link" ? (
-  //             <>
-  //               {Object.entries(item).map(
-  //                 ([key, value]) =>
-  //                   key !== "sku" && (
-  //                     <div key={key}>
-  //                       {record.type === "link" ? (
-  //                         <Button
-  //                           type="link"
-  //                           onClick={() => record.actions![0].onPress(text)}
-  //                         >
-  //                           {key.toUpperCase()}: {String(value)}
-  //                         </Button>
-  //                       ) : (
-  //                         <>
-  //                           <b>{key.toUpperCase()}:</b> {String(value)}
-  //                         </>
-  //                       )}
-  //                     </div>
-  //                   )
-  //               )}
-  //             </>
-  //           ) : (
-  //             <></>
-  //           )}
-  //         </div>
-  //       ))}
-  //     </Space>
-  //   );
-  // }
+function renderColumns(
+  columnConfig: DinamicColumnsType,
+  text: any,
+  record: any
+) {
+  switch (columnConfig.type) {
+    case "price":
+      return <TableText>{`${formattedPriceNormalized(text)}`}</TableText>;
+    case "float":
+      return (
+        <TableText>
+          {Number(text).toFixed(columnConfig.decimals || 2)}
+        </TableText>
+      );
+    case "date":
+      return (
+        <TableText>
+          {dayjs(text).format("DD/MM/YYYY [a las] HH:mm:ss a")}
+        </TableText>
+      );
+    case "actions":
+      if (columnConfig.actions) {
+        return (
+          <Space>
+            {columnConfig.actions.map((action, index) => (
+              <CircleButton
+                key={index}
+                onPress={() => action.onPress(record)}
+                icon={action.icon}
+                tooltip={action.tooltip}
+              />
+            ))}
+          </Space>
+        );
+      }
+    case "link":
+      if (columnConfig.actions) {
+        return (
+          // <Button
+          //   size="small"
+          //   type="link"
+          //   onClick={() => columnConfig.actions![0].onPress(record)}
+          // >
+          //   {text}
+          // </Button>
+          <Link onClick={() => columnConfig.actions![0].onPress(record)}>{text}</Link>
+        );
+      }
+    case "custom":
+      return columnConfig.render ? columnConfig.render(text, record) : text;
 
-  // // Handle objects (but not null)
-  // if (typeof text === "object" && text !== null) {
-  //   return (
-  //     <Space direction="vertical" size={5}>
-  //       {Object.entries(text).map(
-  //         ([key, value]) =>
-  //           key !== "sku" && (
-  //             <div key={key}>
-  //               {record.type === "link" ? (
-  //                 <Button
-  //                   type="link"
-  //                   onClick={() => record.actions![0].onPress(text)}
-  //                 >
-  //                   {key.toUpperCase()}: {String(value)}
-  //                 </Button>
-  //               ) : (
-  //                 <>
-  //                   <b>{key.toUpperCase()}:</b> {String(value)}
-  //                 </>
-  //               )}
-  //             </div>
-  //           )
-  //       )}
-  //     </Space>
-  //   );
-  // }
-
-  if (record.type === "price") {
-    return `${formattedPriceNormalized(text)}`;
-  } else if (record.type === "float") {
-    return Number(text).toFixed(record.decimals || 2);
-  } else if (record.type === "date") {
-    return dayjs(text).format("DD/MM/YYYY [a las] HH:mm:ss a");
-  } else if (record.type === "actions" && record.actions) {
-    return (
-      <Space>
-        {record.actions.map((action, index) => (
-          <CircleButton
-            key={index}
-            onPress={() => action.onPress(record)}
-            icon={action.icon}
-            tooltip={action.tooltip}
-          />
-        ))}
-      </Space>
-    );
-  } else if (record.type === "link" && record.actions) {
-    return (
-      <Button
-        size="small"
-        type="link"
-        onClick={() => record.actions![0].onPress(data)}
-      >
-        {text}
-      </Button>
-    );
+    default:
+      return <TableText>{text}</TableText>;
   }
-
-  return text;
 }
 
 const getTableSize = (columns: DinamicColumnsType[]) => {
@@ -171,7 +125,8 @@ function DinamicTable({
   columns,
   dataSource,
   rowStyle = false,
-  onRowClick = undefined,
+  rowActions = undefined,
+  hasPagination = true,
   getRowClass,
 }: Props) {
   return (
@@ -183,28 +138,34 @@ function DinamicTable({
           return JSON.stringify(record);
         }}
         bordered
-        //rowHoverable={false}
         size={getTableSize(columns)}
         columns={getColumns(columns)}
         dataSource={dataSource}
-        pagination={{
-          showSizeChanger: true,
-          pageSizeOptions: [100, 200, 500, dataSource.length],
-          total: dataSource?.length,
-          showTotal: handleTotal,
-          position: ["topRight"],
-          defaultPageSize: 100,
-        }}
-        tableLayout="fixed"
+        pagination={
+          hasPagination
+            ? {
+                showSizeChanger: true,
+                pageSizeOptions: [100, 200, 500, dataSource.length],
+                total: dataSource?.length,
+                showTotal: handleTotal,
+                position: ["topRight"],
+                defaultPageSize: 100,
+              }
+            : false
+        }
+        tableLayout="auto"
         //scroll={{ x: "max-content" }}
         rowClassName={(record) => {
           return rowStyle ? getRowClass!(record.type) : "";
         }}
         onRow={(record, rowIndex) => {
-          return onRowClick
+          return rowActions
             ? {
                 onClick: (event) => {
-                  onRowClick(record);
+                  rowActions.onRowClick ? rowActions.onRowClick(record) : {};
+                },
+                onMouseEnter: (event) => {
+                  rowActions.onRowHover ? rowActions.onRowHover(record) : {};
                 },
               }
             : {};

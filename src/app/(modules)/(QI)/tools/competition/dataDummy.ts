@@ -22,6 +22,12 @@ export interface DetallesType {
     id: string;
 }
 
+export interface ComparisionType {
+    id: string;
+    title: string;
+    data: DetallesType[]
+} 
+
 export interface CompetenciaType {
     precio: number;
     vendedor: string;
@@ -29,63 +35,6 @@ export interface CompetenciaType {
     titulo: string;
     cantidadVentas: number;
 }
-
-export const columnsCompetition: DinamicColumnsType[] = [
-    {
-        column_id: 'sku',
-        title: 'ID',
-        type: 'int'
-    },
-    {
-        column_id: 'label',
-        title: 'Título',
-        type: 'string',
-        width: 500
-    },
-    {
-        column_id: 'estatus',
-        title: 'Estatus',
-        type: 'string',
-        align: 'center'
-    },
-    {
-        column_id: 'ventas',
-        title: 'Ventas',
-        type: 'int'
-    },
-    {
-        column_id: 'filtros',
-        title: 'Filtros',
-        type: 'actions',
-        align: 'center',
-        actions: [
-            {
-                onPress: (record) => {
-                    console.log('press ', record)
-                },
-                tooltip: 'Filtros',
-                icon: 'Filter'
-            }
-        ],
-        width: 80
-    },
-    {
-        column_id: 'comparar',
-        title: 'Comparar',
-        type: 'actions',
-        align: 'center',
-        actions: [
-            {
-                onPress: (record) => {
-                    console.log('press ', record)
-                },
-                tooltip: 'Comparar',
-                icon: 'People-Arrows'
-            }
-        ],
-        width: 100
-    }
-]
 
 export const data: DataType[] = [
     {
@@ -157,6 +106,39 @@ export const dataDetalles: DetallesType[] = [
     }
 ];
 
+export const dataComparision: ComparisionType[] = [
+    {
+        id: '1',
+        title: 'Full clasica gratis',
+        data: dataDetalles
+    },
+    {
+        id: '2',
+        title: 'dropoff clasica gratis',
+        data: dataDetalles
+    },
+    {
+        id: '3',
+        title: 'full premium gratis',
+        data: dataDetalles
+    },
+    {
+        id: '4',
+        title: 'dropoff premium gratis',
+        data: dataDetalles
+    },
+    {
+        id: '5',
+        title: 'Full clasica gratis',
+        data: dataDetalles
+    },
+    {
+        id: '6',
+        title: 'Full clasica gratis',
+        data: dataDetalles
+    }
+]
+
 export const dataCompetencia: CompetenciaType[] = [
     {
         precio: 950,
@@ -178,51 +160,58 @@ export interface FiltrosType {
     id: string;
     in: boolean;
     ex: boolean;
-    precio: number;
-    titulo: string;
+    price: number;
+    title: string;
+    idImage: number;
 }
 
 export const dataFiltros: FiltrosType[] = [
     {
-        id: 'MLM1290839028',
+        id: 'MLM1456133041',
         in: false,
         ex: false,
-        precio: 1206,
-        titulo: 'Amadeus Cellini AMVL001'
+        price: 1206,
+        title: 'Amadeus Cellini AMVL001',
+        idImage: 200
     },
     {
-        id: 'MLM1290839028',
+        id: 'MLM2164033679',
         in: false,
         ex: true,
-        precio: 2903,
-        titulo: 'Amadeus Cellini AMVL001'
+        price: 2903,
+        title: 'Amadeus Cellini AMVL001',
+        idImage: 230
     },
     {
-        id: 'MLM1290839028',
+        id: 'MLM832171117',
         in: true,
         ex: false,
-        precio: 2903,
-        titulo: 'Amadeus Cellini AMVL001'
+        price: 2903,
+        title: 'Amadeus Cellini AMVL001',
+        idImage: 430
     },
     {
-        id: 'MLM1290839028',
+        id: 'MLM1982663113',
         in: false,
         ex: false,
-        precio: 1206,
-        titulo: 'Amadeus Cellini AMVL001'
+        price: 1206,
+        title: 'Amadeus Cellini AMVL001',
+        idImage: 12
     },
     {
-        id: 'MLM1290839028',
+        id: 'MLM3179368312',
         in: false,
         ex: false,
-        precio: 1206,
-        titulo: 'Amadeus Cellini AMVL001'
+        price: 1206,
+        title: 'Amadeus Cellini AMVL001',
+        idImage: 20
     },
     {
-        id: 'MLM1290839028',
+        id: 'MLM1991136261',
         in: false,
         ex: false,
-        precio: 1206,
-        titulo: 'Amadeus Cellini AMVL001'
+        price: 1206,
+        title: 'Amadeus Cellini AMVL001',
+        idImage: 230
     },
 ]

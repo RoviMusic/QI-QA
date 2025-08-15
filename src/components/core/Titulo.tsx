@@ -44,12 +44,20 @@ function MutedSubtitle({ children }: PropsWithChildren) {
   );
 }
 
-function LabelTitle({children}: PropsWithChildren){
-    return(
-        <>
-        <Text className="font-bold">{children}</Text>
-        </>
-    )
+function LabelTitle({ children }: PropsWithChildren) {
+  return (
+    <>
+      <Text className="font-bold">{children}</Text>
+    </>
+  );
 }
 
-export { MainTitle, Subtitle, DefaultTitle, MutedSubtitle, LabelTitle };
+function TableText({children}: PropsWithChildren){
+  return(
+    <>
+    <p className="text-base sm:text-sm md:text-base">{children}</p>
+    </>
+  )
+}
+
+export { MainTitle, Subtitle, DefaultTitle, MutedSubtitle, LabelTitle, TableText };

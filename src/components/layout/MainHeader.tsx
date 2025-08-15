@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getIcon } from "@/lib/utils";
 import UserCard from "../UserCard";
-import { useUserStore } from "@/shared/stores/authStore";
+import { useUserStore } from "@/shared/stores/userStore";
 import useStore from "@/shared/hooks/useStore";
 
 const { Header } = Layout;

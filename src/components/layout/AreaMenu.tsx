@@ -173,7 +173,7 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
                 {
                   label: 'Market prices',
                   key: 'mktPrices',
-                  onClick: () => router.push("/tools/competition/marketPrices")
+                  onClick: () => router.push("/tools/competition")
                 },
                 {
                   label: 'Policía',

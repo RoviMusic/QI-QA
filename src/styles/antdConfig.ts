@@ -24,7 +24,9 @@ const defaultTheme: ThemeConfig = {
       titleMarginBottom: 0,
     },
     Table: {
-      cellFontSizeSM: 10,
+      cellFontSizeSM: 12,
+      cellFontSize: 16,
+      cellFontSizeMD: 14
     },
     InputNumber: {
       fontSizeSM: 10,

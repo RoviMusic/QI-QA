@@ -1,3 +1,5 @@
+import { ReactElement, ReactNode } from "react";
+
 export type DinamicColumnsType = {
     column_id: string;
     type: "string" | "int" | "float" | "price" | "date" | "actions" | "link" | "custom";
@@ -9,7 +11,8 @@ export type DinamicColumnsType = {
         tooltip?: string;
     }[];
     align?: "left" | "center" | "right"; // Para alinear el contenido de la columna
-    width?: string | number
+    width?: string | number;
+    render?: (value: any, record: any) => ReactNode
 }
 
 export type GenericTableType = {

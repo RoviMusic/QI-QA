@@ -1,6 +1,6 @@
 'use client'
 import useStore from "@/shared/hooks/useStore";
-import { useUserStore } from "@/shared/stores/authStore";
+import { useUserStore } from "@/shared/stores/userStore";
 import { Avatar, Button, Divider, Flex, Space } from "antd";
 import { GlassCard } from "./core/GlassCard";
 import { UserOutlined } from "@ant-design/icons";

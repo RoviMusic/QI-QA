@@ -12,7 +12,7 @@ import Password from "antd/es/input/Password";
 import { LoginType } from "../types/loginTypes";
 import { useEffect } from "react";
 import { localStorageService } from "@/shared/services/localStorageService";
-import { useUserStore } from "@/shared/stores/authStore";
+import { useUserStore } from "@/shared/stores/userStore";
 
 const SIGNIN_ERROR_URL = "/error";
 
