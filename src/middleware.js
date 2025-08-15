@@ -1,6 +1,6 @@
 // middleware.js
 import { NextResponse } from "next/server";
-import { decrypt } from "@/lib/session";
+import { decrypt, verifySession } from "@/lib/session";
 import {routerConfig} from "@/lib/routes"
 
 function handleDolibarr(request) {
@@ -43,37 +43,37 @@ function getRouteType(path) {
   return "protected";
 }
 
-// async function handleAuth(request) {
-//   const path = request.nextUrl.pathname;
-//   console.log("paaaaaaaath ", request.cookies);
-//   console.log("path ", request.cookies.get('DOLSESSID_25c04083ab55fcdf04dd76a5a68cc2d3d9825ac5'));
-//   const routeType = getRouteType(path);
+async function handleAuth(request) {
+  const path = request.nextUrl.pathname;
+  const routeType = getRouteType(path);
 
-//   const cookie = request.cookies.get('session')?.value;
-//   const session = await decrypt(cookie);
-//   const isAuthenticated = session?.userId;
-//   console.log("sessss ", cookie);
+  // const cookie = request.cookies.get('session')?.value;
+  // const session = await decrypt(cookie);
+  // const isAuthenticated = session?.userId;
+  const session = await verifySession();
+  console.log("sessss ", session);
+  const isAuthenticated = session.isAuth;
 
-//   // Rutas públicas
-//   if (routeType === "public") {
-//     // Si está autenticado y trata de ir a login/register, redirigir
-//     if (isAuthenticated && path === "/") {
-//       return NextResponse.redirect(
-//         new URL(routerConfig.redirects.afterLogin, request.nextUrl)
-//       );
-//     }
-//     return null;
-//   }
+  // Rutas públicas
+  if (routeType === "public") {
+    // Si está autenticado y trata de ir a login/register, redirigir
+    if (isAuthenticated && path === "/") {
+      return NextResponse.redirect(
+        new URL(routerConfig.redirects.afterLogin, request.nextUrl)
+      );
+    }
+    return null;
+  }
 
-//   // Rutas protegidas
-//   if (routeType === "protected" && !isAuthenticated) {
-//     return NextResponse.redirect(
-//       new URL(routerConfig.redirects.unauthorized, request.nextUrl)
-//     );
-//   }
+  // Rutas protegidas
+  if (routeType === "protected" && !isAuthenticated) {
+    return NextResponse.redirect(
+      new URL(routerConfig.redirects.unauthorized, request.nextUrl)
+    );
+  }
 
-//   return null;
-// }
+  return null;
+}
 
 export async function middleware(request) {
   // const authResponse = await handleAuth(request);

@@ -2,7 +2,7 @@ import { authApi } from "@/lib/api/client";
 import { LoginResponse, LoginType } from "../types/loginTypes";
 import { localStorageService } from "@/shared/services/localStorageService";
 import { UserType } from "@/shared/types/userTypes";
-import { loginAction } from "../actions/authActions";
+import { loginAction, logoutAction } from "../actions/authActions";
 
 export class AuthService {
   async dolibarAuth(formData: LoginType): Promise<UserType | null> {
@@ -21,7 +21,6 @@ export class AuthService {
       const { user } = response;
       
       await loginAction(user.id)
-
       return user;
 
     } catch (error: any) {
@@ -30,17 +29,16 @@ export class AuthService {
     }
   }
 
-  // async logout() {
-  //   try{
-  //     localStorageService.removeItem('user');
-  //     localStorageService.removeItem('pass');
-  //     localStorageService.removeItem('dolibarrToken')
-  //     await deleteSession();
-  //   }catch(error){
-  //     console.error(error)
-  //     throw new Error('Ocurrió un error al cerrar sesión')
-  //   }
-  // }
+  async logout(): Promise<boolean>{
+    try{
+      localStorageService.clear();
+      await logoutAction();
+      return true
+    }catch(error: any){
+      console.error(error)
+      throw new Error('Ocurrió un error al cerrar sesión ', error)
+    }
+  }
 }
 
 export const authService = new AuthService();

@@ -33,7 +33,7 @@ export async function createSession(userId: string) {
 
   cookieStore.set("session", session, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     expires: expiresAt,
     sameSite: "lax",
     path: "/",
@@ -41,18 +41,16 @@ export async function createSession(userId: string) {
 }
 
 export async function deleteSession() {
-  const cookieStore = await cookies()
-  cookieStore.delete('session')
+  const cookieStore = await cookies();
+  cookieStore.delete("session");
 }
 
 export const verifySession = cache(async () => {
-  const cookie = (await cookies()).get('session')?.value;
-  console.warn('aaaaaaa sessss', await cookies())
-  const session = await decrypt(cookie)
- console.log('session ', session)
+  const cookie = (await cookies()).get("session")?.value;
+  const session = await decrypt(cookie);
   if (!session?.userId) {
-    redirect('/')
+    redirect("/");
   }
- 
-  return { isAuth: true, userId: session.userId }
-})
+
+  return { isAuth: true, userId: session.userId };
+});

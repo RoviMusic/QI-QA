@@ -2,19 +2,15 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { MainTitle } from "../../../components/core/Titulo";
-import { Button, Divider, Input, Form, App } from "antd";
+import { Button, Input, Form, App } from "antd";
 import { useTranslations } from "next-intl";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { authService } from "../services/authService";
 
 import FormItem from "antd/es/form/FormItem";
 import Password from "antd/es/input/Password";
 import { LoginType } from "../types/loginTypes";
-import { useEffect } from "react";
-import { localStorageService } from "@/shared/services/localStorageService";
 import { useUserStore } from "@/shared/stores/userStore";
-
-const SIGNIN_ERROR_URL = "/error";
 
 export default function LoginForm({
   className,
@@ -50,10 +46,6 @@ export default function LoginForm({
   const onFinishFailed = (error: any) => {
     console.error(error);
   };
-
-  // useEffect(() => {
-  //   localStorageService.clear();
-  // },)
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
