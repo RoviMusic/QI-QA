@@ -7,7 +7,7 @@ import { loginAction, logoutAction } from "../actions/authActions";
 export class AuthService {
   async dolibarAuth(formData: LoginType): Promise<UserType | null> {
     try {
-      const response = await authApi.post<LoginResponse>("/api/auth/login", {
+      const response = await authApi.post<LoginResponse>("/api/auth/login_dolibarr", {
         username: formData.user,
         password: formData.pass,
       });

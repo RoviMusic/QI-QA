@@ -137,15 +137,27 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
           onClick: () => router.push("/dashboard"),
         },
         {
-          label: "Tools",
-          key: "tools",
-          icon: getIcon("Toolbox"),
+          label: "Marketplaces",
+          key: "mkp",
+          icon: getIcon("Store"),
           children: [
             {
               label: "Sincronizador y Procesador",
               key: "syncprocess",
-              onClick: () => router.push("/tools/syncprocess"),
+              onClick: () => router.push("/marketplaces/syncprocess"),
             },
+            {
+              label: "Envíos Revisar",
+              key: "shipRev",
+              onClick: () => router.push("/marketplaces/shipmentReview"),
+            },
+          ],
+        },
+        {
+          label: "Tools",
+          key: "tools",
+          icon: getIcon("Toolbox"),
+          children: [
             {
               label: "Fullfilment",
               key: "picking",
@@ -171,22 +183,22 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
               key: "comp",
               children: [
                 {
-                  label: 'Market prices',
-                  key: 'mktPrices',
-                  onClick: () => router.push("/tools/competition")
+                  label: "Market prices",
+                  key: "mktPrices",
+                  onClick: () => router.push("/tools/competition"),
                 },
                 {
-                  label: 'Policía',
-                  key: 'policeman',
-                  onClick: () => router.push("/tools/competition/police")
-                }
-              ]
+                  label: "Policía",
+                  key: "policeman",
+                  onClick: () => router.push("/tools/competition/police"),
+                },
+              ],
             },
           ],
         },
         {
-          label: 'Developer',
-          key: 'dev',
+          label: "Developer",
+          key: "dev",
           icon: getIcon("Code"),
           children: [
             {
@@ -194,8 +206,8 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
               key: "sip",
               onClick: () => router.push("/developer/syp"),
             },
-          ]
-        }
+          ],
+        },
       ],
     },
     {
