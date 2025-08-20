@@ -155,6 +155,7 @@ function DinamicTable({
         }
         tableLayout="auto"
         //scroll={{ x: "max-content" }}
+        scroll={{x: "max-content"}}
         rowClassName={(record) => {
           return rowStyle ? getRowClass!(record.type) : "";
         }}
