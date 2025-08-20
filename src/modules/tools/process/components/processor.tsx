@@ -62,6 +62,7 @@ export default function Processor({ data }: ProcessorProps) {
       title: "Tipo de envío",
       column_id: "shipment_type",
       type: "string",
+      width: 150,
     },
     {
       title: "Marketplace",
@@ -73,6 +74,7 @@ export default function Processor({ data }: ProcessorProps) {
       column_id: "order_reference",
       type: "link",
       align: "center",
+      width: 150,
       actions: [
         {
           onPress: (record) => {
@@ -93,6 +95,7 @@ export default function Processor({ data }: ProcessorProps) {
       column_id: "pack_id",
       type: "link",
       align: "center",
+      width: 150,
       actions: [
         {
           onPress: (record) => {
@@ -111,6 +114,7 @@ export default function Processor({ data }: ProcessorProps) {
       column_id: "invoice_reference",
       type: "link",
       align: "center",
+      width: 150,
       actions: [
         {
           onPress: (record) => {
@@ -148,6 +152,7 @@ export default function Processor({ data }: ProcessorProps) {
       column_id: "shipment_reference",
       type: "link",
       align: "center",
+      width: 150,
       actions: [
         {
           onPress: (record) => {
@@ -301,7 +306,10 @@ export default function Processor({ data }: ProcessorProps) {
         <Flex gap={10} align="center" justify="space-between">
           <Space>
             <MainTitle>Procesador de órdenes</MainTitle>
-            <Badge status="success" text="Procesador en funcionamiento (fake news)" />
+            <Badge
+              status="success"
+              text="Procesador en funcionamiento (fake news)"
+            />
           </Space>
         </Flex>
         <GlassCard>
@@ -363,8 +371,8 @@ export default function Processor({ data }: ProcessorProps) {
                     },
                     {
                       value: "no_shipping",
-                      label: "Sin tipo de envío"
-                    }
+                      label: "Sin tipo de envío",
+                    },
                   ]}
                 />
               </Flex>
@@ -377,9 +385,7 @@ export default function Processor({ data }: ProcessorProps) {
             dataSource={displayedData}
             rowStyle
             getRowClass={getRowClass}
-            rowActions={
-              {onRowClick: handleDetail}
-            }
+            rowActions={{ onRowClick: handleDetail }}
           />
         </GlassCard>
       </Flex>
@@ -519,13 +525,16 @@ export default function Processor({ data }: ProcessorProps) {
               },
             ]}
           />
-
-          <DefaultTitle>Detalle técnico:</DefaultTitle>
-          <JsonView
-            value={dataDetail?.order}
-            collapsed={1}
-            displayDataTypes={false}
-          />
+          {dataDetail?.order && (
+            <>
+              <DefaultTitle>Detalle técnico:</DefaultTitle>
+              <JsonView
+                value={dataDetail?.order}
+                collapsed={1}
+                displayDataTypes={false}
+              />
+            </>
+          )}
         </Flex>
       </Modal>
     </>
