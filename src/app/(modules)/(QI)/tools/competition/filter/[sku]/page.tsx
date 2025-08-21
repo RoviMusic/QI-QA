@@ -141,13 +141,13 @@ export default function FilterPage({
         </GlassCard>
 
         <Row gutter={[20,20]}>
-            <Col xxl={18}>
+            <Col xxl={18} xl={18}>
                 <GlassCard>
                     <DinamicTable columns={columnsFilter} dataSource={dataFiltros} rowActions={{onRowHover: hoverRow}}/>
                 </GlassCard>
             </Col>
 
-            <Col xxl={6}>
+            <Col xxl={6} xl={6}>
                 <GlassCard>
                     <Image src={urlImage} fallback="/Logo.jpg"/>
                 </GlassCard>

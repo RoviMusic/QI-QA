@@ -1,11 +1,14 @@
+'use client'
 import { GlassCard } from "@/components/core/GlassCard";
 import { DinamicTable } from "@/components/core/Tables";
 import { MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import { DinamicColumnsType } from "@/shared/types/tableTypes";
 import { Flex } from "antd";
+import { useState , useEffect } from "react";
 
 export default function OverstockProductPage() {
+  const [data, setData] = useState<any[]>([]);
   const columns: DinamicColumnsType[] = [
     {
       column_id: "ref",
@@ -51,6 +54,40 @@ export default function OverstockProductPage() {
     },
   ];
 
+  const fetchOverStockData = async () => {
+    try {
+      
+      const url = `/api/reports/overstockProduct`;
+      const response = await fetch(url);
+      const result = await response.json();
+
+      console.log("this result ", result);
+      
+      if (result.success) {
+        const formattedData = result.data.map((item: any) => ({
+          ref: item.ref,
+          label: item.label,
+          seuil_stock_alerte: item.seuil_stock_alerte,
+          desiredstock: item.desiredstock,
+          stock: item.stock,
+          entrepot: item.entrepot,
+          price_ttc: item.price_ttc,
+        }));
+        
+        setData(formattedData);
+      } else {
+        throw new Error(result.error);
+      }
+      
+    } catch (err: any) {
+      console.error(err);
+    } 
+  };
+
+useEffect(() => {
+  fetchOverStockData();
+}, []);
+
   return (
     <>
       <Container>
@@ -58,7 +95,7 @@ export default function OverstockProductPage() {
           <MainTitle>Productos con excendente</MainTitle>
 
           <GlassCard>
-            <DinamicTable columns={columns} dataSource={[]} />
+            <DinamicTable columns={columns} dataSource={data} />
           </GlassCard>
         </Flex>
       </Container>

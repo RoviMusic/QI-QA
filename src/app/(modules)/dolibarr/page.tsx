@@ -1,8 +1,8 @@
 "use client";
 import { App } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { cookieStorageService } from "@/shared/services/cookieStorageService";
 import { localStorageService } from "@/shared/services/localStorageService";
+import { useRouter } from "next/navigation";
 
 export default function DolibarrPage() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -10,7 +10,7 @@ export default function DolibarrPage() {
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [alreadyLogout, setAlreadyLogout] = useState(false);
   const { notification } = App.useApp();
-  
+  const router = useRouter()
 
   const DOLIBARR_CREDENTIALS = {
     username: localStorageService.getItem('user'),
@@ -172,10 +172,7 @@ export default function DolibarrPage() {
 
       // Inyectar CSS siempre
       setTimeout(() => injectCustomCSS(iframeDoc), 100);
-      //cachar cuando hayamos echo un logout manual dentro de qi 
-      if(alreadyLogout){
-
-      }
+      
       // Verificar si estamos en página de login
       if (isLoginPage(iframeDoc)) {
         console.log("Página de login detectada");
@@ -234,8 +231,10 @@ export default function DolibarrPage() {
       }
       link.addEventListener("click", (e: any) => {
         const href = link.getAttribute("href");
-        if(href.includes('logout')){
-          console.warn('logoutttt')
+        if(href.includes('pos')){
+          console.warn('aaaaa', href)
+          window.open(href, '_blank')
+          router.push('/dolibarr/redirect')
         }
         if (href && !href.startsWith("http")) {
           e.preventDefault();
