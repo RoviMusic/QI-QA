@@ -42,9 +42,15 @@ function renderColumns(
         </TableText>
       );
     case "date":
+      const fecha = dayjs.unix(Number(text));
       return (
         <TableText>
           {dayjs(text).format("DD/MM/YYYY [a las] HH:mm:ss a")}
+          {/* {dayjs.unix(text).format("DD/MM/YYYY")} */}
+          {/* {dayjs.unix(text).toDate().toDateString()} */}
+          {/* {fecha.isValid() ? fecha.format("DD/MM/YYYY HH:mm:ss") : "Fecha inválida"} */}
+          {/* {dayjs(text).toDate().toDateString()} */}
+          {/* {text} */}
         </TableText>
       );
     case "actions":

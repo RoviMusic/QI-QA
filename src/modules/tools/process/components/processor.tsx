@@ -6,6 +6,7 @@ import {
   LabelTitle,
   MainTitle,
   MutedSubtitle,
+  TableText,
 } from "@/components/core/Titulo";
 import { MarketsEnmu } from "@/shared/enums/MarketEnum";
 import { DinamicColumnsType } from "@/shared/types/tableTypes";
@@ -130,14 +131,23 @@ export default function Processor({ data }: ProcessorProps) {
     },
     {
       title: "Picking",
-      column_id: "picking_id",
-      type: "link",
+      column_id: "picking_ids",
+      type: "custom",
       align: "center",
       width: 100,
+      render: (value, record) => (
+        // <TableText>{value}</TableText>
+        <Link
+          href={`${process.env.NEXT_PUBLIC_DOLIBARR_PICKING_URL}picking_id=${value}`}
+          target="_blank"
+        >
+          {value}
+        </Link>
+      ),
       actions: [
         {
           onPress: (record) => {
-            if (record.picking_id) {
+            if (record.picking_ids) {
               window.open(
                 `${process.env.NEXT_PUBLIC_DOLIBARR_PICKING_URL}picking_id=${record.picking_id}`,
                 "_blank"

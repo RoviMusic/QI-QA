@@ -232,7 +232,6 @@ export default function DolibarrPage() {
       link.addEventListener("click", (e: any) => {
         const href = link.getAttribute("href");
         if(href.includes('pos')){
-          console.warn('aaaaa', href)
           window.open(href, '_blank')
           router.push('/dolibarr/redirect')
         }

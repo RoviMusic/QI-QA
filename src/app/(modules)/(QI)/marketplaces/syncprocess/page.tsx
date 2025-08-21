@@ -24,10 +24,30 @@ export default async function SyncProcessPage() {
 
   const allData = [...meliData, ...amazonData]
     .filter((item) => !item.shipment_reference?.startsWith("NE-"))
-    .sort(
-      (a, b) =>
-        new Date(b.sale_date).getTime() - new Date(a.sale_date).getTime()
-    );
+    .sort((a, b) => {
+      const dateA = new Date(a.sale_date).getTime();
+      const dateB = new Date(b.sale_date).getTime();
+
+      // Si alguna fecha es inválida, ponla al final
+      if (isNaN(dateA)) return 1;
+      if (isNaN(dateB)) return -1;
+
+      return dateB - dateA;
+    });
+  // .sort(
+  //   (a, b) =>
+  //     new Date(b.sale_date).getTime() - new Date(a.sale_date).getTime()
+  // );
+
+  console.log(
+    "meli pros ",
+    allData
+      .filter((item) => item.sale_id == "2000012729173180")
+      .sort(
+        (a, b) =>
+          new Date(b.sale_Date).getTime() - new Date(a.sale_date).getTime()
+      )
+  );
 
   const syncErrors = await GetSync48hErrors();
   const syncSummary = await GetSyncSummary();

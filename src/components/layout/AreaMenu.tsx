@@ -214,7 +214,7 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
       label: "Dolibarr",
       key: "dol",
       icon: getIcon("Toolbox"),
-      onClick: () => router.push("/dolibarr"),
+      onClick: () => {window.open(process.env.NEXT_PUBLIC_DOLIBARR_URL, '_blank')},
     },
     {
       label: "Ecommerce",
