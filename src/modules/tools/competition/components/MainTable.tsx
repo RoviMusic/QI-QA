@@ -1,12 +1,13 @@
 "use client";
 import { Progress, Spin, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
-import { competenciaService } from "../services/competitionService";
+//import { competenciaService } from "../services/competitionService";
 import type { TableColumnsType } from "antd";
 import { MainTableType } from "../types/competitionType";
 import ml from "../utils/mercadolibre";
 import { formattedPriceNormalized } from "@/lib/formattedPrice";
 import DetailTable from "./DetailTable";
+import { authMLToken } from "../services/competitionService";
 
 export default function MainTable() {
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ export default function MainTable() {
         var hash: any = {};
         var stored;
         var products: any = { list: [] };
-        const auth_data = await competenciaService.authMLToken();
+        const auth_data = await authMLToken();
         ml.init((url: any, init: any) =>
           url.searchParams.set("access_token", auth_data.access_token)
         );

@@ -17,6 +17,7 @@ import { useState } from "react";
 import { IErrors } from "../models/ErrorsModel";
 import { ISummary } from "../models/SummaryModel";
 import VirtualList from "rc-virtual-list";
+import JsonView from "@uiw/react-json-view";
 
 interface SyncProps {
   syncTotalErrors: IErrors[];
@@ -183,10 +184,14 @@ export default function Sync({
                 <LabelTitle>
                   MLM: {String(err.metadata.publication_id)}
                 </LabelTitle>
+                <LabelTitle>
+                  SKU: {err.metadata.sku ?? ''}
+                </LabelTitle>
                 <MutedSubtitle>
                   {dayjs.utc(err.timestamp).format("DD/MM/YYYY [a las] HH:mm:ss a")}
                 </MutedSubtitle>
                 <p>{err.error}</p>
+                <JsonView value={err.metadata} collapsed={1} displayDataTypes={false} />
               </Flex>
             </List.Item>
           ))}

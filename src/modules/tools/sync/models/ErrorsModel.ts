@@ -7,6 +7,7 @@ export interface IErrors extends Document {
     timestamp: Date;
     metadata: {
         publication_id: string;
+        sku: string;
     }
 }
 

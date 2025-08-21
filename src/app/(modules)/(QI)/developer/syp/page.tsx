@@ -23,7 +23,7 @@ export default async function DevSipPage() {
   const syncErrors = await GetSync48hErrors();
   const syncSummary = await GetSyncSummary();
   const cicleErrors = await GetCicleError(
-    syncSummary[0].start_time,
+    syncSummary[0].timestamp,
     syncSummary[0].end_time
   );
 
