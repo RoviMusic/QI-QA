@@ -11,7 +11,7 @@ export const routerConfig ={
         '/tools'
     ],
     redirects: {
-        afterLogin: '/dolibarr',
+        afterLogin: '/dashboard',
         afterLogout: '/',
         unauthorized: '/'
     }

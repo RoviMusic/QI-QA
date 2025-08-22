@@ -22,7 +22,28 @@ import { use, useEffect, useState } from "react";
 import { dataFiltros } from "../../dataDummy";
 import { authMLToken } from "@/modules/tools/competition/services/competitionService";
 import ml from "@/modules/tools/competition/utils/mercadolibre";
-//import ml from "";
+
+interface ProductItem {
+  id: string;
+  title: string;
+  price: number;
+  link: string;
+  picture: string;
+}
+
+interface FilterState {
+  query: string;
+  include: string;
+  exclude: string;
+  include_list: string[];
+  exclude_list: string[];
+  check?: boolean;
+}
+
+interface StoredData extends FilterState {
+  _id: string;
+  check?: boolean;
+}
 
 const { Link } = Typography;
 const columnsFilter: DinamicColumnsType[] = [
@@ -74,8 +95,6 @@ export default function FilterPage({
   const [urlImage, setUrlImage] = useState<string>("");
   const loremImage = "https://picsum.photos/id";
 
-  const [stored, setStored] = useState<any>();
-
   const hoverRow = (data: any) => {
     setUrlImage(`${loremImage}/${data.idImage}/400?random=1`);
   };
@@ -83,6 +102,52 @@ export default function FilterPage({
   useEffect(() => {
     getFilters();
   }, []);
+
+  // **********************************
+  const expandTildes = (expr: string): string => {
+    const expand = (terms: string[]): string[][] => {
+      if (terms.length === 1) return [terms];
+      const first = terms.shift()!;
+      const result: string[][] = [];
+      for (const e of expand(terms)) {
+        result.push([first, "-", ...e]);
+        result.push([first, "\\s", ...e]);
+        result.push([first, ...e]);
+      }
+      return result;
+    };
+
+    return expand(expr.split("~"))
+      .map((e) => e.join(""))
+      .join("|");
+  };
+
+  const buildRegExp = (expr: string): RegExp => {
+    let processedExpr = expr.replace(/[.*+()]/g, "\\$&");
+    processedExpr = processedExpr
+      .split("|")
+      .map((e) => expandTildes(e))
+      .join("|");
+    processedExpr = processedExpr
+      .split("|")
+      .map((e) => `(?<![^ ,("])${e}(?![^ ,)"])`)
+      .join("|");
+    return new RegExp(processedExpr, "i");
+  };
+
+  const [filterState, setFilterState] = useState<FilterState>({
+    query: "",
+    include: "",
+    exclude: "",
+    include_list: [],
+    exclude_list: [],
+    check: false,
+  });
+
+  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [currentItem, setCurrentItem] = useState<ProductItem | null>(null);
+  const [stored, setStored] = useState<StoredData>({ _id: "", ...filterState });
+  const [loading, setLoading] = useState(false);
 
   const getFilters = async () => {
     const auth_data = await authMLToken();
@@ -103,7 +168,7 @@ export default function FilterPage({
       setStored(data);
       //Object.assign(input, stored); //asignarlo a un input
     } else {
-      setStored({ '_id': sku });
+      //setStored({ _id: sku });
     }
   };
 

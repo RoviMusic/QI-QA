@@ -19,7 +19,7 @@ export default function DashboardPage() {
           style={{ height: "100%" }}
         >
           <Col xxl={8} xl={8}>
-            <GlassCardHoverable onPress={() => router.push('tools/syncprocess')}>
+            <GlassCardHoverable onPress={() => router.push('marketplaces/syncprocess')}>
               <Flex vertical justify="center" align="center">
                 <MainTitle>{getIcon("Rotate")}</MainTitle>
                 <MainTitle>Sincronizador y Procesador</MainTitle>
@@ -27,14 +27,14 @@ export default function DashboardPage() {
             </GlassCardHoverable>
           </Col>
 
-          <Col xxl={8} xl={8}>
+          {/* <Col xxl={8} xl={8}>
             <GlassCardHoverable onPress={() => router.push('tools/picking')}>
               <Flex vertical justify="center" align="center">
                 <MainTitle>{getIcon("Truck")}</MainTitle>
                 <MainTitle>Fullfilment</MainTitle>
               </Flex>
             </GlassCardHoverable>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </>

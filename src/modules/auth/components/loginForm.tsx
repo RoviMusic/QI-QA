@@ -30,7 +30,7 @@ export default function LoginForm({
       .then((res) => {
         if(res){
           setDataUser(res)
-          router.push('/dolibarr')
+          router.push('/dashboard')
         }
       })
       .catch((e) => {

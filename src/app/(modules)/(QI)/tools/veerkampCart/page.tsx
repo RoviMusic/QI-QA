@@ -25,6 +25,12 @@ const columns: DinamicColumnsType[] = [
     align: "center",
   },
   {
+    column_id: "Modelo",
+    title: "Modelo",
+    type: "string",
+    align: "center",
+  },
+  {
     column_id: "Producto",
     title: "Producto",
     type: "string",
@@ -294,6 +300,7 @@ export default function VeerkampCartPage() {
                   dataSource={data}
                   rowStyle
                   getRowClass={setStatusRow}
+                  hasPagination={false}
                 />
               </GlassCard>
             </Col>
