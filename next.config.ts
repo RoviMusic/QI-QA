@@ -66,6 +66,8 @@ const nextConfig: NextConfig = {
   },
 };
 
+//module.exports = { serverExternalPackages: ["mysql2"] };
+
 const withNextIntl = createNextIntlPlugin(); //configuracion para internationalizacion
 
 export default withNextIntl(nextConfig);

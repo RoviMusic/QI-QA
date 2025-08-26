@@ -4,381 +4,277 @@ import { DinamicTable } from "@/components/core/Tables";
 import { MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import { DinamicColumnsType } from "@/shared/types/tableTypes";
-import { Button, Col, Flex, Form, Input, Row, Select } from "antd";
-import { useState } from "react";
+import { App, Button, Col, Flex, Form, Input, Row, Select } from "antd";
+import { useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 type PurchaseType = {
-  supplier?: string;
-  brand?: string;
-  stock?: string;
+  supplier: string;
+  brand: string;
+  stock: string;
 };
 
-export default function PurchaseReportPage() {
-  const [data, setData] = useState<any[]>([]);
-  const columns: DinamicColumnsType[] = [
-    {
-      column_id: "rowid",
-      title: "ID",
-      type: "link",
-      width: 100,
-      align: "center",
-      actions: [
-        {
-          onPress: (record) => {
-            console.log("press");
-          },
-        },
-      ],
-    },
-    {
-      column_id: "ref",
-      title: "Ref.",
-      type: "string",
-      width: 100,
-    },
-    {
-      column_id: "modelo",
-      title: "Modelo",
-      type: "string",
-      width: 100,
-    },
-    {
-      column_id: "label",
-      title: "Producto",
-      type: "string",
-      width: 300,
-    },
-    {
-      column_id: "barcode",
-      title: "Cod. Barras",
-      type: "string",
-      width: 100,
-    },
-    {
-      column_id: "catproveedor",
-      title: "Proveedor",
-      type: "string",
-      width: 150,
-    },
-    {
-      column_id: "marcaproducto",
-      title: "Marca",
-      type: "string",
-      width: 100,
-    },
-    {
-      column_id: "category",
-      title: "Categoría",
-      type: "string",
-      width: 150,
-    },
-    {
-      column_id: "price_ttc",
-      title: "Precio venta",
-      type: "price",
-      width: 100,
-    },
-    {
-      column_id: "pmp",
-      title: "Costo PMP (sin iva)",
-      type: "price",
-      decimals: 2,
-      width: 100,
-    },
-    {
-      column_id: "prdlinea",
-      title: "Prod. de línea",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "pp_quality",
-      title: "PP Quality",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "pp_sensey",
-      title: "PP Sensey",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "pre",
-      title: "PRE-REC-CEDIS",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "cedis",
-      title: "Almacén",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "piso",
-      title: "Piso",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "mercado",
-      title: "Mercado",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "mat",
-      title: "Matehuala",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "jir",
-      title: "JIR",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "tec",
-      title: "TEC",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "full",
-      title: "FULL",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "garantias",
-      title: "Garantias",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "sep_rmc",
-      title: "SEP.RMC",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "sep_jir",
-      title: "SEP.JIR",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "sep_mj",
-      title: "SEP.MJ",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "sep_mat",
-      title: "SEP.MAT",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "ermc",
-      title: "Exhibición RMC",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "pp_gonher",
-      title: "PP Gonher",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "pp_inovaudio",
-      title: "PP Inovaudio",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "pp_audyson",
-      title: "PP Audyson",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "amazon",
-      title: "Amazon",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "rappi",
-      title: "Rappi",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "liverpool",
-      title: "Liverpool",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "gremates",
-      title: "G. Remates",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "copper",
-      title: "Coppel",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "pp_lemus",
-      title: "PP Lemus",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "controversias",
-      title: "Controversias",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "defecto",
-      title: "Defecto",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "faltante",
-      title: "Faltante",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "shopee",
-      title: "Shopee",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "gcalidad",
-      title: "G. Calidad",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "gproveedor",
-      title: "G. Proveedor",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "grefaccion",
-      title: "G. Refacción",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "greparacion",
-      title: "G. Reparación",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "gmerma",
-      title: "G. Merma",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "status",
-      title: "Status",
-      type: "string",
-      width: 100,
-    },
-    {
-      column_id: "marketplaces",
-      title: "Marketplaces",
-      type: "int",
-      width: 120,
-    },
-    {
-      column_id: "unitmeasure",
-      title: "Uom pedido",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "uomvalue",
-      title: "Uom Valor",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "contenido",
-      title: "Contenido",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "in_transit",
-      title: "En tránsito",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "max",
-      title: "Max.",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "stock",
-      title: "Tot. Stock",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "pedir",
-      title: "Pedir",
-      type: "int",
-      width: 100,
-    },
-    {
-      column_id: "predido2",
-      title: "Pedido",
-      type: "int",
-      width: 100,
-    },
-  ];
+type ApiRow = {
+  pmp: number | null;
+  rowid: number;
+  ref: string;
+  label: string;
+  barcode: string | null;
+  tosell: number | null;
+  tobuy: number | null;
+  contenido: number | null;
+  modelo: string | null;
+  catproveedor: string | null;
+  marcaproducto: string | null;
+  high_end: number | null;
+  prdlinea: number | null; // 1 => "SI"
+  unitmeasure: string | null;
+  uomvalue: number | null; // <- lo usaremos como "pre"
+  price_ttc: number | null;
+  max: number | null; // suma desiredstock (almacenes relevantes)
+  in_transit: number | null; // picking en tránsito último mes
+};
 
-  const [form] = Form.useForm<PurchaseType>();
+type UiRow = {
+  id: number;
+  referencia: string;
+  modelo: string;
+  descripcion: string;
+  barcode: string | null;
+  proveedor: string | null;
+  marca: string | null;
+  categoria: string; // si no hay, queda vacío
+  precio: number;
+  pmp: number;
+  linea: string; // "SI" | ""
+  pre: number | null; // uomvalue
+  cedis: number;
+  piso: number;
+  mercado: number;
+  mat: number;
+  jir: number;
+  tec: number;
+  full: number;
+  max: number;
+  total: number;
+  diferencia: number;
+  pedidos: number | "Error";
+};
 
-  const onFinish = async (values: PurchaseType) => {
-    try {
-      const params = new URLSearchParams();
-      if (values.supplier) params.append("supplier", values.supplier);
-      if (values.brand) params.append("brand", values.brand);
-      if (values.stock) params.append("stock", values.stock);
+function mapToUi(r: ApiRow): UiRow {
+  const pre = r.uomvalue ?? null; // “presentación”/unidades por pack
+  const totalStock = 0; // si luego agregas stocks por almacén, súmalos aquí
+  const total = (r.in_transit ?? 0) + totalStock;
+  const max = r.max ?? 0;
+  const diferencia = max - total;
+  const pedidos = pre && pre !== 0 ? Math.round(diferencia / pre) : "Error";
 
-      const url = `/api/reports/purchaseReport?${params.toString()}`;
-      const response = await fetch(url);
-      const result = await response.json();
-
-      console.log("this result ", result);
-      
-        
-
-      setData(result.data);
-    } catch (err) {
-      console.error("Error:", err);
-    }
+  return {
+    id: r.rowid,
+    referencia: r.ref,
+    modelo: r.modelo ?? "",
+    descripcion: r.label,
+    barcode: r.barcode,
+    proveedor: r.catproveedor,
+    marca: r.marcaproducto,
+    categoria: "",
+    precio: Number(r.price_ttc ?? 0),
+    pmp: Number(r.pmp ?? 0),
+    linea: r.prdlinea === 1 ? "SI" : "",
+    pre,
+    cedis: 0,
+    piso: 0,
+    mercado: 0,
+    mat: 0,
+    jir: 0,
+    tec: 0,
+    full: 0,
+    max,
+    total,
+    diferencia,
+    pedidos,
   };
+}
+
+export default function PurchaseReportPage() {
+  const [form] = Form.useForm<PurchaseType>();
+  const [rows, setRows] = useState<UiRow[]>([]);
+
+  const { message } = App.useApp();
+
+  const fetchReport = useMutation({
+    mutationFn: async (values: {
+      supplier: string | undefined;
+      brand: string | undefined;
+      stock: string | undefined;
+    }) => {
+      const qs = new URLSearchParams({
+        prov: values.supplier ?? "",
+        marca: values.brand ?? "",
+        stock: String(values.stock ?? 0),
+      });
+      const res = await fetch(`/api/reports/purchaseReport?${qs.toString()}`, {
+        cache: "no-store",
+      });
+      console.log("res ", res);
+      if (!res.ok) throw new Error("FETCH_FAIL");
+      return (await res.json()) as ApiRow[];
+    },
+    onSuccess: (data) => {
+      if (!Array.isArray(data) || data.length === 0) {
+        message.open({
+          type: "info",
+          content: "No hay datos para mostrar",
+        });
+        setRows([]);
+        return;
+      }
+      console.log(data);
+
+      setRows(data.map(mapToUi));
+    },
+    onError: (err) => {
+      console.error("hubo un error ", err);
+      message.open({
+        type: "error",
+        content: "Hubo un error al cargar datos",
+      });
+    },
+  });
+
+  const columns: DinamicColumnsType[] = useMemo(
+    () => [
+      { title: "ID", column_id: "id", type: "int", width: 90, align: "center" },
+      {
+        title: "Referencia",
+        column_id: "referencia",
+        type: "string",
+        width: 140,
+      },
+      { title: "Modelo", column_id: "modelo", type: "string", width: 140 },
+      {
+        title: "Descripción",
+        column_id: "descripcion",
+        type: "string",
+        width: 260,
+      },
+      { title: "Barcode", column_id: "barcode", type: "string", width: 140 },
+      {
+        title: "Proveedor",
+        column_id: "proveedor",
+        type: "string",
+        width: 160,
+      },
+      { title: "Marca", column_id: "marca", type: "string", width: 140 },
+      {
+        title: "Categoría",
+        column_id: "categoria",
+        type: "string",
+        width: 140,
+      },
+      { title: "Precio", column_id: "precio", type: "price", width: 120 },
+      {
+        title: "PMP",
+        column_id: "pmp",
+        type: "price",
+        decimals: 2,
+        width: 120,
+      },
+      {
+        title: "Línea",
+        column_id: "linea",
+        type: "string",
+        width: 90,
+        align: "center",
+      },
+      {
+        title: "Pre",
+        column_id: "pre",
+        type: "float",
+        decimals: 0,
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Cedis",
+        column_id: "cedis",
+        type: "int",
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Piso",
+        column_id: "piso",
+        type: "int",
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Mercado",
+        column_id: "mercado",
+        type: "int",
+        width: 100,
+        align: "right",
+      },
+      {
+        title: "Mat",
+        column_id: "mat",
+        type: "int",
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Jir",
+        column_id: "jir",
+        type: "int",
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Tec",
+        column_id: "tec",
+        type: "int",
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Full",
+        column_id: "full",
+        type: "int",
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Max",
+        column_id: "max",
+        type: "int",
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Total",
+        column_id: "total",
+        type: "int",
+        width: 90,
+        align: "right",
+      },
+      {
+        title: "Diferencia",
+        column_id: "diferencia",
+        type: "int",
+        width: 110,
+        align: "right",
+      },
+      {
+        title: "Pedidos",
+        column_id: "pedidos",
+        type: "string",
+        width: 110,
+        align: "right",
+      },
+    ],
+    []
+  );
 
   return (
     <>
@@ -390,7 +286,7 @@ export default function PurchaseReportPage() {
             <Form
               layout="vertical"
               name="purchaseReport"
-              onFinish={onFinish}
+              onFinish={(values) => fetchReport.mutate(values)}
               form={form}
             >
               <Row gutter={[20, 20]}>
@@ -437,7 +333,7 @@ export default function PurchaseReportPage() {
           </GlassCard>
 
           <GlassCard>
-            <DinamicTable columns={columns} dataSource={data} />
+            <DinamicTable columns={columns} dataSource={rows} />
           </GlassCard>
         </Flex>
       </Container>

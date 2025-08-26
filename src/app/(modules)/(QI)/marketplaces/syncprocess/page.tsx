@@ -51,6 +51,7 @@ export default async function SyncProcessPage() {
 
   const syncErrors = await GetSync48hErrors();
   const syncSummary = await GetSyncSummary();
+
   const cicleErrors = await GetCicleError(
     syncSummary[0].timestamp,
     syncSummary[0].end_time

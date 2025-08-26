@@ -222,60 +222,60 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
       icon: getIcon("Cart"),
       onClick: () => router.push("/magento"),
     },
-    {
-      label: "Reportes",
-      key: "reports",
-      icon: getIcon("Folder"),
-      onClick: () => router.push("/reports"),
-    },
     // {
     //   label: "Reportes",
     //   key: "reports",
     //   icon: getIcon("Folder"),
-    //   children: [
-    //     {
-    //       label: 'Análisis',
-    //       key: 'analysis',
-    //       icon: getIcon('ChartSimple'),
-    //       children: [
-    //         {
-    //           label: 'Reporte para compras',
-    //           key: 'purchaseRep',
-    //           onClick: () => router.push("/reports/analysis/purchaseReport")
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       label: 'Productos',
-    //       key: 'products',
-    //       icon: getIcon('Cart'),
-    //       children: [
-    //         {
-    //           label: 'Edición de productos',
-    //           key: 'editingPr',
-    //           onClick: () => router.push("/reports/products/productsEdit")
-    //         },
-    //         {
-    //           label: 'Productos con excedente',
-    //           key: 'overstockP',
-    //           onClick: () => router.push("/reports/products/overstockProducts")
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       label: 'Pedidos proveedor',
-    //       key: 'supplierOrders',
-    //       icon: getIcon('File-Lines'),
-    //       children: [
-    //         {
-    //           label: 'Crear borrador',
-    //           key: 'draft',
-    //           onClick: () => router.push("/reports/supplierOrders/createDraft")
-    //         }
-    //       ]
-    //     }
-    //   ]
+    //   onClick: () => router.push("/reports"),
     // },
+    {
+      label: "Reportes",
+      key: "reports",
+      icon: getIcon("Folder"),
+      children: [
+        {
+          label: 'Análisis',
+          key: 'analysis',
+          icon: getIcon('ChartSimple'),
+          children: [
+            {
+              label: 'Reporte para compras',
+              key: 'purchaseRep',
+              onClick: () => router.push("/reports/analysis/purchaseReport")
+            }
+          ]
+        },
+        {
+          label: 'Productos',
+          key: 'products',
+          icon: getIcon('Cart'),
+          children: [
+            {
+              label: 'Edición de productos',
+              key: 'editingPr',
+              onClick: () => router.push("/reports/products/productsEdit")
+            },
+            {
+              label: 'Productos con excedente',
+              key: 'overstockP',
+              onClick: () => router.push("/reports/products/overstockProducts")
+            }
+          ]
+        },
+        {
+          label: 'Pedidos proveedor',
+          key: 'supplierOrders',
+          icon: getIcon('File-Lines'),
+          children: [
+            {
+              label: 'Crear borrador',
+              key: 'draft',
+              onClick: () => router.push("/reports/supplierOrders/createDraft")
+            }
+          ]
+        }
+      ]
+    },
   ];
 
   return (
