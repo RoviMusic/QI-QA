@@ -128,9 +128,14 @@ export default function PurchaseReportPage() {
         marca: values.brand ?? "",
         stock: String(values.stock ?? 0),
       });
-      const res = await fetch(`/api/reports/purchaseReport?${qs.toString()}`, {
-        cache: "no-store",
-      });
+      const res = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_INTERNAL_API_URL
+        }/reports/purchaseReport?${qs.toString()}`,
+        {
+          cache: "no-store",
+        }
+      );
       if (!res.ok) throw new Error("FETCH_FAIL");
       return (await res.json()) as ApiRow[];
     },

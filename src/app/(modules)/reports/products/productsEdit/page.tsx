@@ -10,11 +10,11 @@ import { useEffect, useMemo, useState } from "react";
 import LoadingAnimation from "@/components/core/LoadingAnimation";
 
 const ENDPOINTS = {
-  products: "/api/reports/products",
-  refProv: "/api/reports/ref_prov",
-  stockAlerte: "/api/reports/stock_alerte",
-  desiredStock: "/api/reports/desaire_stock",
-  editProduct: "/api/reports/edit_product",
+  products: `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/products`,
+  refProv: `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/ref_prov`,
+  stockAlerte: `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/stock_alerte`,
+  desiredStock: `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/desaire_stock`,
+  editProduct: `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/edit_product`,
 };
 
 const ENTRE: Record<string, number> = {

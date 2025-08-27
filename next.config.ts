@@ -2,9 +2,10 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin"; //configuracion para internationalizacion
 
 const nextConfig: NextConfig = {
+  //basePath: "/qi",
   async rewrites() {
     return [
-        // Proxy para directorios específicos
+      // Proxy para directorios específicos
       {
         source: "/erp/:path*",
         destination: "http://192.168.0.234/rovimusic/:path*",

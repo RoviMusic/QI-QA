@@ -37,8 +37,8 @@ export default function CreateDraftPage() {
 
       const endpoint =
         selectedTab === 1
-          ? "/api/reports/read_xml"
-          : "/api/reports/read_xml_adenda";
+          ? `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/read_xml`
+          : `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/read_xml_adenda`;
       console.log("endpoint: ", endpoint);
       const response = await fetch(endpoint, {
         method: "POST",

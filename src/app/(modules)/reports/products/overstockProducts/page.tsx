@@ -81,7 +81,7 @@ export default function OverstockProductPage() {
   const fetchOverStockData = async () => {
     try {
       //fetch
-      const url = `/api/reports/overstockproduct`;
+      const url = `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/overstockproduct`;
       const response = await fetch(url);
       const result = await response.json();
 
