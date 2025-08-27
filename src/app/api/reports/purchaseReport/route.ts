@@ -3,7 +3,6 @@ import { query } from "@/modules/reports/helpers/db";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  console.log("llega?");
   const { searchParams } = new URL(req.url);
   const prov = (searchParams.get("prov") ?? "").trim();
   const marca = (searchParams.get("marca") ?? "").trim();

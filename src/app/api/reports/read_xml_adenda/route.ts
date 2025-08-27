@@ -48,15 +48,22 @@ export async function POST(req: Request) {
 
     const emisor = comp?.Emisor || {};
     const provider: string = (emisor?.Nombre ?? "").toString().trim();
+    console.log("provider: ", provider);
     const rfc: string = (emisor?.Rfc ?? "").toString().trim();
+    console.log("rfc: ", rfc);
+
     if (!rfc)
       return NextResponse.json(
         "Error: No se encontró RFC del Emisor en el XML"
       );
 
     const invoice_number: string = (comp?.Folio ?? "").toString().trim();
+    console.log("Folio: ", invoice_number);
     const invoice_date: string = (comp?.Fecha ?? "").toString().trim();
+    console.log("Fecha: ", invoice_date);
     const total: number = Number(comp?.Total ?? 0);
+    console.log("total: ", total);
+
 
     // Esta versión REQUIERE Addenda
     const addenda = comp?.Addenda;
@@ -79,8 +86,8 @@ export async function POST(req: Request) {
     const detalles: Detalle[] = Array.isArray(detallesRaw)
       ? detallesRaw
       : detallesRaw
-      ? [detallesRaw]
-      : [];
+        ? [detallesRaw]
+        : [];
     let i = 0;
     let exist = 0;
 

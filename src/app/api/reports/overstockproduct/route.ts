@@ -29,5 +29,6 @@ export async function GET() {
             LIMIT 1), 0) < ps.reel
   `;
   const rows = await query(sql);
+
   return NextResponse.json(rows);
 }

@@ -3,6 +3,8 @@ import { queryOne, query } from "./db";
 // Mantengo constantes “hard-coded” como en tu Python (fk_user_author=67)
 const FK_USER_AUTHOR = 67;
 
+// Funcion para verificar que si existe un RFC de proveedor, se busca en la tabla llx_societe
+// Se utiliza la variable siren (rfc en python) para revisar el RFC
 export async function checkRFCExist(siren: string): Promise<{ total: number }> {
   // SELECT COUNT(*) FROM llx_societe WHERE siren=<siren> AND fournisseur=1
   const row = await queryOne<{ total: number }>(
@@ -12,6 +14,8 @@ export async function checkRFCExist(siren: string): Promise<{ total: number }> {
   return { total: row?.total ?? 0 };
 }
 
+// Funcion para verificar si existe un registro con ref y rfc datos, se busca en la tabla
+// llx_product_fournisseur_price
 export async function checkExist(
   ref: string,
   rfc: string
@@ -35,6 +39,7 @@ export async function checkExist(
   return { total: row?.total ?? 0 };
 }
 
+// Funcion para verificar que ya exista un log para esta factura
 export async function checkLog(
   provider: string,
   invoice_number: string
@@ -48,6 +53,7 @@ export async function checkLog(
   return { total: row?.total ?? 0 };
 }
 
+// Funcion para registrar un log en el proceso de la factura XML
 export async function createLog(
   provider: string,
   invoice_number: string,
@@ -63,6 +69,7 @@ export async function createLog(
   return true;
 }
 
+// Funcion para crear un borrador de orden de compra
 export async function createDraft(
   ref: string,
   invoice: string,
@@ -84,9 +91,10 @@ export async function createDraft(
   const tva = total - total_ht;
 
   // Insertar orden
+  //
   await query(
     `INSERT INTO llx_commande_fournisseur
-       (entity, ref_supplier, fk_soc, tms, date_creation, fk_user_author, tva, total_ht, total_ttc, model_pdf, fk_cond_reglement, fk_mode_reglement)
+       (entity, ref_supplier, fk_soc, tms, date_creation, fk_user_author, total_tva, total_ht, total_ttc, model_pdf, fk_cond_reglement, fk_mode_reglement)
      VALUES (1, ?, ?, NOW(), NOW(), ?, ?, ?, ?, 'muscadet', 2, 67)`,
     [invoice, soc.fk_soc, FK_USER_AUTHOR, tva, total_ht, total]
   );
@@ -108,6 +116,7 @@ export async function createDraft(
   return true;
 }
 
+// Funcion para crear detalles de borrador
 export async function createDraftDet(
   ref: string,
   qtyIn: number,
@@ -132,7 +141,7 @@ export async function createDraftDet(
   );
   if (!prod?.fk_product) return false;
 
-  // Última orden del autor
+  // Última orden del autor (Obtiene ultimo ID de orden)
   const last = await queryOne<{ rowid: number }>(
     `SELECT rowid FROM llx_commande_fournisseur
      WHERE fk_user_author=?
@@ -141,7 +150,7 @@ export async function createDraftDet(
   );
   if (!last?.rowid) return false;
 
-  // Contenido por extrafields
+  // Contenido por extrafields (Verifica el contenido)
   const extr = await queryOne<{ contenido: number | null }>(
     `SELECT contenido FROM llx_product_extrafields WHERE fk_object=? LIMIT 1`,
     [prod.fk_product]
@@ -166,6 +175,7 @@ export async function createDraftDet(
   const totalconiva = subtotal * 1.16;
   const iva = totalconiva - subtotal;
 
+  // Insertardetalles
   await query(
     `INSERT INTO llx_commande_fournisseurdet
        (fk_commande, fk_product, ref, tva_tx, qty, remise_percent, subprice, total_ht, total_tva, total_ttc)

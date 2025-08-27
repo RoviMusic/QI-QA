@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 
+// Claves para conectase a DEV
 export const dolibarrPool = mysql.createPool({
   host: "187.189.243.250",
   port: 33306,

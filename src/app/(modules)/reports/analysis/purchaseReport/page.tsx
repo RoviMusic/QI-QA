@@ -7,6 +7,7 @@ import { DinamicColumnsType } from "@/shared/types/tableTypes";
 import { App, Button, Col, Flex, Form, Input, Row, Select } from "antd";
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import * as XLSX from "xlsx";
 
 type PurchaseType = {
   supplier: string;
@@ -116,7 +117,6 @@ export default function PurchaseReportPage() {
       const res = await fetch(`/api/reports/purchaseReport?${qs.toString()}`, {
         cache: "no-store",
       });
-      console.log("res ", res);
       if (!res.ok) throw new Error("FETCH_FAIL");
       return (await res.json()) as ApiRow[];
     },
@@ -153,12 +153,17 @@ export default function PurchaseReportPage() {
       },
       { title: "Modelo", column_id: "modelo", type: "string", width: 140 },
       {
-        title: "Descripción",
+        title: "Producto",
         column_id: "descripcion",
         type: "string",
         width: 260,
       },
-      { title: "Barcode", column_id: "barcode", type: "string", width: 140 },
+      {
+        title: "Cod. Barras",
+        column_id: "barcode",
+        type: "string",
+        width: 140,
+      },
       {
         title: "Proveedor",
         column_id: "proveedor",
@@ -172,16 +177,16 @@ export default function PurchaseReportPage() {
         type: "string",
         width: 140,
       },
-      { title: "Precio", column_id: "precio", type: "price", width: 120 },
+      { title: "Precio Venta", column_id: "precio", type: "price", width: 120 },
       {
-        title: "PMP",
+        title: "Costo PMP (Sin IVA)",
         column_id: "pmp",
         type: "price",
         decimals: 2,
         width: 120,
       },
       {
-        title: "Línea",
+        title: "Prod. de Línea",
         column_id: "linea",
         type: "string",
         width: 90,
@@ -275,6 +280,49 @@ export default function PurchaseReportPage() {
     ],
     []
   );
+
+  // Descargar el archivo xlsx
+  const downloadProcessedFile = () => {
+    if (!rows) return;
+
+    const cleanRows = rows.map((item) => ({
+      id: item.id,
+      pedido: item.pedidos,
+      ref: item.referencia,
+      modelo: item.modelo,
+      producto: item.descripcion,
+      barcode: item.barcode,
+      proveddor: item.proveedor,
+      marca: item.marca,
+      categoria: item.categoria,
+      precio_venta: item.precio,
+      costo_pmp: item.pmp,
+      prod_linea: item.linea,
+      //pp_qu: item.
+    }));
+
+    // xlsx build
+    const worksheet = XLSX.utils.json_to_sheet(cleanRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte para compras");
+
+    //headers
+    // XLSX.utils.sheet_add_aoa(
+    //   worksheet,
+    //   [["SKU", "Etiqueta", "Alerta", "Deseado", "Stock", "Almacen", "Precio"]],
+    //   { origin: "A1" }
+    // );
+
+    /* calculate column width */
+    const max_width = cleanRows.reduce(
+      (w, r) => Math.max(w, r.id.toString().length),
+      10
+    );
+    worksheet["!cols"] = [{ wch: max_width }];
+
+    const fileName = `reporte_compras.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+  };
 
   return (
     <>

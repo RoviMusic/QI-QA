@@ -42,22 +42,27 @@ export async function POST(req: Request) {
     });
     const xml: any = parser.parse(buf.toString("utf8"));
 
-    // Estructura esperada CFDI 3.3+: root = Comprobante
+    // Estructura esperada CFDI 4+: root = Comprobante
     const comp = xml?.Comprobante;
     if (!comp)
       return NextResponse.json("Error: XML inválido o sin nodo Comprobante");
 
     const emisor = comp?.Emisor || {};
     const provider: string = (emisor?.Nombre ?? "").toString().trim();
+    console.log("provider: ", provider);
     const rfc: string = (emisor?.Rfc ?? "").toString().trim();
+    console.log("rfc: ", rfc);
     if (!rfc)
       return NextResponse.json(
         "Error: No se encontró RFC del Emisor en el XML"
       );
 
     const invoice_number: string = (comp?.Folio ?? "").toString().trim();
+    console.log("Folio: ", invoice_number);
     const invoice_date: string = (comp?.Fecha ?? "").toString().trim();
+    console.log("Fecha: ", invoice_date);
     const total: number = Number(comp?.Total ?? 0);
+    console.log("total: ", total);
 
     // Rechazar si tiene Addenda
     if (comp?.Addenda) {
