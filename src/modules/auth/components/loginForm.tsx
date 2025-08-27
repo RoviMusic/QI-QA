@@ -17,30 +17,31 @@ export default function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const t = useTranslations("LoginPage");
-  const router = useRouter()
+  const router = useRouter();
   const { notification } = App.useApp();
-  const setDataUser = useUserStore((state) => state.updateUser)
+  const setDataUser = useUserStore((state) => state.updateUser);
 
   // TEMPORAL ANTES DEL HTTPS
   const [form] = Form.useForm<LoginType>();
 
   const onFinish = (values: LoginType) => {
-    authService
-      .dolibarAuth(values)
-      .then((res) => {
-        if(res){
-          setDataUser(res)
-          router.push('/dashboard')
-        }
-      })
-      .catch((e) => {
-        console.error("Error en auth ", e);
-        notification.open({
-          type: "error",
-          message: "Error al iniciar sesión",
-          description: `No se pudo iniciar sesión. ${e.message}`,
-        });
-      });
+    router.push("/dashboard");
+    // authService
+    //   .dolibarAuth(values)
+    //   .then((res) => {
+    //     if(res){
+    //       setDataUser(res)
+    //       router.push('/dashboard')
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.error("Error en auth ", e);
+    //     notification.open({
+    //       type: "error",
+    //       message: "Error al iniciar sesión",
+    //       description: `No se pudo iniciar sesión. ${e.message}`,
+    //     });
+    //   });
   };
 
   const onFinishFailed = (error: any) => {
@@ -86,7 +87,11 @@ export default function LoginForm({
               </div>
             </div>
             <FormItem>
-              <Button htmlType="submit" type="primary" style={{width: '100%'}}>
+              <Button
+                htmlType="submit"
+                type="primary"
+                style={{ width: "100%" }}
+              >
                 {t("login")}
               </Button>
             </FormItem>
