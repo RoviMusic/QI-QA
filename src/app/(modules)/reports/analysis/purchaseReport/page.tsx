@@ -8,6 +8,7 @@ import { App, Button, Col, Flex, Form, Input, Row, Select } from "antd";
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import * as XLSX from "xlsx";
+import { MainButton } from "@/components/core/Buttons";
 
 type PurchaseType = {
   supplier: string;
@@ -60,6 +61,9 @@ type UiRow = {
   total: number;
   diferencia: number;
   pedidos: number | "Error";
+  unitmeasure: string | null;
+  uomvalue: number | null;
+  contenido: number | null;
 };
 
 function mapToUi(r: ApiRow): UiRow {
@@ -94,6 +98,16 @@ function mapToUi(r: ApiRow): UiRow {
     total,
     diferencia,
     pedidos,
+    unitmeasure:
+      r.unitmeasure == "1"
+        ? "Pieza"
+        : r.unitmeasure == "2"
+        ? "Paquete"
+        : r.unitmeasure == "3"
+        ? "Juego"
+        : "",
+    uomvalue: r.uomvalue,
+    contenido: r.contenido,
   };
 }
 
@@ -144,7 +158,13 @@ export default function PurchaseReportPage() {
 
   const columns: DinamicColumnsType[] = useMemo(
     () => [
-      { title: "ID", column_id: "id", type: "int", width: 90, align: "center" },
+      {
+        title: "ID",
+        column_id: "id",
+        type: "string",
+        width: 90,
+        align: "center",
+      },
       {
         title: "Referencia",
         column_id: "referencia",
@@ -250,6 +270,25 @@ export default function PurchaseReportPage() {
         align: "right",
       },
       {
+        title: "Uom Pedido",
+        column_id: "unitmeasure",
+        type: "string",
+        width: 100,
+      },
+      {
+        title: "Uom Valor",
+        column_id: "uomvalue",
+        type: "string",
+        width: 90,
+        align: "center",
+      },
+      {
+        title: "Contenido",
+        column_id: "contenido",
+        type: "int",
+        width: 90,
+      },
+      {
         title: "Max",
         column_id: "max",
         type: "int",
@@ -298,7 +337,20 @@ export default function PurchaseReportPage() {
       precio_venta: item.precio,
       costo_pmp: item.pmp,
       prod_linea: item.linea,
-      //pp_qu: item.
+      pre: item.pre,
+      cedis: item.cedis,
+      piso: item.piso,
+      mercado: item.mercado,
+      mat: item.mat,
+      jir: item.jir,
+      tec: item.tec,
+      full: item.full,
+      uomPedido: item.unitmeasure,
+      uomValor: item.uomvalue,
+      contenido: item.contenido,
+      max: item.max,
+      total: item.total,
+      diff: item.diferencia,
     }));
 
     // xlsx build
@@ -307,11 +359,42 @@ export default function PurchaseReportPage() {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte para compras");
 
     //headers
-    // XLSX.utils.sheet_add_aoa(
-    //   worksheet,
-    //   [["SKU", "Etiqueta", "Alerta", "Deseado", "Stock", "Almacen", "Precio"]],
-    //   { origin: "A1" }
-    // );
+    XLSX.utils.sheet_add_aoa(
+      worksheet,
+      [
+        [
+          "ID",
+          "Pedido",
+          "Referencia",
+          "Modelo",
+          "Producto",
+          "Código de barras",
+          "Proveedor",
+          "Marca",
+          "Categoría",
+          "Precio Venta",
+          "Costo PMP",
+          "Producto de línea",
+          "Pre",
+          "Cedis",
+          "Piso",
+          "Mercado Juárez",
+          "Matehuala",
+          "JIR",
+          "TEC",
+          "Full",
+          "Uom Pedido",
+          "Uom Valor",
+          "Contenido",
+          "Max",
+          "Total",
+          "Diferencia",
+        ],
+      ],
+      {
+        origin: "A1",
+      }
+    );
 
     /* calculate column width */
     const max_width = cleanRows.reduce(
@@ -381,6 +464,13 @@ export default function PurchaseReportPage() {
           </GlassCard>
 
           <GlassCard>
+            {rows.length > 0 && (
+              <div>
+                <MainButton onPress={downloadProcessedFile}>
+                  Descargar excel
+                </MainButton>
+              </div>
+            )}
             <DinamicTable columns={columns} dataSource={rows} />
           </GlassCard>
         </Flex>
