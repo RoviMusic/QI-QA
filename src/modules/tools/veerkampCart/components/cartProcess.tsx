@@ -229,31 +229,31 @@ export default function CartProcess({ token }: { token: string | undefined }) {
     const dataSend = { cuenta_Id: "201905", listado: dataCart };
     console.log("data to send", dataSend);
 
-    // const init = new Headers();
-    // init.append("Authorization", token!);
-    // init.append("Content-Type", "application/json");
+    const init = new Headers();
+    init.append("Authorization", token!);
+    init.append("Content-Type", "application/json");
 
-    // const r = await fetch("https://cadi.veerkamp.biz:8443/updCarrito", {
-    //   method: "POST",
-    //   headers: init,
-    //   body: JSON.stringify(dataSend),
-    // });
+    const r = await fetch("https://cadi.veerkamp.biz:8443/updCarrito", {
+      method: "POST",
+      headers: init,
+      body: JSON.stringify(dataSend),
+    });
 
-    // const responseJ = await r.json();
-    // console.log(responseJ);
+    const responseJ = await r.json();
+    console.log(responseJ);
 
-    // if (responseJ.resultado != "ok") {
-    //   notification.open({
-    //     type: "error",
-    //     message: "Hubo un error",
-    //     description: "Hubo un error al generar el carrito",
-    //   });
-    // } else {
-    //   notification.open({
-    //     type: "success",
-    //     message: "Se ha enviado correctamente el carrito",
-    //   });
-    // }
+    if (responseJ.resultado != "ok") {
+      notification.open({
+        type: "error",
+        message: "Hubo un error",
+        description: "Hubo un error al generar el carrito",
+      });
+    } else {
+      notification.open({
+        type: "success",
+        message: "Se ha enviado correctamente el carrito",
+      });
+    }
   };
 
   const reset = () => {
@@ -307,11 +307,9 @@ export default function CartProcess({ token }: { token: string | undefined }) {
       const row = data[i];
       try {
         const stock = await get_stock(row.sku);
-        ("use server");
-        const getExtraData = await GetExtraData(row.sku);
-
-        const jsonData = JSON.parse(JSON.stringify(getExtraData));
-
+        const url = `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/shared/getModel?sku=${row.sku}`;
+        const response = await fetch(url);
+        const jsonData = await response.json();
         if (stock != null) {
           const actual = Math.min(row.cant, stock);
 
