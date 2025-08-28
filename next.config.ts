@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin"; //configuracion para internationalizacion
 
 const nextConfig: NextConfig = {
-  //basePath: "/qi",
+  basePath: "/qi",
   async rewrites() {
     return [
       // Proxy para directorios específicos
