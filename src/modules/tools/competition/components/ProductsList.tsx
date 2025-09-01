@@ -1,9 +1,10 @@
-'use client'
+"use client";
 import { GlassCard } from "@/components/core/GlassCard";
 import { DinamicTable } from "@/components/core/Tables";
 import { DinamicColumnsType } from "@/shared/types/tableTypes";
 import { Col, Row, Tag } from "antd";
 import { useRouter } from "next/navigation";
+import MainTable from "./MainTable";
 
 interface ProductsProps {
   list: any;
@@ -83,13 +84,15 @@ export default function ProductsList({ list }: ProductsProps) {
   return (
     <>
       <Row justify="center">
-        <Col xxl={24}>
+        <Col xxl={24} xl={24}>
           <GlassCard>
-            <DinamicTable
+            {/* <DinamicTable
               columns={columnsCompetition}
               dataSource={[]}
               hasPagination={false}
-            />
+            /> */}
+
+            <MainTable />
           </GlassCard>
         </Col>
       </Row>

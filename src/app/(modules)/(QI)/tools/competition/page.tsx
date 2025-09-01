@@ -1,11 +1,17 @@
+"use server";
 import { Flex } from "antd";
 import Container from "@/components/layout/Container";
 import ProductsList from "@/modules/tools/competition/components/ProductsList";
-import { GetProductsList } from "@/modules/tools/competition/services/competitionService";
+import {
+  GetMainData,
+  GetProductsList,
+} from "@/modules/tools/competition/services/competitionService";
 import { MainTitle } from "@/components/core/Titulo";
 
 export default async function CompetenciaPage() {
   const list = await GetProductsList();
+
+  //const data = await GetMainData();
 
   return (
     <>

@@ -1,13 +1,12 @@
 "use client";
 import { Progress, Spin, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
-//import { competenciaService } from "../services/competitionService";
 import type { TableColumnsType } from "antd";
 import { MainTableType } from "../types/competitionType";
 import ml from "../utils/mercadolibre";
 import { formattedPriceNormalized } from "@/lib/formattedPrice";
 import DetailTable from "./DetailTable";
-import { authMLToken } from "../services/competitionService";
+import { authMLToken, GetProductsList } from "../services/competitionService";
 
 export default function MainTable() {
   const [loading, setLoading] = useState(false);
@@ -20,110 +19,112 @@ export default function MainTable() {
     //getMainDataWithStreaming();
   }, []);
 
-    async function getMainData() {
-      setLoading(true);
-      try {
-        var hash: any = {};
-        var stored;
-        var products: any = { list: [] };
-        const auth_data = await authMLToken();
-        ml.init((url: any, init: any) =>
-          url.searchParams.set("access_token", auth_data.access_token)
-        );
-        const data = await competenciaService.couchData();
+  async function getMainData() {
+    setLoading(true);
+    try {
+      var hash: any = {};
+      var stored;
+      var products: any = { list: [] };
+      const auth_data = await authMLToken();
+      ml.init((url: any, init: any) =>
+        url.searchParams.set("access_token", auth_data.access_token)
+      );
+      const data = await GetProductsList();
 
-        stored = Object.fromEntries(data.rows.map((e: any) => [e.id, e.doc]));
+      stored = Object.fromEntries(data.rows.map((e: any) => [e.id, e.doc]));
 
-        const params = { status: "active,paused", orders: "sold_quantity_desc" };
+      const params = { status: "active,paused", orders: "sold_quantity_desc" };
 
-        const mlAny = ml as any;
-        console.warn("Empieza carga de productos...");
-        for await (const e of mlAny.publications.user_search(params)) {
-          e.group_nick = mlAny.publications.group_names[e.group];
-          e.competition_price = 0;
-          console.log("producto? ", e);
-          if (!(e.sku in hash)) {
-            const obj = {
-              id: e.sku,
-              brand: e.brand,
-              title: e.title,
-              sold: e.sold,
-              status: e.status,
-              publications: [e],
-              check: "",
-              competition: [{}]
-            };
-            const info = stored[obj.id];
-            obj.check = info?.check ? "ok" : "bad";
-            hash[obj.id] = obj;
-            const infoComp = await getPriceCompetition(e.title)
-            obj.competition = infoComp ?? [{}];
-            products.list.push(obj);
-          } else {
-            const obj = hash[e.sku];
-            obj.sold += e.sold;
-            obj.publications.push(e);
-          }
+      const mlAny = ml as any;
+      console.warn("Empieza carga de productos...");
+      for await (const e of mlAny.publications.user_search(params)) {
+        e.group_nick = mlAny.publications.group_names[e.group];
+        e.competition_price = 0;
+        console.log("producto? ", e);
+        if (!(e.sku in hash)) {
+          const obj = {
+            id: e.sku,
+            brand: e.brand,
+            title: e.title,
+            sold: e.sold,
+            status: e.status,
+            publications: [e],
+            check: "",
+            competition: [{}],
+          };
+          const info = stored[obj.id];
+          obj.check = info?.check ? "ok" : "bad";
+          hash[obj.id] = obj;
+          const infoComp = await getPriceCompetition(e.title);
+          obj.competition = infoComp ?? [{}];
+          products.list.push(obj);
+        } else {
+          const obj = hash[e.sku];
+          obj.sold += e.sold;
+          obj.publications.push(e);
         }
-        setDataProduct(products.list);
-        console.warn("Termina carga de productos...");
-        console.log("datos cargados ", products.list);
-      } catch (error) {
-        console.error("Error ", error);
-        setDataProduct([]);
-      } finally {
-        setLoading(false);
       }
+      setDataProduct(products.list);
+      console.warn("Termina carga de productos...");
+      console.log("datos cargados ", products.list);
+    } catch (error) {
+      console.error("Error ", error);
+      setDataProduct([]);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    async function getPriceCompetition(element: any) {
-      const map = (e: any) => {
-        return {
-          id: e.id,
-          title: e.title,
-          price: e.price,
-          link: e.link,
-          picture: e.picture,
-        };
+  async function getPriceCompetition(element: any) {
+    const map = (e: any) => {
+      return {
+        id: e.id,
+        title: e.title,
+        price: e.price,
+        link: e.link,
+        picture: e.picture,
       };
+    };
 
-      const params = {
-        query: element,
-        pages: "1",
-        delay: "1",
-      };
-      const queryParams = new URLSearchParams(params).toString();
+    const params = {
+      query: element,
+      pages: "1",
+      delay: "1",
+    };
+    const queryParams = new URLSearchParams(params).toString();
 
-      try {
-        // Llamada a la API (ruta relativa al mismo origen)
-        const resp = await fetch(`http://187.189.243.250:3500/searchFilter?${queryParams}`, {
+    try {
+      // Llamada a la API (ruta relativa al mismo origen)
+      const resp = await fetch(
+        `http://187.189.243.250:3500/searchFilter?${queryParams}`,
+        {
           method: "GET",
           headers: { "Content-Type": "application/json" },
-        });
-        console.log('llamada competition ', resp);
-        if (!resp.ok) {
-          console.error("API error:", resp.status, resp.statusText);
-          return [];
         }
-
-        // Extraemos el JSON (un array de productos)
-        const data = await resp.json();
-        console.log(data);
-
-        // Si no hay resultados, nos salimos
-        if (!Array.isArray(data) || data.length === 0) {
-          console.log("No hay productos para mostrar");
-          return [];
-        }
-
-        let mapeo = data.map(map);
-        console.log('mapeo ', mapeo)
-        return mapeo
-
-      } catch (error) {
-        console.error("idk man ", error);
+      );
+      console.log("llamada competition ", resp);
+      if (!resp.ok) {
+        console.error("API error:", resp.status, resp.statusText);
+        return [];
       }
+
+      // Extraemos el JSON (un array de productos)
+      const data = await resp.json();
+      console.log(data);
+
+      // Si no hay resultados, nos salimos
+      if (!Array.isArray(data) || data.length === 0) {
+        console.log("No hay productos para mostrar");
+        return [];
+      }
+
+      let mapeo = data.map(map);
+      console.log("mapeo ", mapeo);
+      return mapeo;
+    } catch (error) {
+      console.error("idk man ", error);
     }
+  }
 
   async function getMainDataWithStreaming() {
     setLoading(true);
@@ -133,12 +134,12 @@ export default function MainTable() {
       const hash: any = {};
       const products: any = { list: [] };
       //consulta de token
-      const auth_data = await competenciaService.authMLToken();
+      const auth_data = await authMLToken();
       ml.init((url: any, init: any) =>
         url.searchParams.set("access_token", auth_data.access_token)
       );
 
-      const data = await competenciaService.couchData();
+      const data = await GetProductsList();
       setTotalRegistros(data.rows.length);
 
       const stored = Object.fromEntries(
@@ -376,13 +377,13 @@ export default function MainTable() {
       dataIndex: "price",
       key: "price",
       align: "center",
-      render: (price) => <span>{formattedPriceNormalized(price)}</span>
+      render: (price) => <span>{formattedPriceNormalized(price)}</span>,
     },
     {
       title: "Ventas",
       dataIndex: "sold",
       key: "sold",
-      align: "center"
+      align: "center",
     },
     {
       title: "Estatus",
@@ -390,14 +391,12 @@ export default function MainTable() {
       key: "status",
       align: "center",
       render: (status) => {
-        return(
-          <Tag color={status === 'active' ? "green" : "red"}>{status}</Tag>
-        )
-      }
+        return (
+          <Tag color={status === "active" ? "green" : "red"}>{status}</Tag>
+        );
+      },
     },
   ];
-
-
 
   return (
     <>
@@ -405,13 +404,18 @@ export default function MainTable() {
         percent={percent}
         format={(percent) => `${percent?.toFixed(0)} %`}
         strokeColor={"#FFC709"}
-        success={{strokeColor: "green"}}
+        success={{ strokeColor: "green" }}
       />
       <Spin spinning={loading}>
-        <Table columns={columns} bordered dataSource={dataProduct} expandable={{
-          expandedRowRender: (record) => <DetailTable />,
-          columnWidth: 50
-        }}/>
+        <Table
+          columns={columns}
+          bordered
+          dataSource={dataProduct}
+          expandable={{
+            expandedRowRender: (record) => <DetailTable />,
+            columnWidth: 50,
+          }}
+        />
       </Spin>
     </>
   );

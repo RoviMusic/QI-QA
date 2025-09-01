@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { competenciaService } from "../services/competitionService";
+import { authMLToken } from "../services/competitionService";
 
-
-export function useMLToken(){
-    return useQuery({
-        queryKey: ['mlToken'],
-        queryFn: () => competenciaService.authMLToken()
-    })
+export function useMLToken() {
+  return useQuery({
+    queryKey: ["mlToken"],
+    queryFn: () => authMLToken(),
+  });
 }
