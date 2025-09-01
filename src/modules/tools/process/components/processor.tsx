@@ -27,6 +27,7 @@ import type { GetProp } from "antd";
 import dayjs from "dayjs";
 import JsonView from "@uiw/react-json-view";
 import tableStyles from "@/styles/Tables.module.css";
+import BadgeStatus from "./badgeStatus";
 const { Link } = Typography;
 
 interface ProcessorProps {
@@ -316,10 +317,7 @@ export default function Processor({ data }: ProcessorProps) {
         <Flex gap={10} align="center" justify="space-between">
           <Space>
             <MainTitle>Procesador de órdenes</MainTitle>
-            <Badge
-              status="success"
-              text="Procesador en funcionamiento (fake news)"
-            />
+            <BadgeStatus />
           </Space>
         </Flex>
         <GlassCard>

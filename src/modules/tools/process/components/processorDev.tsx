@@ -7,17 +7,26 @@ import { useMemo, useState } from "react";
 import { DataProcessorType } from "../types/processorTypes";
 import type { GetProp } from "antd";
 import LoadingAnimation from "@/components/core/LoadingAnimation";
-import { IProcessor, IProcessorErrors, IProcessorPending } from "../types/processorMongoInterfaces";
+import {
+  IProcessor,
+  IProcessorErrors,
+  IProcessorPending,
+} from "../types/processorMongoInterfaces";
+import BadgeStatus from "./badgeStatus";
 
 export type markets = "Mercado Libre" | "Amazon" | "Walmart" | "Coppel";
 
 interface ProcessorDevProps {
   processedData: IProcessor[];
   errorsData: IProcessorErrors[];
-  pendingData: IProcessorPending[]
+  pendingData: IProcessorPending[];
 }
 
-export default function ProcessorDev({ processedData, errorsData, pendingData }: ProcessorDevProps) {
+export default function ProcessorDev({
+  processedData,
+  errorsData,
+  pendingData,
+}: ProcessorDevProps) {
   const [dataProcessed, setDataProcessed] = useState<any[]>(processedData);
   const [dataPending, setDataPending] = useState<any[]>(pendingData);
   const [dataErrors, setDataErrors] = useState<any[]>(errorsData);
@@ -98,7 +107,7 @@ export default function ProcessorDev({ processedData, errorsData, pendingData }:
         <Flex gap={20} vertical>
           <Flex gap={10} align="center" wrap>
             <MainTitle>Procesador de órdenes</MainTitle>
-            <Badge status="success" text="Procesador en funcionamiento (fake news)" />
+            <BadgeStatus />
           </Flex>
 
           <GlassCard>
