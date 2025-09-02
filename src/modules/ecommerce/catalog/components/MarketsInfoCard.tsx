@@ -21,7 +21,7 @@ import { faMinus, faPlus, faStar } from "@fortawesome/free-solid-svg-icons";
 import { useTranslations } from "next-intl";
 
 export default function MarketInfoCard() {
-    const t = useTranslations("Ecommerce.catalog.product.marketInfo");
+  const t = useTranslations("Ecommerce.catalog.product.marketInfo");
   const [checked, setChecked] = useState(false);
   const onChange: CheckboxProps["onChange"] = (e) => {
     console.log("checked = ", e.target.checked);
@@ -104,35 +104,51 @@ export default function MarketInfoCard() {
                     <Segmented
                       options={[
                         {
-                          label: <Tooltip title="50x20x120">{t("guitar")}</Tooltip>,
+                          label: (
+                            <Tooltip title="50x20x120">{t("guitar")}</Tooltip>
+                          ),
                           value: "guitar",
                         },
                         {
-                          label: <Tooltip title="40x20x135">{t("bass")}</Tooltip>,
+                          label: (
+                            <Tooltip title="40x20x135">{t("bass")}</Tooltip>
+                          ),
                           value: "bass",
                         },
                         {
-                          label: <Tooltip title="37x20x92">{t("violin")}</Tooltip>,
+                          label: (
+                            <Tooltip title="37x20x92">{t("violin")}</Tooltip>
+                          ),
                           value: "violin",
                         },
                         {
-                          label: <Tooltip title="18x14x48">{t("melodica")}</Tooltip>,
+                          label: (
+                            <Tooltip title="18x14x48">{t("melodica")}</Tooltip>
+                          ),
                           value: "melodica",
                         },
                         {
-                          label: <Tooltip title="24x14x24">{t("littleBox")}</Tooltip>,
+                          label: (
+                            <Tooltip title="24x14x24">{t("littleBox")}</Tooltip>
+                          ),
                           value: "littleBox",
                         },
                         {
-                          label: <Tooltip title="10x10x10">{t("envelope")}</Tooltip>,
+                          label: (
+                            <Tooltip title="10x10x10">{t("envelope")}</Tooltip>
+                          ),
                           value: "envelope",
                         },
                         {
-                          label: <Tooltip title="45x7x45">{t("patch")}</Tooltip>,
+                          label: (
+                            <Tooltip title="45x7x45">{t("patch")}</Tooltip>
+                          ),
                           value: "patch",
                         },
                         {
-                          label: <Tooltip title={t("other")}>{t("other")}</Tooltip>,
+                          label: (
+                            <Tooltip title={t("other")}>{t("other")}</Tooltip>
+                          ),
                           value: "other",
                         },
                       ]}
@@ -184,7 +200,7 @@ export default function MarketInfoCard() {
                 {(fields, { add, remove }) => (
                   <>
                     {fields.map(({ key, name, ...restField }) => (
-                      <Row gutter={15}>
+                      <Row gutter={15} key={key}>
                         <Col xxl={4} xl={4} lg={4} md={6} sm={24} xs={24}>
                           <Form.Item
                             {...restField}
@@ -263,7 +279,7 @@ export default function MarketInfoCard() {
                 {(fields, { add, remove }) => (
                   <>
                     {fields.map(({ key, name, ...restField }) => (
-                      <Row gutter={15}>
+                      <Row gutter={15} key={key}>
                         <Col xxl={4} xl={8} lg={8} md={10} sm={20} xs={20}>
                           <Form.Item
                             {...restField}

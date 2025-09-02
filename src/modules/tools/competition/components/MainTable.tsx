@@ -22,16 +22,18 @@ export default function MainTable() {
   async function getMainData() {
     setLoading(true);
     try {
-      var hash: any = {};
-      var stored;
-      var products: any = { list: [] };
+      const hash: any = {};
+      //const stored;
+      const products: any = { list: [] };
       const auth_data = await authMLToken();
       ml.init((url: any, init: any) =>
         url.searchParams.set("access_token", auth_data.access_token)
       );
       const data = await GetProductsList();
 
-      stored = Object.fromEntries(data.rows.map((e: any) => [e.id, e.doc]));
+      const stored = Object.fromEntries(
+        data.rows.map((e: any) => [e.id, e.doc])
+      );
 
       const params = { status: "active,paused", orders: "sold_quantity_desc" };
 
@@ -118,7 +120,7 @@ export default function MainTable() {
         return [];
       }
 
-      let mapeo = data.map(map);
+      const mapeo = data.map(map);
       console.log("mapeo ", mapeo);
       return mapeo;
     } catch (error) {
@@ -197,7 +199,7 @@ export default function MainTable() {
   }
 
   function getPercent(cargado: number, total: number) {
-    let percent = (cargado * 100) / total;
+    const percent = (cargado * 100) / total;
     console.log("percent ", total);
     setPercent(percent);
   }

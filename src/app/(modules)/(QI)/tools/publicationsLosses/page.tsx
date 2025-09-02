@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { GlassCard } from "@/components/core/GlassCard";
 import LoadingAnimation from "@/components/core/LoadingAnimation";
 import { DinamicTable } from "@/components/core/Tables";
@@ -32,7 +32,7 @@ export default function PublicationLossesPage() {
           description: `No se pudo obtener la información: ${error.message}`,
         });
       });
-  }, []);
+  });
   return (
     <>
       <LoadingAnimation isActive={loading}>

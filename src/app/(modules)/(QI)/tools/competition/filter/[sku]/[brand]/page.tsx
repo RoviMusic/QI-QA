@@ -66,7 +66,7 @@ export default function FilterPage({
 
   useEffect(() => {
     getFilters();
-  }, []);
+  });
 
   // **********************************
   const expandTildes = (expr: string): string => {
@@ -596,6 +596,7 @@ export default function FilterPage({
                 <Image
                   src={`http://mlm-s2-p.mlstatic.com/${currentItem.picture}-O.jpg`}
                   fallback="/Logo.jpg"
+                  alt="Product Image"
                 />
               </GlassCard>
             </Col>

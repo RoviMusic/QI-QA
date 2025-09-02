@@ -25,23 +25,22 @@ export default function LoginForm({
   const [form] = Form.useForm<LoginType>();
 
   const onFinish = (values: LoginType) => {
-    router.push("/dashboard");
-    // authService
-    //   .dolibarAuth(values)
-    //   .then((res) => {
-    //     if(res){
-    //       setDataUser(res)
-    //       router.push('/dashboard')
-    //     }
-    //   })
-    //   .catch((e) => {
-    //     console.error("Error en auth ", e);
-    //     notification.open({
-    //       type: "error",
-    //       message: "Error al iniciar sesión",
-    //       description: `No se pudo iniciar sesión. ${e.message}`,
-    //     });
-    //   });
+    authService
+      .dolibarAuth(values)
+      .then((res) => {
+        if (res) {
+          setDataUser(res);
+          router.push("/dashboard");
+        }
+      })
+      .catch((e) => {
+        console.error("Error en auth ", e);
+        notification.open({
+          type: "error",
+          message: "Error al iniciar sesión",
+          description: `No se pudo iniciar sesión. ${e.message}`,
+        });
+      });
   };
 
   const onFinishFailed = (error: any) => {

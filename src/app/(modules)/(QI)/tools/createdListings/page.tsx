@@ -32,7 +32,7 @@ export default function CreatedListingsPage() {
           description: `No se pudo obtener la información: ${error.message}`,
         });
       });
-  }, []);
+  });
 
   return (
     <>

@@ -2,10 +2,10 @@ import mysql from "mysql2/promise";
 
 // Claves para conectase a DEV
 export const dolibarrPool = mysql.createPool({
-  host: "187.189.243.250",
-  port: 33306,
-  user: "rmdm",
-  password: "R0vi4dmin$",
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT ? parseInt(process.env.MYSQL_PORT) : 3306,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASS,
   database: "dolibarr_dev",
   waitForConnections: true,
   //connectionLimit: 5,

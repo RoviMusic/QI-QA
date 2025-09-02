@@ -13,7 +13,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import AppProviders from "@/providers/AppProviders";
 
 // Official Neue Haas Display font import
-export const NeueFont = localFont({
+const NeueFont = localFont({
   src: [
     {
       path: "../styles/fonts/NeueHaasDisplayLight.woff2",

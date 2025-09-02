@@ -11,9 +11,11 @@ import LoginForm from "@/modules/auth/components/loginForm";
 import { Particles } from "@/components/magicui/particles";
 import LocaleSelect from "@/components/LocaleSelect";
 import { GlassCard } from "@/components/core/GlassCard";
-
+import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
+  redirect("/dashboard");
+
   return (
     <>
       <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">

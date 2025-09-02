@@ -96,33 +96,6 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
     return IconComponent();
   }
 
-  // const items: MenuItem[] = [
-  //   {
-  //     label: "Dashboard",
-  //     key: "dashboard",
-  //     icon: getIcon("Gauge"),
-  //     onClick: () => router.push("/dashboard"),
-  //   },
-  //   {
-  //     label: "Rovi Music Tools",
-  //     key: "tools",
-  //     icon: getIcon("Toolbox"),
-  //     children: [
-  //       {
-  //         label: "Procesador & Sincronizador",
-  //         key: "processor",
-  //         onClick: () => router.push("/tools/syncprocess"),
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     label: "Picking",
-  //     key: "picking",
-  //     icon: getIcon("Truck"),
-  //     onClick: () => router.push("/tools/picking"),
-  //   },
-  // ];
-
   const items: MenuItem[] = [
     {
       label: "QI",
@@ -214,7 +187,9 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
       label: "Dolibarr",
       key: "dol",
       icon: getIcon("Toolbox"),
-      onClick: () => {window.open(process.env.NEXT_PUBLIC_DOLIBARR_URL, '_blank')},
+      onClick: () => {
+        window.open(process.env.NEXT_PUBLIC_DOLIBARR_URL, "_blank");
+      },
     },
     {
       label: "Ecommerce",
@@ -234,47 +209,47 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
       icon: getIcon("Folder"),
       children: [
         {
-          label: 'Análisis',
-          key: 'analysis',
-          icon: getIcon('ChartSimple'),
+          label: "Análisis",
+          key: "analysis",
+          icon: getIcon("ChartSimple"),
           children: [
             {
-              label: 'Reporte para compras',
-              key: 'purchaseRep',
-              onClick: () => router.push("/reports/analysis/purchaseReport")
-            }
-          ]
+              label: "Reporte para compras",
+              key: "purchaseRep",
+              onClick: () => router.push("/reports/analysis/purchaseReport"),
+            },
+          ],
         },
         {
-          label: 'Productos',
-          key: 'products',
-          icon: getIcon('Cart'),
+          label: "Productos",
+          key: "products",
+          icon: getIcon("Cart"),
           children: [
             {
-              label: 'Edición de productos',
-              key: 'editingPr',
-              onClick: () => router.push("/reports/products/productsEdit")
+              label: "Edición de productos",
+              key: "editingPr",
+              onClick: () => router.push("/reports/products/productsEdit"),
             },
             {
-              label: 'Productos con excedente',
-              key: 'overstockP',
-              onClick: () => router.push("/reports/products/overstockProducts")
-            }
-          ]
+              label: "Productos con excedente",
+              key: "overstockP",
+              onClick: () => router.push("/reports/products/overstockProducts"),
+            },
+          ],
         },
         {
-          label: 'Pedidos proveedor',
-          key: 'supplierOrders',
-          icon: getIcon('File-Lines'),
+          label: "Pedidos proveedor",
+          key: "supplierOrders",
+          icon: getIcon("File-Lines"),
           children: [
             {
-              label: 'Crear borrador',
-              key: 'draft',
-              onClick: () => router.push("/reports/supplierOrders/createDraft")
-            }
-          ]
-        }
-      ]
+              label: "Crear borrador",
+              key: "draft",
+              onClick: () => router.push("/reports/supplierOrders/createDraft"),
+            },
+          ],
+        },
+      ],
     },
   ];
 

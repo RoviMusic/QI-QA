@@ -42,11 +42,11 @@ export default function FullfilmentPage() {
     //     });
     //   });
     fetchData();
-  }, []);
+  });
 
   async function fetchData() {
     setLoading(true);
-    let timeStart = Date.now();
+    const timeStart = Date.now();
     try {
       // const extradata = await fetch("http://192.168.0.234:8000/fulfillment", {
       //   method: "POST",
@@ -74,14 +74,14 @@ export default function FullfilmentPage() {
       return;
     }
 
-    let timeEnd = Date.now();
-    let totalTime = (timeEnd - timeStart) / 1000; // Convertir a segundos
+    const timeEnd = Date.now();
+    const totalTime = (timeEnd - timeStart) / 1000; // Convertir a segundos
     console.log(`Total processing time: ${totalTime} seconds`);
     setLoading(false);
   }
 
   async function getDataProcessed(datos: any, authToken: string) {
-    let timeStart = Date.now();
+    const timeStart = Date.now();
     try {
       let j = 0;
       for (let i = 0; i < datos.length; i++) {
@@ -126,8 +126,8 @@ export default function FullfilmentPage() {
         j++;
         console.log(`Processed ${j} items so far`);
       }
-      let timeEnd = Date.now();
-      let totalTime = (timeEnd - timeStart) / 1000; // Convertir a segundos
+      const timeEnd = Date.now();
+      const totalTime = (timeEnd - timeStart) / 1000; // Convertir a segundos
       console.log(`Total processing time: ${totalTime} seconds`);
       console.warn("All items processed successfully");
       console.log("datos procesados en total:", j);

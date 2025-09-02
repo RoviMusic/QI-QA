@@ -8,9 +8,9 @@ import { GetTokenMeli } from "@/lib/meli";
 
 export async function GetMainData() {
   try {
-    var hash: any = {};
-    var stored;
-    var products: any = { list: [] };
+    const hash: any = {};
+    let stored;
+    const products: any = { list: [] };
 
     const tokenData = await GetTokenMeli();
 

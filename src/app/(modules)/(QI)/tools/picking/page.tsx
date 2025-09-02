@@ -1,10 +1,7 @@
 "use client";
 import { LargeButton } from "@/components/core/Buttons";
-import { MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
-import { markets } from "@/modules/tools/process/components/processor";
-import { ValueType } from "@/shared/types/sharedTypes";
-import { Col, Flex, Row, Space } from "antd";
+import { Col, Row, Space } from "antd";
 import { useRouter } from "next/navigation";
 
 type PickingType = {
@@ -28,11 +25,9 @@ export default function PickingPage() {
   return (
     <>
       <Container>
-        <Row
-          gutter={[40, 40]}
-        >
+        <Row gutter={[40, 40]}>
           {pickings.map((pk, index) => (
-            <Col xl={8}>
+            <Col xl={8} key={index}>
               <LargeButton
                 onPress={() => router.push(`/tools/picking/${pk.id}`)}
                 key={index}

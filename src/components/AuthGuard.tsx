@@ -6,11 +6,11 @@ export default async function AuthGuard({
 }: {
   children: React.ReactNode;
 }) {
-  //const session = await verifySession()
-  //console.log('sessionnnnnnn ', session)
+  // const session = await verifySession();
+  // //console.log('sessionnnnnnn ', session)
 
   // if (!session) {
-  //   redirect('/')
+  //   redirect("/");
   // }
 
   return <>{children}</>;

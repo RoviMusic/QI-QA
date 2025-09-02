@@ -23,7 +23,7 @@ export default function UserCard() {
       content: "Cerrando sesión",
       duration: 0,
     });
-    let dolibarrWindow = window.open(
+    const dolibarrWindow = window.open(
       `${logoutUrl}${dolToken}`,
       "_blank",
       "width=600,height=400"

@@ -1,6 +1,6 @@
 "use client";
 
-import {GlassCard, GlassCardHoverable} from "@/components/core/GlassCard";
+import { GlassCardHoverable } from "@/components/core/GlassCard";
 import { MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import { getIcon } from "@/lib/utils";
@@ -19,7 +19,9 @@ export default function DashboardPage() {
           style={{ height: "100%" }}
         >
           <Col xxl={8} xl={8}>
-            <GlassCardHoverable onPress={() => router.push('marketplaces/syncprocess')}>
+            <GlassCardHoverable
+              onPress={() => router.push("marketplaces/syncprocess")}
+            >
               <Flex vertical justify="center" align="center">
                 <MainTitle>{getIcon("Rotate")}</MainTitle>
                 <MainTitle>Sincronizador y Procesador</MainTitle>

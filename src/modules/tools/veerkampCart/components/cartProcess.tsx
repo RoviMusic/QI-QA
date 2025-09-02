@@ -129,7 +129,7 @@ export default function CartProcess({ token }: { token: string | undefined }) {
   };
 
   async function processExcel(file: any) {
-    let listCart = [];
+    const listCart = [];
     if (!file) {
       notification.open({
         type: "error",
@@ -302,7 +302,7 @@ export default function CartProcess({ token }: { token: string | undefined }) {
 
   const getExtraData = async (data: any) => {
     if (data.length === 0) return null;
-    let listCart = [];
+    const listCart = [];
     for (let i = 0; i < data.length; i++) {
       const row = data[i];
       try {

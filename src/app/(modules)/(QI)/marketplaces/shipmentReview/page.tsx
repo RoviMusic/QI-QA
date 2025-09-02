@@ -39,7 +39,7 @@ export default function ShipmentReview() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  });
 
   const review = () => {};
 
@@ -60,10 +60,7 @@ export default function ShipmentReview() {
                   <Input value={saleId!} ref={inputRef} readOnly />
 
                   <Space>
-                    <Button
-                      onClick={() => clear()}
-                      disabled={saleId == null}
-                    >
+                    <Button onClick={() => clear()} disabled={saleId == null}>
                       Limpiar
                     </Button>
                     <MainButton
@@ -76,7 +73,7 @@ export default function ShipmentReview() {
                 </Flex>
               </GlassCard>
             </Col>
-            
+
             {iframeRef != null && (
               <Col xxl={16}>
                 <div style={{ height: "100%" }}>
