@@ -10,7 +10,6 @@ import { DinamicColumnsType } from "@/shared/types/tableTypes";
 import { App, Flex, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { set } from "zod";
 
 export default function FullfilmentPage() {
   const router = useRouter();

@@ -34,13 +34,33 @@ export async function POST(req: Request) {
     }
 
     // Parse CFDI y remover prefijos de namespace (cfdi:, tfd:)
-    const buf = Buffer.from(await file.arrayBuffer());
+    let buf = Buffer.from(await file.arrayBuffer());
+    // Limpieza de caracteres nulos y caracteres de control
+    console.log("Buffer original length:", buf.length);
+
+    // Filtrar caracteres nulos (0x00) y otros caracteres de control problemáticos
+    const filteredBuffer = buf.filter((byte) => byte !== 0);
+    buf = Buffer.from(filteredBuffer);
+
+    console.log("Buffer después de limpieza:", buf.length);
+
+    // Convertir a string con encoding UTF-8 y limpiar caracteres restantes
+    let xmlContent = buf.toString("utf8");
+    // Remover caracteres nulos adicionales que pudieran quedar
+    xmlContent = xmlContent.replace(/\0/g, "");
+    console.log(
+      "Contenido XML limpio (primeros 200 chars):",
+      xmlContent.substring(0, 200)
+    );
+
     const parser = new XMLParser({
       ignoreAttributes: false,
       attributeNamePrefix: "",
       removeNSPrefix: true,
     });
-    const xml: any = parser.parse(buf.toString("utf8"));
+    const xml: any = parser.parse(xmlContent);
+    console.log("XML parseado:", JSON.stringify(xml, null, 2));
+    console.log("Raíces XMLL:", Object.keys(xml));
 
     // Estructura esperada CFDI 4+: root = Comprobante
     const comp = xml?.Comprobante;
@@ -164,8 +184,11 @@ export async function POST(req: Request) {
 
     return NextResponse.json("Error inesperado al generar borrador");
   } catch (e: any) {
-    return NextResponse.json(`Error inesperado: ${e?.message ?? e}`, {
-      status: 500,
-    });
+    return NextResponse.json(
+      `Error inesperado al subir archivo: ${e?.message ?? e}`,
+      {
+        status: 500,
+      }
+    );
   }
 }

@@ -49,6 +49,8 @@ type UiRow = {
   precio: number;
   pmp: number;
   linea: string; // "SI" | ""
+  pp_quality: number;
+  pp_sensey: number;
   pre: number | null; // uomvalue
   cedis: number;
   piso: number;
@@ -57,6 +59,30 @@ type UiRow = {
   jir: number;
   tec: number;
   full: number;
+  garantias: number;
+  sep_rmc: number;
+  sep_jir: number;
+  sep_mj: number;
+  sep_mat: number;
+  exhibicion_rmc: number;
+  pp_gonher: number;
+  pp_inovaudio: number;
+  pp_audyson: number;
+  amazon: number;
+  rappi: number;
+  liverpool: number;
+  g_remates: number;
+  coppel: number;
+  pp_lemus: number;
+  controversias: number;
+  defecto: number;
+  faltante: number;
+  shopee: number;
+  g_calidad: number;
+  g_proveedor: number;
+  g_refaccion: number;
+  g_reparacion: number;
+  g_merma: number; 
   max: number;
   total: number;
   diferencia: number;
@@ -75,30 +101,56 @@ function mapToUi(r: ApiRow): UiRow {
   const pedidos = pre && pre !== 0 ? Math.round(diferencia / pre) : "Error";
 
   return {
-    id: r.rowid,
-    referencia: r.ref,
-    modelo: r.modelo ?? "",
-    descripcion: r.label,
-    barcode: r.barcode,
-    proveedor: r.catproveedor,
-    marca: r.marcaproducto,
-    categoria: "",
-    precio: Number(r.price_ttc ?? 0),
-    pmp: Number(r.pmp ?? 0),
-    linea: r.prdlinea === 1 ? "SI" : "",
-    pre,
-    cedis: 0,
-    piso: 0,
-    mercado: 0,
-    mat: 0,
-    jir: 0,
-    tec: 0,
-    full: 0,
-    max,
-    total,
-    diferencia,
-    pedidos,
-    unitmeasure:
+    id: r.rowid,                          // rowid
+    referencia: r.ref,                    // ref
+    modelo: r.modelo ?? "",               // modelo
+    descripcion: r.label,                 // label
+    barcode: r.barcode,                   // barcode
+    proveedor: r.catproveedor,            // proveedor
+    marca: r.marcaproducto,               // marca
+    categoria: "",                        // categoria
+    precio: Number(r.price_ttc ?? 0),     // Precio venta
+    pmp: Number(r.pmp ?? 0),              // Costo PMP (Sin IVA)
+    linea: r.prdlinea === 1 ? "SI" : "",  // Prod. linea
+    pp_quality: 0,                        // pp_quality
+    pp_sensey: 0,                         // pp_sensey
+    pre: 0,                               // pre
+    cedis: 0,                             // cedis
+    piso: 0,                              // piso
+    mercado: 0,                           // mercado
+    mat: 0,                               // mat
+    jir: 0,                               // jir
+    tec: 0,                               // tec
+    full: 0,                              // full
+    garantias: 0,                         // garantias
+    sep_rmc: 0,                           // SEP .RMC
+    sep_jir: 0,                           // SEP .JIR
+    sep_mj: 0,                            // SEP .MJ
+    sep_mat: 0,                           // SEP. MAT
+    exhibicion_rmc: 0,                    // EXHIBICION RMC
+    pp_gonher: 0,                         // PP Gonher
+    pp_inovaudio: 0,                      // PP Inovaudio
+    pp_audyson: 0,                        // PP Audyson
+    amazon: 0,                            // amazon
+    rappi: 0,                             // rappi
+    liverpool: 0,                         // liverpool
+    g_remates: 0,                         // G. Remates
+    coppel: 0,                            // coppel
+    pp_lemus: 0,                          // PP Lemus
+    controversias: 0,                     // Controversias
+    defecto: 0,                           // Defecto
+    faltante: 0,                          // Faltante
+    shopee: 0,                            // Shopee
+    g_calidad: 0,                         // G. Calidad
+    g_proveedor: 0,                       // G. Proveedor
+    g_refaccion: 0,                       // G. Refacción
+    g_reparacion: 0,                      // G. Reparación
+    g_merma: 0,                           // G. Merma
+    max,                                  // Max
+    total,                                // Tot. stock
+    diferencia,                           // Diferencia
+    pedidos,                              // Pedidos
+    unitmeasure:                          // Uom pedido
       r.unitmeasure == "1"
         ? "Pieza"
         : r.unitmeasure == "2"
@@ -106,8 +158,8 @@ function mapToUi(r: ApiRow): UiRow {
         : r.unitmeasure == "3"
         ? "Juego"
         : "",
-    uomvalue: r.uomvalue,
-    contenido: r.contenido,
+    uomvalue: r.uomvalue,                 // Uom Value
+    contenido: r.contenido,               // Contenido
   };
 }
 

@@ -1,12 +1,12 @@
 // middleware.js
 import { NextResponse } from "next/server";
 import { decrypt, verifySession } from "@/lib/session";
-import {routerConfig} from "@/lib/routes"
+import { routerConfig } from "@/lib/routes";
 
 function handleDolibarr(request) {
-  if (request.nextUrl.pathname.startsWith("/rovimusic/")) {
+  if (request.nextUrl.pathname.startsWith("/dolibarr/")) {
     const newUrl = new URL(
-      request.nextUrl.pathname.replace("/rovimusic/", "/erp/"),
+      request.nextUrl.pathname.replace("/dolibarr/", "/erp/"),
       request.nextUrl
     );
     return NextResponse.rewrite(newUrl);
@@ -87,7 +87,7 @@ export async function middleware(request) {
 
 export const config = {
   matcher: [
-    "/rovimusic/:path*",
+    "/dolibarr/:path*",
     //"/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };

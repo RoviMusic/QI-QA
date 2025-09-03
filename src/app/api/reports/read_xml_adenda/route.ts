@@ -34,13 +34,22 @@ export async function POST(req: Request) {
       );
     }
 
-    const buf = Buffer.from(await file.arrayBuffer());
+    let buf = Buffer.from(await file.arrayBuffer());
+    // Filtrar caracteres nulos (0x00) y otros caracteres de control problemáticos
+    const filteredBuffer = buf.filter((byte) => byte !== 0);
+    buf = Buffer.from(filteredBuffer);
+
+    // Convertir a string con encoding UTF-8 y limpiar caracteres restantes
+    let xmlContent = buf.toString("utf8");
+    // Remover caracteres nulos adicionales que pudieran quedar
+    xmlContent = xmlContent.replace(/\0/g, "");
+
     const parser = new XMLParser({
       ignoreAttributes: false,
       attributeNamePrefix: "",
       removeNSPrefix: true,
     });
-    const xml: any = parser.parse(buf.toString("utf8"));
+    const xml: any = parser.parse(xmlContent);
 
     const comp = xml?.Comprobante;
     if (!comp)
@@ -64,7 +73,6 @@ export async function POST(req: Request) {
     const total: number = Number(comp?.Total ?? 0);
     console.log("total: ", total);
 
-
     // Esta versión REQUIERE Addenda
     const addenda = comp?.Addenda;
     if (!addenda) {
@@ -86,8 +94,8 @@ export async function POST(req: Request) {
     const detalles: Detalle[] = Array.isArray(detallesRaw)
       ? detallesRaw
       : detallesRaw
-        ? [detallesRaw]
-        : [];
+      ? [detallesRaw]
+      : [];
     let i = 0;
     let exist = 0;
 
@@ -192,8 +200,11 @@ export async function POST(req: Request) {
     }
     return NextResponse.json(output);
   } catch (e: any) {
-    return NextResponse.json(`Error inesperado: ${e?.message ?? e}`, {
-      status: 500,
-    });
+    return NextResponse.json(
+      `Error inesperado al subir archivo: ${e?.message ?? e}`,
+      {
+        status: 500,
+      }
+    );
   }
 }

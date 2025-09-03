@@ -8,46 +8,46 @@ const nextConfig: NextConfig = {
       // Proxy para directorios específicos
       {
         source: "/erp/:path*",
-        destination: "http://192.168.0.234/rovimusic/:path*",
+        destination: "http://192.168.0.234/dolibarr/:path*",
       },
       // Luego rutas más generales
       {
         source: "/societe/:path*",
-        destination: "http://192.168.0.234/rovimusic/societe/:path*",
+        destination: "http://192.168.0.234/dolibarr/societe/:path*",
       },
       {
         source: "/user/:path*",
-        destination: "http://192.168.0.234/rovimusic/user/:path*",
+        destination: "http://192.168.0.234/dolibarr/user/:path*",
       },
       {
         source: "/admin/:path*",
-        destination: "http://192.168.0.234/rovimusic/admin/:path*",
+        destination: "http://192.168.0.234/dolibarr/admin/:path*",
       },
       {
         source: "/includes/:path*",
-        destination: "http://192.168.0.234/rovimusic/includes/:path*",
+        destination: "http://192.168.0.234/dolibarr/includes/:path*",
       },
       {
         source: "/theme/:path*",
-        destination: "http://192.168.0.234/rovimusic/theme/:path*",
+        destination: "http://192.168.0.234/dolibarr/theme/:path*",
       },
       {
         source: "/custom/:path*",
-        destination: "http://192.168.0.234/rovimusic/custom/:path*",
+        destination: "http://192.168.0.234/dolibarr/custom/:path*",
       },
       {
         source: "/core/:path*",
-        destination: "http://192.168.0.234/rovimusic/core/:path*",
+        destination: "http://192.168.0.234/dolibarr/core/:path*",
       },
       // Capturar TODAS las rutas PHP
       {
         source: "/:path*.php",
-        destination: "http://192.168.0.234/rovimusic/:path*.php",
+        destination: "http://192.168.0.234/dolibarr/:path*.php",
       },
       // Capturar TODAS las rutas JS
       {
         source: "/:path*.js",
-        destination: "http://192.168.0.234/rovimusic/:path*.js",
+        destination: "http://192.168.0.234/dolibarr/:path*.js",
       },
     ];
   },
