@@ -4,20 +4,31 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-
     const rowid = searchParams.get("rowid");
-    const entrepot = searchParams.get("entrepot")
-    let sql = "";
 
-    if (rowid != undefined && entrepot != undefined) {
-      sql = `select reel from llx_product_stock where fk_product=${rowid} and fk_entrepot=${entrepot} LIMIT 1`;
+    if (!rowid) {
+      return Response.json(
+        { error: "Missing rowid parameter" },
+        { status: 400 }
+      );
     }
 
-    const [rows] = await dolibarrPool.execute(sql);
+    // Consulta todos los stocks de los almacenes de este producto
+    const sql = `
+      SELECT fk_entrepot, reel
+      FROM llx_product_stock
+      WHERE fk_product = ?
+    `;
 
-    return Response.json({
-      data: rows,
+    const [rows] = await dolibarrPool.execute(sql, [rowid]);
+
+    // Convertimos el resultado en un mapa: { fk_entrepot: reel }
+    const stockMap: Record<number, number> = {};
+    (rows as any[]).forEach((row) => {
+      stockMap[row.fk_entrepot] = row.reel;
     });
+
+    return Response.json({ data: stockMap });
   } catch (err) {
     return Response.json({ error: err }, { status: 500 });
   }

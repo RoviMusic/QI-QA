@@ -52,9 +52,9 @@ export async function GET(req: Request) {
         GROUP BY pid.fk_product
       ) pt ON pt.id = p.rowid
       WHERE ${where.length ? where.join(" AND ") : "1=1"}
+      ORDER BY pe.marcaproducto ASC
     `;
   try {
-    console.info(sql);
     const [rows] = await dolibarrPool.execute(sql);
     return NextResponse.json(rows);
   } catch (err: any) {

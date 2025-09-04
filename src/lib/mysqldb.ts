@@ -8,6 +8,7 @@ export const dolibarrPool = mysql.createPool({
   password: process.env.MYSQL_PASS,
   database: "dolibarr_dev",
   waitForConnections: true,
-  //connectionLimit: 5,
+  connectionLimit: 15, // 15 conexiones, por default son 10 conexiones
   queueLimit: 0,
+  connectTimeout: 30000, //30 segundos, por default son 10 segundos
 });

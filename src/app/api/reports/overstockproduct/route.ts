@@ -28,6 +28,7 @@ export async function GET() {
               AND pw.fk_entrepot=ps.fk_entrepot 
             LIMIT 1), 0) < ps.reel
   `;
+
   const rows = await query(sql);
 
   return NextResponse.json(rows);

@@ -13,6 +13,7 @@ import {
   ReloadOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
+import LoadingAnimation from "@/components/core/LoadingAnimation";
 const { TextArea } = Input;
 
 const columns: DinamicColumnsType[] = [
@@ -363,10 +364,11 @@ export default function CartProcess({ token }: { token: string | undefined }) {
 
   return (
     <>
-      <Row gutter={[20, 20]} justify="space-between">
-        <Col xxl={8} xl={8}>
-          <GlassCard>
-            {/* <Flex vertical gap={20}>
+      <LoadingAnimation isActive={isProcessing}>
+        <Row gutter={[20, 20]} justify="space-between">
+          <Col xxl={8} xl={8}>
+            <GlassCard>
+              {/* <Flex vertical gap={20}>
                   <UploaderExcel
                     title="Cargar archivo para crear carrito"
                     file={file}
@@ -398,58 +400,59 @@ export default function CartProcess({ token }: { token: string | undefined }) {
                   </Button>
                 </Flex> */}
 
-            <Flex vertical gap={20}>
-              <small>Ingresa sku's y cantidad, después da 'enter'</small>
-              <TextArea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder={`Ejemplo:\n4002165\t2\n4002175\t1\n4201170\t2`}
-                autoSize={{ minRows: 6, maxRows: 12 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault(); // evita insertar nueva línea
-                    parseSkuTextarea(text); // convierte a array
+              <Flex vertical gap={20}>
+                <small>Ingresa sku's y cantidad, después da 'enter'</small>
+                <TextArea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder={`Ejemplo:\n4002165\t2\n4002175\t1\n4201170\t2`}
+                  autoSize={{ minRows: 6, maxRows: 12 }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault(); // evita insertar nueva línea
+                      parseSkuTextarea(text); // convierte a array
+                    }
+                  }}
+                />
+                <Button
+                  type="primary"
+                  disabled={items.length == 0 || isProcessing}
+                  onClick={sendCart}
+                  icon={
+                    isProcessing ? (
+                      <LoadingOutlined className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <ShoppingCartOutlined className="w-5 h-5" />
+                    )
                   }
-                }}
+                >
+                  Hacer pedido
+                </Button>
+
+                <Button
+                  icon={<ReloadOutlined />}
+                  onClick={reset}
+                  disabled={isProcessing}
+                >
+                  Limpiar
+                </Button>
+              </Flex>
+            </GlassCard>
+          </Col>
+
+          <Col xxl={16} xl={16}>
+            <GlassCard>
+              <DinamicTable
+                columns={columns}
+                dataSource={items}
+                rowStyle
+                getRowClass={setStatusRow}
+                hasPagination={false}
               />
-              <Button
-                type="primary"
-                disabled={items.length == 0 || isProcessing}
-                onClick={sendCart}
-                icon={
-                  isProcessing ? (
-                    <LoadingOutlined className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <ShoppingCartOutlined className="w-5 h-5" />
-                  )
-                }
-              >
-                Hacer pedido
-              </Button>
-
-              <Button
-                icon={<ReloadOutlined />}
-                onClick={reset}
-                disabled={isProcessing}
-              >
-                Limpiar
-              </Button>
-            </Flex>
-          </GlassCard>
-        </Col>
-
-        <Col xxl={16} xl={16}>
-          <GlassCard>
-            <DinamicTable
-              columns={columns}
-              dataSource={items}
-              rowStyle
-              getRowClass={setStatusRow}
-              hasPagination={false}
-            />
-          </GlassCard>
-        </Col>
-      </Row>
+            </GlassCard>
+          </Col>
+        </Row>
+      </LoadingAnimation>
     </>
   );
 }
