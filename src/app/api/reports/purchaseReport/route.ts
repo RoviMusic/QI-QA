@@ -47,7 +47,7 @@ export async function GET(req: Request) {
         FROM llx_pickingdet pid
         LEFT JOIN llx_picking pi ON pi.rowid=pid.picking_id
         WHERE pid.status=1 
-          AND pi.stock_to IN (1,2,3,4,10)
+          AND pi.stock_to IN (1,2,3,4,10,49)
           AND pi.date_creation > (NOW() - INTERVAL 1 MONTH)
         GROUP BY pid.fk_product
       ) pt ON pt.id = p.rowid

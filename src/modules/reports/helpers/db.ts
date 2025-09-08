@@ -2,7 +2,7 @@ import { dolibarrPool } from "@/lib/mysqldb";
 
 // Wrapper para ejecutar consultas SQL que devuelven multiples filas
 export async function query<T = any>(sql: string, params: any[] = []) {
-  const [rows] = await dolibarrPool.execute(sql, params);
+  const [rows] = await dolibarrPool.query(sql, params);
   return rows as T[];
 }
 

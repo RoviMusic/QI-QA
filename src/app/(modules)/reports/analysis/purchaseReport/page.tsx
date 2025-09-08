@@ -156,7 +156,7 @@ async function mapToUi(r: ApiRow): Promise<UiRow> {
     Number(jir) +
     Number(tec); // si luego agregas stocks por almacén, súmalos aquí
 
-  const total = (r.in_transit ?? 0) + Number(totalStock);
+  const total = (Number(r.in_transit) ?? 0) + Number(totalStock);
 
   const max = r.max;
 
@@ -166,8 +166,9 @@ async function mapToUi(r: ApiRow): Promise<UiRow> {
 
   const status = r.tosell == 0 && r.tobuy == 0 ? "Descontinuado" : "";
 
-  if (r.ref === "1100464") {
-    console.log("mapToUi - Detalles del producto 1100464:");
+  if (r.ref === "7504365") {
+    console.log("mapToUi - Detalles del producto 7504365:");
+    console.log("en transito ", r.in_transit);
     console.log(
       `cedis: ${cedis} piso: ${piso} mercado: ${mercado} mat: ${mat} jir: ${jir} tec: ${tec}`
     );

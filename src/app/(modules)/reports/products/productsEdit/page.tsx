@@ -4,7 +4,18 @@ import { DinamicTable } from "@/components/core/Tables";
 import { MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
 import { DinamicColumnsType } from "@/shared/types/tableTypes";
-import { App, Button, Col, Flex, Form, Input, Row, Select, Space } from "antd";
+import {
+  App,
+  Button,
+  Col,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Space,
+} from "antd";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import LoadingAnimation from "@/components/core/LoadingAnimation";
@@ -191,7 +202,7 @@ export default function ProductsEditionPage() {
       const base: ProductRow[] = await res.json();
       // Enriquecemos con límite de concurrencia
       setEnriching(true);
-      const enriched = await enrichMany(base, 8);
+      const enriched = await enrichMany(base, 5);
       setEnriching(false);
       return enriched;
     },
@@ -218,9 +229,9 @@ export default function ProductsEditionPage() {
     setRows(enriched);
   };
 
-  useEffect(() => {
-    getInitialData();
-  }, []);
+  // useEffect(() => {
+  //   getInitialData();
+  // }, []);
 
   // Guardar: inputs (enter) y selects (onChange)
   async function saveChange(payload: {
@@ -278,6 +289,29 @@ export default function ProductsEditionPage() {
         />
       );
 
+  const renderInputNumber =
+    (field: string, type: string, max = 100, numberOnly = false) =>
+    (value: any, record: ProductRow) =>
+      (
+        <InputNumber
+          controls={false}
+          defaultValue={value ?? ""}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              const v = (e.currentTarget.value || "").trim();
+              if (numberOnly) e.currentTarget.value = v.replace(/\D/g, "");
+              saveChange({
+                rowid: record.rowid,
+                type,
+                field,
+                value: numberOnly ? v.replace(/\D/g, "") : v,
+              });
+            }
+          }}
+          max={max}
+        />
+      );
+
   const renderSelect =
     (
       field: string,
@@ -300,16 +334,14 @@ export default function ProductsEditionPage() {
     {
       column_id: "ref",
       title: "Ref.",
-      type: "custom",
+      type: "string",
       width: 150,
-      render: renderInput("ref", "product_ref", 140),
     },
     {
       column_id: "ref_prov",
       title: "Ref Prov",
-      type: "custom",
+      type: "string",
       width: 130,
-      render: renderInput("ref_prov", "ref_prov", 140),
     },
     {
       column_id: "label",
@@ -508,14 +540,19 @@ export default function ProductsEditionPage() {
       title: "CO",
       type: "custom",
       width: 50,
-      render: renderInput("contenido", "product_extra", 80, true),
+      render: renderInputNumber("contenido", "product_extra", 100, true),
     },
     {
       column_id: "contenido_picking",
       title: "PI",
       type: "custom",
       width: 50,
-      render: renderInput("contenido_picking", "product_extra", 80, true),
+      render: renderInputNumber(
+        "contenido_picking",
+        "product_extra",
+        100,
+        true
+      ),
     },
     {
       column_id: "etiquetas",
@@ -612,31 +649,31 @@ export default function ProductsEditionPage() {
                 }
               >
                 <Row gutter={[20, 20]}>
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={3} xl={3}>
                     <Form.Item label="Referencia producto" name="ref">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Etiqueta producto" name="label">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Proveedor" name="proveedor">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Marca" name="marca">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Tipo" name="tipo">
                       <Select
                         style={{ width: "100%" }}
@@ -681,44 +718,43 @@ export default function ProductsEditionPage() {
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Área" name="area">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Pasillo" name="pasillo">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Estante" name="estante">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Columna" name="columna">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={6}>
+                  <Col xxl={2} xl={2}>
                     <Form.Item label="Posición" name="posicion">
                       <Input />
                     </Form.Item>
                   </Col>
 
-                  <Col xxl={8} xl={"auto"}>
+                  <Col xxl={3} xl={"auto"}>
                     <Form.Item>
                       <Space>
                         <Button
                           onClick={() => {
                             form.resetFields();
                             form.setFieldsValue(initialFilters);
-                            loadProducts.mutate(initialFilters);
                           }}
                         >
                           Limpiar

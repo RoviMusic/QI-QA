@@ -124,6 +124,11 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
               key: "shipRev",
               onClick: () => router.push("/marketplaces/shipmentReview"),
             },
+            {
+              label: "Procesador FBA",
+              key: "fbaProc",
+              onClick: () => router.push("/marketplaces/processFBA"),
+            },
           ],
         },
         {

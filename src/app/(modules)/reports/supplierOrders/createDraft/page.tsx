@@ -51,6 +51,8 @@ export default function CreateDraftPage() {
         throw new Error(result);
       }
 
+      console.log("result: ", result);
+
       setMessage(result);
     } catch (err: any) {
       setError(err.message || "Error al procesar el archivo");

@@ -41,14 +41,14 @@ export async function GET(req: Request) {
   }
 
   if (ref) {
-    where.push(`p.ref LIKE '${ref}'`);
+    where.push(`p.ref LIKE '%${ref}%'`);
   }
   if (label) {
     const words = label.trim().replace(/\s+/g, " ").split(" ");
 
     const conditions = words.map((word) => {
       params.push(`%${word}%`);
-      return `p.label LIKE '${word}'`;
+      return `p.label LIKE '%${word}%'`;
     });
 
     where.push(`(${conditions.join(" AND ")})`);
