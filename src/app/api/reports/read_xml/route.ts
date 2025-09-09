@@ -9,6 +9,7 @@ import {
   createLog,
   createDraftDet,
 } from "@/modules/reports/helpers/xmlProcess";
+import { OutputMessage } from "@/modules/reports/types/XMLTypes";
 
 export const runtime = "nodejs";
 
@@ -27,10 +28,11 @@ export async function POST(req: Request) {
     const file = form.get("file") as File | null;
 
     if (!file || !file.name.toLowerCase().endsWith(".xml")) {
-      return NextResponse.json(
-        { error: "Solo se permiten archivos XML" },
-        { status: 400 }
-      );
+      const output: OutputMessage = {
+        message: "Solo se permiten archivos XML",
+        type: "error",
+      };
+      return NextResponse.json(output);
     }
 
     // Parse CFDI y remover prefijos de namespace (cfdi:, tfd:)
@@ -54,18 +56,26 @@ export async function POST(req: Request) {
 
     // Estructura esperada CFDI 4+: root = Comprobante
     const comp = xml?.Comprobante;
-    if (!comp)
-      return NextResponse.json("Error: XML inválido o sin nodo Comprobante");
+    if (!comp) {
+      const output: OutputMessage = {
+        message: "Error: XML inválido o sin nodo Comprobante",
+        type: "error",
+      };
+      return NextResponse.json(output);
+    }
 
     const emisor = comp?.Emisor || {};
     const provider: string = (emisor?.Nombre ?? "").toString().trim();
     console.log("provider: ", provider);
     const rfc: string = (emisor?.Rfc ?? "").toString().trim();
     console.log("rfc: ", rfc);
-    if (!rfc)
-      return NextResponse.json(
-        "Error: No se encontró RFC del Emisor en el XML"
-      );
+    if (!rfc) {
+      const output: OutputMessage = {
+        message: "Error: No se encontró RFC del Emisor en el XML",
+        type: "error",
+      };
+      return NextResponse.json(output);
+    }
 
     const invoice_number: string = (comp?.Folio ?? "").toString().trim();
     console.log("Folio: ", invoice_number);
@@ -76,23 +86,34 @@ export async function POST(req: Request) {
 
     // Rechazar si tiene Addenda
     if (comp?.Addenda) {
-      return NextResponse.json("Error: XML contiene Addenda no soportada");
+      const output: OutputMessage = {
+        message: "XML contiene Addenda no soportada, use otro importador.",
+        type: "warning",
+      };
+      return NextResponse.json(output);
     }
 
     // Validación de proveedor (RFC)
     const rfcExists = await checkRFCExist(rfc);
-    if ((rfcExists.total ?? 0) <= 0) {
-      return NextResponse.json(
-        "<br><br><label>Resultados del proceso: RFC no existe.</label><br>"
-      );
+    if (rfcExists.total <= 0) {
+      const output: OutputMessage = {
+        message: "RFC no existe.",
+        type: "error",
+      };
+      return NextResponse.json(output);
     }
 
     // Checar si ya hay log
     const prevLog = await checkLog(provider, invoice_number);
-    if ((prevLog.total ?? 0) > 0) {
-      return NextResponse.json(
-        "<br><br><label>Resultados del proceso: Borrador ya existe.</label><br>"
-      );
+    if (prevLog.total > 0) {
+      const output: OutputMessage = {
+        message: "Borrador ya existe.",
+        type: "warning",
+        supplier: provider,
+        rfc: rfc,
+        invoice_number: invoice_number,
+      };
+      return NextResponse.json(output);
     }
 
     // Conceptos
@@ -108,28 +129,42 @@ export async function POST(req: Request) {
 
     for (const c of conceptos) {
       counter += 1;
-      const ref = (c?.NoIdentificacion ?? "").toString().trim();
+      const ref = c?.NoIdentificacion!.toString().trim();
       const chk = await checkExist(ref, rfc);
-      if ((chk.total ?? 0) > 0) good += 1;
+      if (chk.total > 0) good += 1;
     }
 
     // Si hay faltantes, responder listado con ✓ / No existe
     if (counter !== good) {
-      let output =
-        '<br><br><label>Resultados del proceso: <span style="color:red">Error, no todos los productos existen en Dolibarr, revise listado.</span></label><br>';
-      output += `<b>Proveedor:</b> ${provider} <b>RFC:</b> ${rfc}<br>`;
-      output += `<b>Folio:</b> ${invoice_number}<br>`;
-      output += "<br><b>Lista de Productos</b><br>";
+      const output: OutputMessage = {
+        message:
+          "Error, no todos los productos existen en Dolibarr, revise listado.",
+        type: "error",
+        supplier: provider,
+        rfc: rfc,
+        invoice_number: invoice_number,
+        products: [],
+      };
 
       for (const c of conceptos) {
-        const ref = (c?.NoIdentificacion ?? "").toString().trim();
-        const desc = (c?.Descripcion ?? "").toString().trim();
-        const cantidad = (c?.Cantidad ?? "0").toString();
+        const ref = c?.NoIdentificacion!.toString().trim();
+        const desc = c?.Descripcion!.toString().trim();
+        const cantidad = c?.Cantidad!.toString();
         const valid = await checkExist(ref, rfc);
         if ((valid.total ?? 0) > 0) {
-          output += `<b>Descripción:</b> (${cantidad}) ${desc} <b>SKU:</b> ${ref} <span style="color:green">✓</span><br>`;
+          output.products?.push({
+            description: desc,
+            sku: ref,
+            quantity: Number(cantidad),
+            exists: true,
+          });
         } else {
-          output += `<b>Descripción:</b> (${cantidad}) ${desc} <b>SKU:</b> ${ref} <b style="color:red">No existe</b><br>`;
+          output.products?.push({
+            description: desc,
+            sku: ref,
+            quantity: Number(cantidad),
+            exists: false,
+          });
         }
       }
       return NextResponse.json(output);
@@ -158,27 +193,38 @@ export async function POST(req: Request) {
     }
 
     if (i === exist && exist > 0) {
-      let output =
-        "<br><br><label>Resultados del proceso: Borrador creado con éxito.</label><br>";
-      output += `<b>Proveedor:</b> ${provider} <b>RFC:</b> ${rfc}<br>`;
-      output += `<b>Folio:</b> ${invoice_number}<br>`;
-      output += "<br><b>Lista de Productos</b><br>";
+      const output: OutputMessage = {
+        message: "Borrador creado con éxito.",
+        type: "success",
+        supplier: provider,
+        rfc: rfc,
+        invoice_number: invoice_number,
+        products: [],
+      };
       for (const c of conceptos) {
         const ref = (c?.NoIdentificacion ?? "").toString().trim();
         const desc = (c?.Descripcion ?? "").toString().trim();
         const cantidad = (c?.Cantidad ?? "0").toString();
-        output += `<b>Descripción:</b> (${cantidad}) ${desc} <b>SKU:</b> ${ref} <span style="color:green">✓</span><br>`;
+        output.products?.push({
+          description: desc,
+          sku: ref,
+          quantity: Number(cantidad),
+          exists: true,
+        });
       }
       return NextResponse.json(output);
     }
 
-    return NextResponse.json("Error inesperado al generar borrador");
+    const error: OutputMessage = {
+      message: "Error inesperado al generar borrador",
+      type: "error",
+    };
+    return NextResponse.json(error);
   } catch (e: any) {
-    return NextResponse.json(
-      `Error inesperado al subir archivo: ${e?.message ?? e}`,
-      {
-        status: 500,
-      }
-    );
+    const error: OutputMessage = {
+      message: `Error inesperado al subir archivo: ${e?.message ?? e}`,
+      type: "error",
+    };
+    return NextResponse.json(error);
   }
 }

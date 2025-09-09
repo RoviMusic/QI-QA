@@ -1,8 +1,14 @@
 "use client";
 import { GlassCard } from "@/components/core/GlassCard";
-import { MainTitle } from "@/components/core/Titulo";
+import { DefaultTitle, MainTitle } from "@/components/core/Titulo";
 import Container from "@/components/layout/Container";
-import { Flex, Input, Radio, Tabs, Button, Alert } from "antd";
+import { OutputMessage } from "@/modules/reports/types/XMLTypes";
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  WarningFilled,
+} from "@ant-design/icons";
+import { Flex, Input, Radio, Tabs, Button, Alert, Space, List } from "antd";
 import { useState } from "react";
 // import type { TabsProps } from "antd";
 
@@ -12,6 +18,8 @@ export default function CreateDraftPage() {
   const [loading, setLoading] = useState<boolean>(false); // Variable de estado para boton de procesar archivo
   const [message, setMessage] = useState<string>(""); // Variable de estado para mostrar mensaje
   const [error, setError] = useState<string>(""); // Variable de estado para mostrar error
+
+  const [outputMessage, setOutputMessage] = useState<OutputMessage>();
 
   // Funcion que detecta el archivo que el usuario selecciona
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,21 +47,22 @@ export default function CreateDraftPage() {
         selectedTab === 1
           ? `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/read_xml`
           : `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/read_xml_adenda`;
-      console.log("endpoint: ", endpoint);
       const response = await fetch(endpoint, {
         method: "POST",
         body: formData,
       });
 
-      const result = await response.text();
+      // const result = await response.text();
 
-      if (!response.ok) {
-        throw new Error(result);
-      }
+      // if (!response.ok) {
+      //   throw new Error(result);
+      // }
 
+      const result: OutputMessage = await response.json();
       console.log("result: ", result);
+      setOutputMessage(result);
 
-      setMessage(result);
+      //setMessage(result);
     } catch (err: any) {
       setError(err.message || "Error al procesar el archivo");
     } finally {
@@ -127,7 +136,85 @@ export default function CreateDraftPage() {
               />
             )}
 
-            {/* <Input type="file" />*/}
+            {outputMessage && (
+              <div
+                style={{
+                  marginTop: 16,
+                  padding: 16,
+                  border: "1px solid #d9d9d9",
+                  borderRadius: 6,
+                  background:
+                    outputMessage.type === "success"
+                      ? "#F6FFED"
+                      : outputMessage.type === "error"
+                      ? "#FFF2F0"
+                      : "#FFFBE6",
+                }}
+              >
+                <Flex vertical gap={10}>
+                  <DefaultTitle>Resultados del proceso:</DefaultTitle>
+                  <Space>
+                    <p>
+                      {outputMessage.type == "error" ? (
+                        <CloseCircleFilled color="red" />
+                      ) : outputMessage.type == "success" ? (
+                        <CheckCircleFilled color="green" />
+                      ) : (
+                        <WarningFilled color="yellow" />
+                      )}
+                    </p>
+                    <p>{outputMessage.message}</p>
+                  </Space>
+                  <Flex gap={10} wrap>
+                    <Space>
+                      <b>Proveedor: </b>
+                      <p>{outputMessage.supplier}</p>
+                    </Space>
+                    <Space>
+                      <b>RFC: </b>
+                      <p>{outputMessage.rfc}</p>
+                    </Space>
+                    <Space>
+                      <b>Folio: </b>
+                      <p>{outputMessage.invoice_number}</p>
+                    </Space>
+                  </Flex>
+                  {outputMessage.products && (
+                    <>
+                      <DefaultTitle>Listado de productos:</DefaultTitle>
+                      <List>
+                        {outputMessage.products?.map((item, index) => (
+                          <List.Item key={index}>
+                            <Flex vertical gap={5}>
+                              <h4>{item.description}</h4>
+                              <Flex gap={10} wrap>
+                                <Space>
+                                  <b>SKU: </b>
+                                  <p>{item.sku}</p>
+                                </Space>
+                                <Space>
+                                  <b>Cantidad: </b>
+                                  <p>{item.quantity}</p>
+                                </Space>
+                                <Space>
+                                  {item.exists ? (
+                                    <CheckCircleFilled color="green" />
+                                  ) : (
+                                    <>
+                                      <b style={{ color: "red" }}>No existe</b>
+                                    </>
+                                  )}
+                                </Space>
+                              </Flex>
+                            </Flex>
+                          </List.Item>
+                        ))}
+                      </List>
+                    </>
+                  )}
+                </Flex>
+              </div>
+            )}
           </GlassCard>
         </Flex>
       </Container>

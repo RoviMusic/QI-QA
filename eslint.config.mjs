@@ -21,6 +21,7 @@ const eslintConfig = [
       "react-hooks/exhaustive-deps": "off",
       "react/display-name": "off",
       "no-anonymous-default-export": "off",
+      "prefer-const": "off",
     },
   }),
 ];

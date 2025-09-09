@@ -71,7 +71,7 @@ export async function createDraft(
   total: number,
   rfc: string
 ) {
-  // Obtener fk_soc por ref_fourn y rfc (igual a Python)
+  // Obtener fk_soc por ref_fourn y rfc
   const soc = await queryOne<{ fk_soc: number }>(
     `SELECT fp.fk_soc
      FROM llx_product_fournisseur_price fp
@@ -160,7 +160,7 @@ export async function createDraftDet(
     unitNoIVA = unitNoIVA / contenido;
   }
 
-  // Manejo de descuentos (igual a Python)
+  // Manejo de descuentos
   let remise_percent = 0;
   let subtotal = Number(importe);
   if (Number(descuento) > 0) {

@@ -4,8 +4,8 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const fk_product = Number(searchParams.get("fk_product") ?? "0");
-  const entrepot = Number(searchParams.get("entrepot") ?? "0");
+  const fk_product = Number(searchParams.get("fk_product"));
+  const entrepot = Number(searchParams.get("entrepot"));
   if (!fk_product || !entrepot) return NextResponse.json("", { status: 200 });
 
   const sql = `

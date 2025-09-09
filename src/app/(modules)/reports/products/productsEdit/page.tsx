@@ -361,7 +361,7 @@ export default function ProductsEditionPage() {
       column_id: "min.CE",
       title: "-CE",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput(
           "seuil_stock_alerte_almacen",
@@ -374,7 +374,7 @@ export default function ProductsEditionPage() {
       column_id: "max.CE",
       title: "+CE",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput("desiredstock_almacen", "productw", 60, true)(r.max?.CE, r),
     },
@@ -382,7 +382,7 @@ export default function ProductsEditionPage() {
       column_id: "min.PI",
       title: "-PI",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput(
           "seuil_stock_alerte_piso",
@@ -395,7 +395,7 @@ export default function ProductsEditionPage() {
       column_id: "max.PI",
       title: "+PI",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput("desiredstock_piso", "productw", 60, true)(r.max?.PI, r),
     },
@@ -403,7 +403,7 @@ export default function ProductsEditionPage() {
       column_id: "min.MJ",
       title: "-MJ",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput(
           "seuil_stock_alerte_mercado",
@@ -416,7 +416,7 @@ export default function ProductsEditionPage() {
       column_id: "max.MJ",
       title: "+MJ",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput("desiredstock_mercado", "productw", 60, true)(r.max?.MJ, r),
     },
@@ -424,7 +424,7 @@ export default function ProductsEditionPage() {
       column_id: "min.JI",
       title: "-JI",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput(
           "seuil_stock_alerte_jir",
@@ -437,7 +437,7 @@ export default function ProductsEditionPage() {
       column_id: "max.JI",
       title: "+JI",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput("desiredstock_jir", "productw", 60, true)(r.max?.JI, r),
     },
@@ -445,7 +445,7 @@ export default function ProductsEditionPage() {
       column_id: "min.TEC",
       title: "-TEC",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput(
           "seuil_stock_alerte_TEC",
@@ -458,7 +458,7 @@ export default function ProductsEditionPage() {
       column_id: "max.TEC",
       title: "+TEC",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput("desiredstock_TEC", "productw", 60, true)(r.max?.TEC, r),
     },
@@ -466,7 +466,7 @@ export default function ProductsEditionPage() {
       column_id: "min.MA",
       title: "-MA",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput(
           "seuil_stock_alerte_matehuala",
@@ -479,7 +479,7 @@ export default function ProductsEditionPage() {
       column_id: "max.MA",
       title: "+MA",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput(
           "desiredstock_matehuala",
@@ -492,7 +492,7 @@ export default function ProductsEditionPage() {
       column_id: "min.FU",
       title: "-FU",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput(
           "seuil_stock_alerte_full",
@@ -505,7 +505,7 @@ export default function ProductsEditionPage() {
       column_id: "max.FU",
       title: "+FU",
       type: "custom",
-      width: 50,
+      width: 70,
       render: (_: any, r) =>
         renderInput("desiredstock_full", "productw", 60, true)(r.max?.FU, r),
     },
@@ -525,28 +525,28 @@ export default function ProductsEditionPage() {
       column_id: "prdlinea",
       title: "PL",
       type: "custom",
-      width: 50,
+      width: 70,
       render: renderInput("prdlinea", "product_extra", 80, true),
     },
     {
       column_id: "high_end",
       title: "MKP",
       type: "custom",
-      width: 50,
+      width: 70,
       render: renderInput("high_end", "product_extra", 80, true),
     },
     {
       column_id: "contenido",
       title: "CO",
       type: "custom",
-      width: 50,
+      width: 70,
       render: renderInputNumber("contenido", "product_extra", 100, true),
     },
     {
       column_id: "contenido_picking",
       title: "PI",
       type: "custom",
-      width: 50,
+      width: 70,
       render: renderInputNumber(
         "contenido_picking",
         "product_extra",
@@ -558,42 +558,42 @@ export default function ProductsEditionPage() {
       column_id: "etiquetas",
       title: "ET",
       type: "custom",
-      width: 50,
+      width: 70,
       render: renderInput("etiquetas", "product_extra", 80, true),
     },
     {
       column_id: "area",
       title: "AR",
       type: "custom",
-      width: 50,
+      width: 70,
       render: renderInput("area", "product_extrachar", 120),
     },
     {
       column_id: "pasillo",
       title: "PA",
       type: "custom",
-      width: 50,
+      width: 70,
       render: renderInput("pasillo", "product_extrachar", 120),
     },
     {
       column_id: "estante",
       title: "ES",
       type: "custom",
-      width: 50,
+      width: 70,
       render: renderInput("estante", "product_extrachar", 120),
     },
     {
       column_id: "columna",
       title: "COL",
       type: "custom",
-      width: 80,
+      width: 70,
       render: renderInput("columna", "product_extrachar", 120),
     },
     {
       column_id: "posicion",
       title: "PO",
       type: "custom",
-      width: 80,
+      width: 70,
       render: renderInput("posicion", "product_extrachar", 120),
     },
     {

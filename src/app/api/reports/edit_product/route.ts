@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 type Body = {
   type: string;
   rowid: number;
-  value: string;
+  value: string | null;
   field: string;
 };
 
@@ -28,7 +28,12 @@ const fieldMap: Record<string, { col: string; entrepot: number }> = {
 
 export async function POST(req: Request) {
   const body = (await req.json()) as Body;
-  const { type, rowid, value, field } = body;
+  let { type, rowid, value, field } = body;
+  console.log("edit_product", body);
+
+  if (!value) {
+    value = null;
+  }
 
   const ok = (data = "ok") => NextResponse.json(data);
   const err = (msg: string) => NextResponse.json(msg);
@@ -44,11 +49,13 @@ export async function POST(req: Request) {
     type === "product_label" ||
     type === "product_status"
   ) {
-    // UPDATE llx_product SET <field>=? WHERE rowid=?
-    await query(
-      `UPDATE llx_product SET ${field} = '${value}' WHERE rowid = ${rowid} LIMIT 1`,
-      [value, rowid]
-    );
+    let qry;
+    if (value === null) {
+      qry = `UPDATE llx_product SET ${field} = NULL WHERE rowid = ${rowid} LIMIT 1`;
+    } else {
+      qry = `UPDATE llx_product SET ${field} = '${value}' WHERE rowid = ${rowid} LIMIT 1`;
+    }
+    await query(qry);
     return ok();
   }
 
@@ -57,11 +64,11 @@ export async function POST(req: Request) {
     type === "product_extrachar" ||
     type === "product_mp"
   ) {
-    // UPDATE llx_product_extrafields SET <field>=? WHERE fk_object=?
-    await query(
-      `UPDATE llx_product_extrafields SET ${field} = '${value}' WHERE fk_object = ${rowid} LIMIT 1`,
-      [value, rowid]
-    );
+    const qry =
+      value === null
+        ? `UPDATE llx_product_extrafields SET ${field} = NULL WHERE fk_object = ${rowid} LIMIT 1`
+        : `UPDATE llx_product_extrafields SET ${field} = '${value}' WHERE fk_object = ${rowid} LIMIT 1`;
+    await query(qry);
     return ok();
   }
 
@@ -141,15 +148,17 @@ export async function POST(req: Request) {
     );
 
     if ((countRow?.total ?? 0) > 0) {
-      await query(
-        `
-        UPDATE llx_product_warehouse_properties
+      const qry =
+        value === null
+          ? `UPDATE llx_product_warehouse_properties
+        SET ${col} = NULL
+        WHERE fk_product = ${rowid} AND fk_entrepot = ${entrepot}
+        LIMIT 1`
+          : `UPDATE llx_product_warehouse_properties
         SET ${col} = '${value}'
         WHERE fk_product = ${rowid} AND fk_entrepot = ${entrepot}
-        LIMIT 1
-      `,
-        [value, rowid, entrepot]
-      );
+        LIMIT 1`;
+      await query(qry);
     } else {
       await query(
         `
