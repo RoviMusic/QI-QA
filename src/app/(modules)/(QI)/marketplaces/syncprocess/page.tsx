@@ -39,8 +39,6 @@ export default async function SyncProcessPage() {
   //     new Date(b.sale_date).getTime() - new Date(a.sale_date).getTime()
   // );
 
-  console.log("meli pros ");
-
   const syncErrors = await GetSync48hErrors();
   const syncSummary = await GetSyncSummary();
 
