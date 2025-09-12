@@ -293,8 +293,11 @@ export default function Processor({ data }: ProcessorProps) {
     setDataDetail(null);
   };
 
-  const getRowClass = (type: any) => {
+  const getRowClass = (type: any, shipment_reference?: string) => {
     let classColor = "";
+    if (shipment_reference?.startsWith("NE-")) {
+      return tableStyles.neRow;
+    }
     switch (type) {
       case "processed":
         classColor = tableStyles.processedRow;

@@ -23,7 +23,7 @@ export default async function SyncProcessPage() {
   const amazonData = await GetAllAmazonData();
 
   const allData = [...meliData, ...amazonData]
-    .filter((item) => !item.shipment_reference?.startsWith("NE-"))
+    //.filter((item) => !item.shipment_reference?.startsWith("NE-"))
     .sort((a, b) => {
       const dateA = new Date(a.sale_date).getTime();
       const dateB = new Date(b.sale_date).getTime();
@@ -39,15 +39,7 @@ export default async function SyncProcessPage() {
   //     new Date(b.sale_date).getTime() - new Date(a.sale_date).getTime()
   // );
 
-  console.log(
-    "meli pros ",
-    allData
-      .filter((item) => item.sale_id == "2000012729173180")
-      .sort(
-        (a, b) =>
-          new Date(b.sale_Date).getTime() - new Date(a.sale_date).getTime()
-      )
-  );
+  console.log("meli pros ");
 
   const syncErrors = await GetSync48hErrors();
   const syncSummary = await GetSyncSummary();

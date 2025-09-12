@@ -6,7 +6,7 @@ import { CircleButton } from "./Buttons";
 import { formattedPriceNormalized } from "@/lib/formattedPrice";
 import dayjs from "dayjs";
 import { TableText } from "./Titulo";
-const { Link } = Typography
+const { Link } = Typography;
 
 /**
  * DinamicTable component renders a table with dynamic columns and data.
@@ -23,7 +23,7 @@ type Props = {
     onRowClick?: (record: any) => void;
     onRowHover?: (record: any) => void;
   };
-  getRowClass?: (type: any) => string;
+  getRowClass?: (type: any, shipment?: string) => string;
   hasPagination?: boolean;
 };
 
@@ -78,7 +78,9 @@ function renderColumns(
           // >
           //   {text}
           // </Button>
-          <Link onClick={() => columnConfig.actions![0].onPress(record)}>{text}</Link>
+          <Link onClick={() => columnConfig.actions![0].onPress(record)}>
+            {text}
+          </Link>
         );
       }
     case "custom":
@@ -161,9 +163,11 @@ function DinamicTable({
         }
         tableLayout="auto"
         //scroll={{ x: "max-content" }}
-        scroll={{x: "max-content"}}
+        scroll={{ x: "max-content" }}
         rowClassName={(record) => {
-          return rowStyle ? getRowClass!(record.type) : "";
+          return rowStyle
+            ? getRowClass!(record.type, record.shipment_reference)
+            : "";
         }}
         onRow={(record, rowIndex) => {
           return rowActions
