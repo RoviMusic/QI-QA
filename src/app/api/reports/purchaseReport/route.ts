@@ -55,7 +55,7 @@ export async function GET(req: Request) {
       ORDER BY pe.marcaproducto ASC
     `;
   try {
-    const [rows] = await dolibarrPool.execute(sql);
+    const [rows] = await dolibarrPool.query(sql);
     return NextResponse.json(rows);
   } catch (err: any) {
     console.error("[/api/reportes] ERROR:", err?.message || err);

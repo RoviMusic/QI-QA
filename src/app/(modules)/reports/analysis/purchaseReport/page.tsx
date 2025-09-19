@@ -166,20 +166,6 @@ async function mapToUi(r: ApiRow): Promise<UiRow> {
 
   const status = r.tosell == 0 && r.tobuy == 0 ? "Descontinuado" : "";
 
-  if (r.ref === "7504365") {
-    console.log("mapToUi - Detalles del producto 7504365:");
-    console.log("en transito ", r.in_transit);
-    console.log(
-      `cedis: ${cedis} piso: ${piso} mercado: ${mercado} mat: ${mat} jir: ${jir} tec: ${tec}`
-    );
-    console.log("stockMap: ", stockMap);
-    console.log("totalStock: ", totalStock);
-    console.log("total: ", total);
-    console.log("max: ", max);
-    console.log("diferencia: ", diferencia);
-    console.log("pedidos: ", pedidos);
-  }
-
   return {
     id: r.rowid, // rowid
     referencia: r.ref, // ref
@@ -305,10 +291,11 @@ export default function PurchaseReportPage() {
           content: "No hay datos para mostrar",
         });
         setRows([]);
+        setLoading(false);
         return;
       }
 
-      console.log(data);
+      //console.log(data);
 
       // Esperamos a que todas las promesas devueltas por mapToUi terminen
       //const mapped = await Promise.all(data.map((r) => mapToUi(r)));

@@ -19,6 +19,12 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import LoadingAnimation from "@/components/core/LoadingAnimation";
+import {
+  CheckCircleFilled,
+  HomeFilled,
+  LoadingOutlined,
+  WarningFilled,
+} from "@ant-design/icons";
 
 const ENDPOINTS = {
   products: `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/reports/products`,
@@ -186,7 +192,6 @@ const initialFilters = {
 export default function ProductsEditionPage() {
   const [form] = Form.useForm();
   const [rows, setRows] = useState<ProductRow[]>([]);
-  const [loadingRow, setLoadingRow] = useState<number | null>(null);
   const [enriching, setEnriching] = useState(false);
 
   const { message } = App.useApp();
@@ -215,23 +220,204 @@ export default function ProductsEditionPage() {
     },
   });
 
-  const getInitialData = async () => {
-    const response = await fetch(`${ENDPOINTS.products}`, {
-      cache: "no-store",
-    });
+  // Componente para input editable con feedback visual
+  function EditableInput({
+    value,
+    record,
+    field,
+    type,
+    numberOnly = false,
+    width = 100,
+    saveChange,
+  }: {
+    value: any;
+    record: ProductRow;
+    field: string;
+    type: string;
+    numberOnly?: boolean;
+    width?: number;
+    saveChange: (payload: {
+      rowid: number;
+      type: string;
+      field: string;
+      value: any;
+    }) => Promise<void>;
+  }) {
+    const [status, setStatus] = useState<
+      "idle" | "saving" | "success" | "error"
+    >("idle");
+    const [inputValue, setInputValue] = useState(value ?? "");
 
-    const result = await response.json();
-    console.log("this result ", result);
-    setEnriching(true);
-    const enriched = await enrichMany(result, 8);
-    setEnriching(false);
+    let bgColor = "#fff"; // amarillo claro
+    if (status === "saving") bgColor = "#fff7b2";
+    if (status === "success") bgColor = "#d6f5d6";
+    if (status === "error") bgColor = "#ffd6d6";
 
-    setRows(enriched);
-  };
+    const handleSave = async (v: string) => {
+      setStatus("saving");
+      try {
+        await saveChange({
+          rowid: record.rowid,
+          type,
+          field,
+          value: numberOnly ? v.replace(/\D/g, "") : v,
+        });
+        setStatus("success");
+        //setTimeout(() => setStatus("idle"), 1200);
+      } catch {
+        setStatus("error");
+        //setTimeout(() => setStatus("idle"), 1200);
+      }
+    };
 
-  // useEffect(() => {
-  //   getInitialData();
-  // }, []);
+    return (
+      <Input
+        style={{ backgroundColor: bgColor, width }}
+        value={inputValue}
+        onChange={(e) => {
+          let v = e.target.value;
+          if (numberOnly) v = v.replace(/\D/g, "");
+          setInputValue(v);
+        }}
+        onKeyUp={async (e) => {
+          if (e.key === "Enter") {
+            await handleSave(inputValue.trim());
+          }
+        }}
+      />
+    );
+  }
+
+  // Componente para InputNumber editable con feedback visual
+  function EditableInputNumber({
+    value,
+    record,
+    field,
+    type,
+    max = 100,
+    numberOnly = false,
+    saveChange,
+  }: {
+    value: any;
+    record: ProductRow;
+    field: string;
+    type: string;
+    max?: number;
+    numberOnly?: boolean;
+    saveChange: (payload: {
+      rowid: number;
+      type: string;
+      field: string;
+      value: any;
+    }) => Promise<void>;
+  }) {
+    const [status, setStatus] = useState<
+      "idle" | "saving" | "success" | "error"
+    >("idle");
+    const [inputValue, setInputValue] = useState(value ?? "");
+
+    let bgColor = "#fff";
+    if (status === "saving") bgColor = "#fff7b2";
+    if (status === "success") bgColor = "#d6f5d6";
+    if (status === "error") bgColor = "#ffd6d6";
+
+    const handleSave = async (v: string | number) => {
+      setStatus("saving");
+      try {
+        await saveChange({
+          rowid: record.rowid,
+          type,
+          field,
+          value: numberOnly ? String(v).replace(/\D/g, "") : v,
+        });
+        setStatus("success");
+      } catch {
+        setStatus("error");
+      }
+    };
+
+    return (
+      <InputNumber
+        controls={false}
+        value={inputValue}
+        style={{ backgroundColor: bgColor, width: 80 }}
+        max={max}
+        onChange={(v) => {
+          let val = v;
+          if (numberOnly && typeof val === "string")
+            val = val.replace(/\D/g, "");
+          setInputValue(val);
+        }}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            handleSave(inputValue);
+          }
+        }}
+      />
+    );
+  }
+
+  // Componente para Select editable con feedback visual
+  function EditableSelect({
+    value,
+    record,
+    field,
+    type,
+    options,
+    saveChange,
+  }: {
+    value: any;
+    record: ProductRow;
+    field: string;
+    type: string;
+    options: { value: string | number; label: string }[];
+    saveChange: (payload: {
+      rowid: number;
+      type: string;
+      field: string;
+      value: any;
+    }) => Promise<void>;
+  }) {
+    const [status, setStatus] = useState<
+      "idle" | "saving" | "success" | "error"
+    >("idle");
+    const [selectValue, setSelectValue] = useState(value ?? options[0]?.value);
+
+    let bgColor = "#fff";
+    if (status === "saving") bgColor = "#fff7b2";
+    if (status === "success") bgColor = "#d6f5d6";
+    if (status === "error") bgColor = "#ffd6d6";
+
+    const handleChange = async (v: any) => {
+      setSelectValue(v);
+      setStatus("saving");
+      try {
+        await saveChange({ rowid: record.rowid, type, field, value: v });
+        setStatus("success");
+      } catch {
+        setStatus("error");
+      }
+    };
+
+    return (
+      <Select
+        value={selectValue}
+        style={{ width: 140 }}
+        options={options}
+        onChange={handleChange}
+        styles={{ root: { backgroundColor: bgColor } }}
+        prefix={
+          status === "saving" ? (
+            <LoadingOutlined />
+          ) : status === "success" ? (
+            <CheckCircleFilled style={{ color: "green" }} />
+          ) : status === "error" ? (
+            <WarningFilled style={{ color: "red" }} />
+          ) : undefined
+        }
+      />
+    );
+  }
 
   // Guardar: inputs (enter) y selects (onChange)
   async function saveChange(payload: {
@@ -268,24 +454,14 @@ export default function ProductsEditionPage() {
     (field: string, type: string, width = 100, numberOnly = false) =>
     (value: any, record: ProductRow) =>
       (
-        <Input
-          defaultValue={value ?? ""}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              const v = (e.currentTarget.value || "").trim();
-              if (numberOnly) e.currentTarget.value = v.replace(/\D/g, "");
-              saveChange({
-                rowid: record.rowid,
-                type,
-                field,
-                value: numberOnly ? v.replace(/\D/g, "") : v,
-              });
-            }
-          }}
-          onInput={(e) => {
-            if (numberOnly)
-              e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
-          }}
+        <EditableInput
+          value={value}
+          record={record}
+          field={field}
+          type={type}
+          numberOnly={numberOnly}
+          width={width}
+          saveChange={saveChange}
         />
       );
 
@@ -293,22 +469,14 @@ export default function ProductsEditionPage() {
     (field: string, type: string, max = 100, numberOnly = false) =>
     (value: any, record: ProductRow) =>
       (
-        <InputNumber
-          controls={false}
-          defaultValue={value ?? ""}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              const v = (e.currentTarget.value || "").trim();
-              if (numberOnly) e.currentTarget.value = v.replace(/\D/g, "");
-              saveChange({
-                rowid: record.rowid,
-                type,
-                field,
-                value: numberOnly ? v.replace(/\D/g, "") : v,
-              });
-            }
-          }}
+        <EditableInputNumber
+          value={value}
+          record={record}
+          field={field}
+          type={type}
           max={max}
+          numberOnly={numberOnly}
+          saveChange={saveChange}
         />
       );
 
@@ -320,13 +488,13 @@ export default function ProductsEditionPage() {
     ) =>
     (value: any, record: ProductRow) =>
       (
-        <Select
-          defaultValue={value ?? options[0]?.value}
-          style={{ width: 140 }}
+        <EditableSelect
+          value={value}
+          record={record}
+          field={field}
+          type={type}
           options={options}
-          onChange={(v) =>
-            saveChange({ rowid: record.rowid, type, field, value: v })
-          }
+          saveChange={saveChange}
         />
       );
 

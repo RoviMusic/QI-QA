@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       WHERE fk_product = ?
     `;
 
-    const [rows] = await dolibarrPool.execute(sql, [rowid]);
+    const [rows] = await dolibarrPool.query(sql, [rowid]);
 
     // Convertimos el resultado en un mapa: { fk_entrepot: reel }
     const stockMap: Record<number, number> = {};

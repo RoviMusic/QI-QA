@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       sql = `SELECT c.description FROM llx_categorie c, llx_categorie_product cp WHERE c.rowid=cp.fk_categorie AND cp.fk_product = ${rowid}`;
     }
 
-    const [rows] = await dolibarrPool.execute(sql);
+    const [rows] = await dolibarrPool.query(sql);
 
     return Response.json({
       data: rows,

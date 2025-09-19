@@ -26,27 +26,30 @@ const defaultTheme: ThemeConfig = {
     Table: {
       cellFontSizeSM: 12,
       cellFontSize: 16,
-      cellFontSizeMD: 14
+      cellFontSizeMD: 14,
     },
     InputNumber: {
       fontSizeSM: 10,
-      activeBorderColor: '#FAB627',
+      activeBorderColor: "#FAB627",
     },
     Input: {
       fontSizeSM: 10,
     },
     Segmented: {
-      itemActiveBg: '#FAB627',
-      itemSelectedBg: '#FAB627',
-      itemSelectedColor: '#fff'
+      itemActiveBg: "#FAB627",
+      itemSelectedBg: "#FAB627",
+      itemSelectedColor: "#fff",
     },
     Button: {
-      colorBgContainerDisabled: '#D9D9D9',
-      defaultBg: 'transparent',
-      defaultBorderColor: '#FAB627'
+      colorBgContainerDisabled: "#D9D9D9",
+      defaultBg: "transparent",
+      defaultBorderColor: "#FAB627",
     },
     Form: {
-      itemMarginBottom: 0
+      itemMarginBottom: 0,
+    },
+    Transfer: {
+      listWidth: 300,
     },
   },
 };
