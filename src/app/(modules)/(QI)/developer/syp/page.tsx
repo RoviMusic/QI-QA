@@ -5,11 +5,13 @@ import {
   GetErrorsMeli,
   GetPendingMeli,
   GetProcesserMeli,
+  GetProcessorActivity,
 } from "@/modules/tools/process/services/processorService";
 import Sync from "@/modules/tools/sync/components/sync";
 import {
   GetCicleError,
   GetSync48hErrors,
+  GetSyncActivity,
   GetSyncSummary,
 } from "@/modules/tools/sync/services/syncService";
 import { Flex } from "antd";
@@ -26,6 +28,7 @@ export default async function DevSipPage() {
     syncSummary[0].timestamp,
     syncSummary[0].end_time
   );
+  const syncActivity = await GetSyncActivity();
 
   const processorData = await GetProcesserMeli();
   const errorsMeliData = await GetErrorsMeli();
@@ -37,6 +40,7 @@ export default async function DevSipPage() {
   const processedData = [...addMarket(processorData, "Mercado Libre")];
   const errorsData = [...addMarket(errorsMeliData, "Mercado Libre")];
   const pendingData = [...addMarket(pendingMeliData, "Mercado Libre")];
+  const processorActivity = await GetProcessorActivity();
 
   return (
     <>
@@ -54,11 +58,13 @@ export default async function DevSipPage() {
             syncTotalErrors={syncErrors}
             syncSummary={syncSummary[0]}
             syncCicleErrors={cicleErrors}
+            syncActivity={syncActivity[0].timestamp}
           />
           <ProcessorDev
             processedData={processedData}
             errorsData={errorsData}
             pendingData={pendingData}
+            activity={processorActivity}
           />
         </Flex>
       </Container>

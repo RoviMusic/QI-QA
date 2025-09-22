@@ -65,6 +65,10 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  experimental: {
+    clientInstrumentationHook: true,
+  },
 };
 
 //module.exports = { serverExternalPackages: ["mysql2"] };

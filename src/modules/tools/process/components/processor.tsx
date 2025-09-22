@@ -32,9 +32,10 @@ const { Link } = Typography;
 
 interface ProcessorProps {
   data: any[];
+  activity: any;
 }
 
-export default function Processor({ data }: ProcessorProps) {
+export default function Processor({ data, activity }: ProcessorProps) {
   const columns: DinamicColumnsType[] = [
     {
       title: "No. de orden",
@@ -320,7 +321,7 @@ export default function Processor({ data }: ProcessorProps) {
         <Flex gap={10} align="center" justify="space-between">
           <Space>
             <MainTitle>Procesador de órdenes</MainTitle>
-            <BadgeStatus />
+            <BadgeStatus status={activity.status} text={activity.text} />
           </Space>
         </Flex>
         <GlassCard>

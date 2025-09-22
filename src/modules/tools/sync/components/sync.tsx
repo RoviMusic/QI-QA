@@ -11,7 +11,7 @@ import ItemsList from "@/modules/tools/shared/components/ItemsList";
 import { ErrorType } from "@/shared/types/sharedTypes";
 import { Badge, Col, Flex, List, Modal, Row, Space, Statistic } from "antd";
 import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
+import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 import { useState } from "react";
 import { IErrors } from "../models/ErrorsModel";
@@ -23,12 +23,14 @@ interface SyncProps {
   syncTotalErrors: IErrors[];
   syncSummary: ISummary;
   syncCicleErrors: IErrors[];
+  syncActivity: Date;
 }
 
 export default function Sync({
   syncTotalErrors,
   syncSummary,
   syncCicleErrors,
+  syncActivity,
 }: SyncProps) {
   const [errors, setErrors] = useState<IErrors[]>();
   const [openModalErrors, setOpenModalErrors] = useState<boolean>(false);
@@ -44,6 +46,26 @@ export default function Sync({
     setOpenModalErrors(false);
   };
 
+  const checkSyncStatus = () => {
+    // Quita el offset y parsea como local
+    const lastSyncLocal = new Date(
+      syncActivity.toString().replace(/([+-]\d{2}:\d{2}|Z)$/, "")
+    );
+    const nowLocal = new Date();
+
+    const diffMs = nowLocal.getTime() - lastSyncLocal.getTime();
+    const diffMin = Math.floor(diffMs / 1000 / 60);
+
+    if (diffMin <= 70) {
+      return {
+        status: "running",
+        message: "Sincronizador en funcionamiento",
+      };
+    } else {
+      return { status: "error", message: "Error en sincronizador" };
+    }
+  };
+
   return (
     <>
       <Flex gap={20} vertical>
@@ -56,8 +78,10 @@ export default function Sync({
               <Flex gap={15} justify="space-between">
                 <DefaultTitle level={3}>Meli</DefaultTitle>
                 <Badge
-                  status="success"
-                  text="Sincronizador en funcionamiento (fake news)"
+                  status={
+                    checkSyncStatus().status === "running" ? "success" : "error"
+                  }
+                  text={checkSyncStatus().message}
                 />
               </Flex>
 
@@ -184,14 +208,18 @@ export default function Sync({
                 <LabelTitle>
                   MLM: {String(err.metadata.publication_id)}
                 </LabelTitle>
-                <LabelTitle>
-                  SKU: {err.metadata.sku ?? ''}
-                </LabelTitle>
+                <LabelTitle>SKU: {err.metadata.sku ?? ""}</LabelTitle>
                 <MutedSubtitle>
-                  {dayjs.utc(err.timestamp).format("DD/MM/YYYY [a las] HH:mm:ss a")}
+                  {dayjs
+                    .utc(err.timestamp)
+                    .format("DD/MM/YYYY [a las] HH:mm:ss a")}
                 </MutedSubtitle>
                 <p>{err.error}</p>
-                <JsonView value={err.metadata} collapsed={1} displayDataTypes={false} />
+                <JsonView
+                  value={err.metadata}
+                  collapsed={1}
+                  displayDataTypes={false}
+                />
               </Flex>
             </List.Item>
           ))}

@@ -4,12 +4,15 @@ import Processor from "@/modules/tools/process/components/processor";
 import {
   GetAllAmazonData,
   GetAllMeliData,
+  GetAllProcessorData,
+  GetProcessorActivity,
 } from "@/modules/tools/process/services/processorService";
 import Sync from "@/modules/tools/sync/components/sync";
 import {
   GetCicleError,
   GetSync48hErrors,
   GetSyncSummary,
+  GetSyncActivity,
 } from "@/modules/tools/sync/services/syncService";
 import { Flex } from "antd";
 import dayjs from "dayjs";
@@ -19,21 +22,24 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export default async function SyncProcessPage() {
-  const meliData = await GetAllMeliData();
-  const amazonData = await GetAllAmazonData();
+  // const meliData = await GetAllMeliData();
+  // const amazonData = await GetAllAmazonData();
 
-  const allData = [...meliData, ...amazonData]
-    //.filter((item) => !item.shipment_reference?.startsWith("NE-"))
-    .sort((a, b) => {
-      const dateA = new Date(a.sale_date).getTime();
-      const dateB = new Date(b.sale_date).getTime();
+  const allProcessorData = await GetAllProcessorData();
+  const processorActivity = await GetProcessorActivity();
 
-      // Si alguna fecha es inválida, ponla al final
-      if (isNaN(dateA)) return 1;
-      if (isNaN(dateB)) return -1;
+  // const allData = [...meliData, ...amazonData]
+  //   //.filter((item) => !item.shipment_reference?.startsWith("NE-"))
+  //   .sort((a, b) => {
+  //     const dateA = new Date(a.sale_date).getTime();
+  //     const dateB = new Date(b.sale_date).getTime();
 
-      return dateB - dateA;
-    });
+  //     // Si alguna fecha es inválida, ponla al final
+  //     if (isNaN(dateA)) return 1;
+  //     if (isNaN(dateB)) return -1;
+
+  //     return dateB - dateA;
+  //   });
   // .sort(
   //   (a, b) =>
   //     new Date(b.sale_date).getTime() - new Date(a.sale_date).getTime()
@@ -41,6 +47,7 @@ export default async function SyncProcessPage() {
 
   const syncErrors = await GetSync48hErrors();
   const syncSummary = await GetSyncSummary();
+  const syncActivity = await GetSyncActivity();
 
   const cicleErrors = await GetCicleError(
     syncSummary[0].timestamp,
@@ -63,8 +70,9 @@ export default async function SyncProcessPage() {
             syncTotalErrors={syncErrors}
             syncSummary={syncSummary[0]}
             syncCicleErrors={cicleErrors}
+            syncActivity={syncActivity[0].timestamp}
           />
-          <Processor data={allData} />
+          <Processor data={allProcessorData} activity={processorActivity} />
         </Flex>
       </Container>
     </>

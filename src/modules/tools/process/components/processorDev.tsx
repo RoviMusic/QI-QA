@@ -20,12 +20,14 @@ interface ProcessorDevProps {
   processedData: IProcessor[];
   errorsData: IProcessorErrors[];
   pendingData: IProcessorPending[];
+  activity: any;
 }
 
 export default function ProcessorDev({
   processedData,
   errorsData,
   pendingData,
+  activity,
 }: ProcessorDevProps) {
   const [dataProcessed, setDataProcessed] = useState<any[]>(processedData);
   const [dataPending, setDataPending] = useState<any[]>(pendingData);
@@ -107,7 +109,7 @@ export default function ProcessorDev({
         <Flex gap={20} vertical>
           <Flex gap={10} align="center" wrap>
             <MainTitle>Procesador de órdenes</MainTitle>
-            <BadgeStatus />
+            <BadgeStatus status={activity.status} text={activity.text} />
           </Flex>
 
           <GlassCard>

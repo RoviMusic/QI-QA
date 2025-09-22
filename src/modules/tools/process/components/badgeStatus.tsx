@@ -1,13 +1,13 @@
 import { Badge } from "antd";
+type BadgeProps = {
+  status: "default" | "warning" | "error" | "success";
+  text: string;
+};
 
-export default function BadgeStatus() {
-  const sendNotification = () => {};
-
-  const checkStatus = () => {};
-
+export default function BadgeStatus({ status, text }: BadgeProps) {
   return (
     <>
-      <Badge status="success" text="Procesador en funcionamiento (fake news)" />
+      <Badge status={status} text={text} />
     </>
   );
 }
