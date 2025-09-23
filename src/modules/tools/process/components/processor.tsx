@@ -14,6 +14,7 @@ import {
   Badge,
   Checkbox,
   Col,
+  DatePicker,
   Flex,
   Input,
   Modal,
@@ -22,12 +23,14 @@ import {
   Steps,
   Typography,
 } from "antd";
+import type { DatePickerProps } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import type { GetProp } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import JsonView from "@uiw/react-json-view";
 import tableStyles from "@/styles/Tables.module.css";
 import BadgeStatus from "./badgeStatus";
+import { CircleButton } from "@/components/core/Buttons";
 const { Link } = Typography;
 
 interface ProcessorProps {
@@ -40,21 +43,63 @@ export default function Processor({ data, activity }: ProcessorProps) {
     {
       title: "No. de orden",
       column_id: "sale_id",
-      type: "link",
-      actions: [
-        {
-          onPress: (record) => {
-            //enviar a numero de orden en market
-            console.log("Order details:", record);
-            if (record.market === MarketsEnmu.Meli && record.sale_id) {
-              window.open(
-                `${process.env.NEXT_PUBLIC_MELI_ORDERS_URL}/${record.sale_id}/detalle`,
-                "_blank"
-              );
-            }
-          },
-        },
-      ],
+      type: "custom",
+      render: (value, record) => {
+        return (
+          <>
+            <Space>
+              <Link
+                onClick={() => {
+                  if (record.market === MarketsEnmu.Meli && record.sale_id) {
+                    window.open(
+                      `${process.env.NEXT_PUBLIC_MELI_ORDERS_URL}/${record.sale_id}/detalle`,
+                      "_blank"
+                    );
+                  }
+                }}
+              >
+                {value}
+              </Link>
+
+              <CircleButton
+                icon="Circle-Info"
+                onPress={() => handleDetail(record)}
+                color="#FAB627"
+                tooltip="Ver información"
+              />
+            </Space>
+          </>
+        );
+      },
+      // type: "link",
+      // actions: [
+      //   {
+      //     onPress: (record) => {
+      //       //enviar a numero de orden en market
+      //       console.log("Order details:", record);
+      //       if (record.market === MarketsEnmu.Meli && record.sale_id) {
+      //         window.open(
+      //           `${process.env.NEXT_PUBLIC_MELI_ORDERS_URL}/${record.sale_id}/detalle`,
+      //           "_blank"
+      //         );
+      //       }
+      //     },
+      //   },
+      // ],
+    },
+    {
+      title: "SKU",
+      column_id: "order_items",
+      type: "custom",
+      render: (value, record) => {
+        return (
+          <>
+            <TableText>
+              {value[0].sku} <small>({value[0].requested_quantity})</small>{" "}
+            </TableText>
+          </>
+        );
+      },
     },
     {
       title: "Fecha de venta",
@@ -197,6 +242,8 @@ export default function Processor({ data, activity }: ProcessorProps) {
     []
   );
 
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+
   const marketMap: Record<string, string> = {
     meli: "Mercado Libre",
     amazon: "Amazon",
@@ -239,6 +286,14 @@ export default function Processor({ data, activity }: ProcessorProps) {
     });
   };
 
+  const filterByDate = (items: any[]) => {
+    if (!selectedDate) return items;
+
+    return items.filter((item) =>
+      dayjs(item.sale_date).isSame(selectedDate, "day")
+    );
+  };
+
   const filterMarket = useMemo(
     () => filterByMarket(data),
     [data, selectedMarkets]
@@ -247,6 +302,11 @@ export default function Processor({ data, activity }: ProcessorProps) {
   const filterMarketAndShipping = useMemo(
     () => filterByShippingType(filterMarket),
     [filterMarket, selectedShippingTypes]
+  );
+
+  const filterMarketShippingAndDate = useMemo(
+    () => filterByDate(filterMarketAndShipping),
+    [filterMarketAndShipping, selectedDate]
   );
 
   const onChangeMarket: GetProp<typeof Checkbox.Group, "onChange"> = (
@@ -267,6 +327,10 @@ export default function Processor({ data, activity }: ProcessorProps) {
     setSelectedShippingTypes(checkedValues as string[]);
   };
 
+  const onChangeDate: DatePickerProps["onChange"] = (date, dateString) => {
+    setSelectedDate(date);
+  };
+
   const filterBySearch = (items: any[]) =>
     !searchTerm.trim()
       ? items
@@ -278,15 +342,15 @@ export default function Processor({ data, activity }: ProcessorProps) {
 
   // Aplica ambos filtros: mercado y búsqueda
   const displayedData = useMemo(
-    () => filterBySearch(filterMarketAndShipping),
-    [filterMarketAndShipping, searchTerm]
+    () => filterBySearch(filterMarketShippingAndDate),
+    [filterMarketShippingAndDate, searchTerm]
   );
 
   const handleDetail = (data: any) => {
-    if (data.type === "errors") {
-      setOpenDetail(true);
-      setDataDetail(data);
-    }
+    //if (data.type === "errors") {
+    setOpenDetail(true);
+    setDataDetail(data);
+    //}
   };
 
   const handleCloseDetail = () => {
@@ -338,55 +402,68 @@ export default function Processor({ data, activity }: ProcessorProps) {
               </Space>
             </Col>
 
-            <Col>
-              <Flex vertical gap={10}>
-                <LabelTitle>Filtrar por:</LabelTitle>
+            <Col span={24}>
+              <Flex gap={10} justify="space-between">
+                <Space direction="vertical">
+                  <LabelTitle>Filtrar por market:</LabelTitle>
+                  <Checkbox.Group
+                    onChange={onChangeMarket}
+                    options={[
+                      {
+                        value: "meli",
+                        label: (
+                          <span className="text-[#F2A516]">Mercado Libre</span>
+                        ),
+                      },
+                      {
+                        value: "amazon",
+                        label: <span className="text-[#232F3E]">Amazon</span>,
+                      },
+                      {
+                        value: "wl",
+                        label: <span className="text-[#0071DC]">Walmart</span>,
+                      },
+                      {
+                        value: "cop",
+                        label: <span className="text-[#1C42E8]">Coppel</span>,
+                      },
+                    ]}
+                  />
+                </Space>
 
-                <Checkbox.Group
-                  onChange={onChangeMarket}
-                  options={[
-                    {
-                      value: "meli",
-                      label: (
-                        <span className="text-[#F2A516]">Mercado Libre</span>
-                      ),
-                    },
-                    {
-                      value: "amazon",
-                      label: <span className="text-[#232F3E]">Amazon</span>,
-                    },
-                    {
-                      value: "wl",
-                      label: <span className="text-[#0071DC]">Walmart</span>,
-                    },
-                    {
-                      value: "cop",
-                      label: <span className="text-[#1C42E8]">Coppel</span>,
-                    },
-                  ]}
-                />
+                <Space direction="vertical">
+                  <LabelTitle>Filtrar por envío:</LabelTitle>
+                  <Checkbox.Group
+                    onChange={onChangeShippingType}
+                    options={[
+                      {
+                        value: "fulfillment",
+                        label: <span>Fullfilment</span>,
+                      },
+                      {
+                        value: "cross_docking",
+                        label: <span>Cross Docking</span>,
+                      },
+                      {
+                        value: "drop_off",
+                        label: <span>Drop Off</span>,
+                      },
+                      {
+                        value: "no_shipping",
+                        label: "Sin tipo de envío",
+                      },
+                    ]}
+                  />
+                </Space>
 
-                <Checkbox.Group
-                  onChange={onChangeShippingType}
-                  options={[
-                    {
-                      value: "fulfillment",
-                      label: <span>Fullfilment</span>,
-                    },
-                    {
-                      value: "cross_docking",
-                      label: <span>Cross Docking</span>,
-                    },
-                    {
-                      value: "drop_off",
-                      label: <span>Drop Off</span>,
-                    },
-                    {
-                      value: "no_shipping",
-                      label: "Sin tipo de envío",
-                    },
-                  ]}
-                />
+                <Space direction="vertical">
+                  <LabelTitle>Filtrar por fecha:</LabelTitle>
+                  <DatePicker
+                    style={{ width: "200px" }}
+                    onChange={onChangeDate}
+                    value={selectedDate}
+                  />
+                </Space>
               </Flex>
             </Col>
           </Row>
@@ -397,7 +474,7 @@ export default function Processor({ data, activity }: ProcessorProps) {
             dataSource={displayedData}
             rowStyle
             getRowClass={getRowClass}
-            rowActions={{ onRowClick: handleDetail }}
+            //rowActions={{ onRowClick: handleDetail }}
           />
         </GlassCard>
       </Flex>
@@ -436,7 +513,7 @@ export default function Processor({ data, activity }: ProcessorProps) {
             )}
           </Flex>
 
-          <p className="text-red-400 mb-3">{dataDetail?.message}</p>
+          <p className="font-bold mb-3">{dataDetail?.message}</p>
 
           <Steps
             progressDot
@@ -537,16 +614,8 @@ export default function Processor({ data, activity }: ProcessorProps) {
               },
             ]}
           />
-          {dataDetail?.order && (
-            <>
-              <DefaultTitle>Detalle técnico:</DefaultTitle>
-              <JsonView
-                value={dataDetail?.order}
-                collapsed={1}
-                displayDataTypes={false}
-              />
-            </>
-          )}
+          <DefaultTitle>Detalle técnico:</DefaultTitle>
+          <JsonView value={dataDetail} collapsed={1} displayDataTypes={false} />
         </Flex>
       </Modal>
     </>

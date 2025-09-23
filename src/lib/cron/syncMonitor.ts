@@ -72,10 +72,6 @@ class SyncMonitor {
       const diffMs = nowLocal.getTime() - activityTimestamp.getTime();
       const diffMin = Math.floor(diffMs / 1000 / 60);
 
-      console.log("lastSync serv", activityTimestamp);
-      console.log("now serv", nowLocal);
-      console.log("diffInMinutes serv", diffMin);
-
       if (diffMin <= 70) {
         console.log("✅ Sync funcionando correctamente");
       } else {

@@ -49,7 +49,7 @@ export default function Sync({
   const checkSyncStatus = () => {
     // Quita el offset y parsea como local
     const lastSyncLocal = new Date(
-      syncActivity.toString().replace(/([+-]\d{2}:\d{2}|Z)$/, "")
+      syncActivity?.toString().replace(/([+-]\d{2}:\d{2}|Z)$/, "")
     );
     const nowLocal = new Date();
 

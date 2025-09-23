@@ -104,8 +104,8 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
                 type == "Processed"
                   ? "green"
                   : type == "Pending"
-                  ? "gray"
-                  : "red",
+                    ? "gray"
+                    : "red",
             }}
           >
             {items.length} {title}
@@ -234,26 +234,27 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
         width={800}
       >
         <Flex vertical gap={20}>
-          <Flex vertical gap={10}>
-            <p>Market: {dataError?.market}</p>
-            <p>
-              Fecha de venta:{" "}
-              {dayjs(dataError?.sale_date).format(
-                "DD/MM/YYYY [a las] HH:mm:ss a"
-              )}
-            </p>
-            {dataError?.shipment_type ? (
-              <>
-                <p>Tipo de envío: {dataError?.shipment_type}</p>
-              </>
-            ) : (
-              <>
-                <Space>
-                  <p>Tipo de envío:</p>
-                  <MutedSubtitle>Sin dato</MutedSubtitle>
-                </Space>
-              </>
-            )}
+          <Flex gap={10} justify="space-between">
+            <Space>
+              <p className="font-semibold">Market:</p>
+              <MutedSubtitle>{dataError?.market}</MutedSubtitle>
+            </Space>
+
+            <Space>
+              <p className="font-semibold">Fecha de venta:</p>
+              <MutedSubtitle>
+                {dayjs(dataError?.sale_date).format(
+                  "DD/MM/YYYY [a las] HH:mm:ss a"
+                )}
+              </MutedSubtitle>
+            </Space>
+
+            <Space>
+              <p>Tipo de envío:</p>
+              <MutedSubtitle>
+                {dataError?.shipment_type ?? "Sin dato"}
+              </MutedSubtitle>
+            </Space>
           </Flex>
 
           <p className="text-red-400 mb-3">{dataError?.message}</p>
@@ -357,16 +358,8 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
               },
             ]}
           />
-          {dataError?.order && (
-            <>
-              <DefaultTitle>Detalle técnico:</DefaultTitle>
-              <JsonView
-                value={dataError?.order}
-                collapsed={1}
-                displayDataTypes={false}
-              />
-            </>
-          )}
+          <DefaultTitle>Detalle técnico:</DefaultTitle>
+          <JsonView value={dataError} collapsed={1} displayDataTypes={false} />
         </Flex>
       </Modal>
 
@@ -378,29 +371,30 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
         footer={null}
       >
         <Flex vertical gap={20}>
-          <Flex vertical gap={10}>
-            <p>Market: {dataDetail?.market}</p>
-            <p>
-              Fecha de venta:{" "}
-              {dayjs(dataDetail?.sale_date).format(
-                "DD/MM/YYYY [a las] HH:mm:ss a"
-              )}
-            </p>
-            {dataDetail?.shipment_type ? (
-              <>
-                <p>Tipo de envío: {dataDetail?.shipment_type}</p>
-              </>
-            ) : (
-              <>
-                <Space>
-                  <p>Tipo de envío:</p>
-                  <MutedSubtitle>Sin dato</MutedSubtitle>
-                </Space>
-              </>
-            )}
+          <Flex gap={10} justify="space-between">
+            <Space>
+              <p className="font-semibold">Market:</p>
+              <MutedSubtitle>{dataDetail?.market}</MutedSubtitle>
+            </Space>
+
+            <Space>
+              <p className="font-semibold">Fecha de venta:</p>
+              <MutedSubtitle>
+                {dayjs(dataDetail?.sale_date).format(
+                  "DD/MM/YYYY [a las] HH:mm:ss a"
+                )}
+              </MutedSubtitle>
+            </Space>
+
+            <Space>
+              <p className="font-semibold">Tipo de envío:</p>
+              <MutedSubtitle>
+                {dataDetail?.shipment_type ?? "Sin dato"}
+              </MutedSubtitle>
+            </Space>
           </Flex>
 
-          <p className="text-red-400 mb-3">{dataDetail?.message}</p>
+          <p className="font-bold mb-3">{dataDetail?.message}</p>
 
           <Steps
             progressDot
@@ -503,10 +497,6 @@ export default function ItemsList({ title, items, type }: ItemsListProps) {
           />
           <DefaultTitle>Detalle técnico:</DefaultTitle>
           <JsonView value={dataDetail} collapsed={1} displayDataTypes={false} />
-          {/* {dataDetail?.order && (
-            <>
-            </>
-          )} */}
         </Flex>
       </Modal>
     </>

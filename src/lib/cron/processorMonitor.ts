@@ -83,7 +83,6 @@ class ProcessorMonitor {
       });
 
       const getErrorPercentage = (totalErrors * 100) / recentData.length;
-      console.log("percentage ", getErrorPercentage);
 
       if (getErrorPercentage >= 10 && getErrorPercentage < 30) {
         await this.sendAlert({
