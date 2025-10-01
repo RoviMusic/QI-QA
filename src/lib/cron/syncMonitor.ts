@@ -56,7 +56,7 @@ class SyncMonitor {
 
       if (!latestActivity) {
         await this.sendAlert({
-          message: "No se encontró actividad de sync",
+          message: "SINCRONIZADOR - No se encontró actividad de sync",
           level: "CRITICAL",
           where: "Sync",
         });
@@ -76,7 +76,7 @@ class SyncMonitor {
         console.log("✅ Sync funcionando correctamente");
       } else {
         await this.sendAlert({
-          message: `El proceso de sync no ha tenido actividad en ${diffMin} minutos. Última actividad: ${activityTimestamp}`,
+          message: `SINCRONIZADOR no ha tenido actividad en ${diffMin} minutos. Última actividad: ${activityTimestamp}`,
           level: "CRITICAL",
           where: "Sync",
         });
@@ -86,7 +86,7 @@ class SyncMonitor {
     } catch (error: any) {
       console.error("❌ Error al verificar actividad del sync:", error);
       await this.sendAlert({
-        message: `Error al verificar el estado del sync: ${error.message}`,
+        message: `SINCRONIZADOR - Error al verificar el estado del sync: ${error.message}`,
         level: "ERROR",
         where: "Sync",
       });

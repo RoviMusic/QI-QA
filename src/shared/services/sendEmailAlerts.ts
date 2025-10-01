@@ -24,7 +24,7 @@ export async function sendEmailsAlerts({
         "ric@rovimusic.com",
         "market.places@rovimusic.com",
       ],
-      subject: `Alerta en ${where} - Nivel: ${level}`,
+      subject: `${where} - Alerta nivel: ${level}`,
       text: `${message}`,
       //react: AlertsEmail(payload),
     });

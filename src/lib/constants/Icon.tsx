@@ -24,6 +24,7 @@ import {
   faPlus,
   faRotate,
   faScrewdriverWrench,
+  faShop,
   faStore,
   faTags,
   faToolbox,
@@ -68,8 +69,15 @@ export const iconComponents: Record<string, (props?: any) => JSX.Element> = {
     <FontAwesomeIcon icon={faCircleInfo} {...props} />
   ),
   Eye: (props: any) => <FontAwesomeIcon icon={faEye} {...props} />,
-  "Triangle-Exclamation": (props: any) => <FontAwesomeIcon icon={faTriangleExclamation} {...props} />,
-  Logout: (props: any) => <FontAwesomeIcon icon={faArrowRightFromBracket} {...props}/>,
-  Filter: (props: any) => <FontAwesomeIcon icon={faFilter} {...props}/>,
-  'File-Lines': (props: any) => <FontAwesomeIcon icon={faFileLines} {...props}/>
+  "Triangle-Exclamation": (props: any) => (
+    <FontAwesomeIcon icon={faTriangleExclamation} {...props} />
+  ),
+  Logout: (props: any) => (
+    <FontAwesomeIcon icon={faArrowRightFromBracket} {...props} />
+  ),
+  Filter: (props: any) => <FontAwesomeIcon icon={faFilter} {...props} />,
+  "File-Lines": (props: any) => (
+    <FontAwesomeIcon icon={faFileLines} {...props} />
+  ),
+  Shop: (props: any) => <FontAwesomeIcon icon={faShop} {...props} />,
 };

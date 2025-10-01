@@ -63,7 +63,7 @@ class ProcessorMonitor {
 
       if (diffMin > 70) {
         await this.sendAlert({
-          message: `El procesador no ha tenido actividad en ${diffMin} minutos. Última actividad: ${lastDate}`,
+          message: `PROCESADOR no ha tenido actividad en ${diffMin} minutos. Última actividad: ${lastDate}`,
           level: "CRITICAL",
           where: "Procesador",
         });
@@ -86,7 +86,7 @@ class ProcessorMonitor {
 
       if (getErrorPercentage >= 10 && getErrorPercentage < 30) {
         await this.sendAlert({
-          message: `El procesador tiene un ${getErrorPercentage.toFixed(
+          message: `PROCESADOR tiene un ${getErrorPercentage.toFixed(
             2
           )}% de errores.`,
           level: "WARNING",
@@ -94,7 +94,7 @@ class ProcessorMonitor {
         });
       } else if (getErrorPercentage >= 30 && getErrorPercentage < 50) {
         await this.sendAlert({
-          message: `El procesador tiene un ${getErrorPercentage.toFixed(
+          message: `PROCESADOR tiene un ${getErrorPercentage.toFixed(
             2
           )}% de errores.`,
           level: "ERROR",
@@ -102,7 +102,7 @@ class ProcessorMonitor {
         });
       } else if (getErrorPercentage >= 50) {
         await this.sendAlert({
-          message: `El procesador tiene un ${getErrorPercentage.toFixed(
+          message: `PROCESADOR tiene un ${getErrorPercentage.toFixed(
             2
           )}% de errores.`,
           level: "CRITICAL",
@@ -119,7 +119,7 @@ class ProcessorMonitor {
         if (diffInMinutes >= 10) {
           console.log("han pasado mas de 10 min en este item ", item.sale_id);
           await this.sendAlert({
-            message: `Han pasado más de 10min intentando procesar la orden ${item.sale_id}.`,
+            message: `PROCESADOR - Han pasado más de 10min intentando procesar la orden ${item.sale_id}.`,
             level: "ERROR",
             where: "Procesador",
           });
@@ -132,7 +132,7 @@ class ProcessorMonitor {
     } catch (error: any) {
       console.error("❌ Error al verificar actividad del procesador:", error);
       await this.sendAlert({
-        message: `Error al verificar el estado del procesador: ${error.message}`,
+        message: `PROCESADOR - Error al verificar el estado del procesador: ${error.message}`,
         level: "ERROR",
         where: "Procesador",
       });

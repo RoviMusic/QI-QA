@@ -128,6 +128,8 @@ export default function ShipmentReview({ shipmentData }: Props) {
         (item: any) => item.sale_id == Number(saleId)
       );
 
+      console.log("this dt ", dt);
+
       const result = await validateShipment(
         dt.shipment_id,
         dt._id,

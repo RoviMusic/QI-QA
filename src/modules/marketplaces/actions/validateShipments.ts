@@ -15,14 +15,8 @@ export async function validateShipment(
     headers.append("DOLAPIKEY", process.env.DOLAPIKEY!);
     console.log("validate shipment id ", shipmentId);
     console.log("validate document id ", document_id);
+    console.log("validate shipment ref ", actual_shipment_ref);
 
-    const response = await fetch(
-      `${process.env.DOLIBARR_VALILDATE_SHIPMENT_URL}/${shipmentId}/validate`,
-      {
-        method: "POST",
-        headers: headers,
-      }
-    );
     const conn = await dbConnect();
     const db = conn.connection.useDb("dolibarr_processor", {
       useCache: true,
@@ -31,9 +25,16 @@ export async function validateShipment(
     const DB_PrModel =
       db.models.Processor || db.model<IProcessor>("Processor", ProcessorSchema);
 
+    const response = await fetch(
+      `${process.env.DOLIBARR_VALILDATE_SHIPMENT_URL}/${shipmentId}/validate`,
+      {
+        method: "POST",
+        headers: headers,
+      }
+    );
+
     if (response.status == 200) {
       const result = await response.json();
-      console.log("result ", result);
 
       await DB_PrModel.updateOne(
         { _id: document_id },
@@ -43,15 +44,19 @@ export async function validateShipment(
       return true;
     } else {
       const resultError = await response.json();
-      await DB_PrModel.updateOne(
-        { _id: document_id },
-        {
-          $set: {
-            shipment_reference: `(Err) ${actual_shipment_ref}`,
-            warning: `API Validate Shipment Error ${response.status}: ${resultError.error.message}`,
-          },
-        }
+      console.log(
+        `Error for ${document_id} && shipment ref: ${actual_shipment_ref} `
       );
+      console.log(`--- ${resultError.error.message} ----`);
+      // await DB_PrModel.updateOne(
+      //   { _id: document_id },
+      //   {
+      //     $set: {
+      //       shipment_reference: `(Err) ${actual_shipment_ref}`,
+      //       warning: `API Validate Shipment Error ${response.status}: ${resultError.error.message}`,
+      //     },
+      //   }
+      // );
       throw new Error("Failed to validate shipment");
     }
   } catch (error: any) {

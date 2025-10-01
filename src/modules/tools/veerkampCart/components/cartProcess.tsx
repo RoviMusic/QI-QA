@@ -59,9 +59,9 @@ export default function CartProcess({ token }: { token: string | undefined }) {
   const [text, setText] = useState("");
   const [items, setItems] = useState<Item[]>([]);
 
-  const setStatusRow = (status: any) => {
+  const setStatusRow = (record: any) => {
     let statusColor = "";
-    switch (status) {
+    switch (record.status) {
       case "good":
         statusColor = tableStyles.processedRow;
         break;

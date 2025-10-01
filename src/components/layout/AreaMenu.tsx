@@ -200,7 +200,14 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
       label: "Ecommerce",
       key: "magento",
       icon: getIcon("Cart"),
-      onClick: () => router.push("/magento"),
+      children: [
+        {
+          label: "Departamentos",
+          key: "departments",
+          onClick: () => router.push("/ecommerce/departments"),
+          icon: getIcon("Shop"),
+        },
+      ],
     },
     // {
     //   label: "Reportes",

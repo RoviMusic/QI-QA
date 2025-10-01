@@ -6,6 +6,7 @@ import { CircleButton } from "./Buttons";
 import { formattedPriceNormalized } from "@/lib/formattedPrice";
 import dayjs from "dayjs";
 import { TableText } from "./Titulo";
+import React from "react";
 const { Link } = Typography;
 
 /**
@@ -23,8 +24,11 @@ type Props = {
     onRowClick?: (record: any) => void;
     onRowHover?: (record: any) => void;
   };
-  getRowClass?: (type: any, shipment?: string) => string;
+  getRowClass?: (record: any) => string;
+  getRowStyle?: (record: any) => React.CSSProperties;
   hasPagination?: boolean;
+  rowHoverable?: boolean;
+  loading?: boolean;
 };
 
 function renderColumns(
@@ -136,6 +140,9 @@ function DinamicTable({
   rowActions = undefined,
   hasPagination = true,
   getRowClass,
+  getRowStyle,
+  rowHoverable = true,
+  loading = false,
 }: Props) {
   return (
     <div>
@@ -159,29 +166,39 @@ function DinamicTable({
                 position: ["topRight"],
                 defaultPageSize: 100,
               }
-            : false
+            : {
+                pageSizeOptions: [dataSource.length],
+                total: dataSource.length,
+                showTotal: handleTotal,
+                position: ["topRight"],
+                defaultPageSize: dataSource.length,
+                showSizeChanger: false,
+              }
         }
         tableLayout="auto"
         //scroll={{ x: "max-content" }}
         scroll={{ x: "max-content" }}
         rowClassName={(record) => {
-          return rowStyle
-            ? getRowClass!(record.type, record.shipment_reference)
-            : "";
+          return rowStyle && getRowClass ? getRowClass!(record) : "";
         }}
         onRow={(record, rowIndex) => {
-          return rowActions
-            ? {
-                onClick: (event) => {
-                  rowActions.onRowClick ? rowActions.onRowClick(record) : {};
-                },
-                onMouseEnter: (event) => {
-                  rowActions.onRowHover ? rowActions.onRowHover(record) : {};
-                },
-              }
-            : {};
+          const rowProps: React.HTMLAttributes<HTMLElement> = {};
+          if (rowStyle && getRowStyle) {
+            rowProps.style = getRowStyle(record);
+          }
+          if (rowActions) {
+            rowProps.onClick = (event) => {
+              rowActions.onRowClick ? rowActions.onRowClick(record) : {};
+            };
+            rowProps.onMouseEnter = (event) => {
+              rowActions.onRowHover ? rowActions.onRowHover(record) : {};
+            };
+          }
+          return rowProps;
         }}
         sticky={true}
+        rowHoverable={rowHoverable}
+        loading={loading}
       />
     </div>
   );
