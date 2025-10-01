@@ -96,6 +96,17 @@ export const getTextColorForBackground = (backgroundColor: string): string => {
   return luminance > 0.5 ? "#000000" : "#ffffff";
 };
 
+export function getEnumOptions<T extends Record<string, string | number>>(
+  enumObj: T
+): { label: string; value: number }[] {
+  return Object.entries(enumObj)
+    .filter(([key]) => isNaN(Number(key))) // Filtra solo las claves string
+    .map(([label, value]) => ({
+      label,
+      value: Number(value), // Asegura que el value sea número
+    }));
+}
+
 // Tremor focusInput [v0.0.2]
 
 export const focusInput = [

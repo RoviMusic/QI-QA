@@ -17,4 +17,5 @@ export interface IProcessor extends Document {
   sale_id: number;
   pack_id: number;
   shipment_reference: string;
+  warning?: string;
 }

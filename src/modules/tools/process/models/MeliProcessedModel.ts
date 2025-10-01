@@ -15,6 +15,9 @@ export const ProcessorSchema: Schema<IProcessor> = new Schema(
     shipment_reference: {
       type: String,
     },
+    warning: {
+      type: String,
+    },
   },
   {
     collection: "orchestrator.meli.batches.processed",

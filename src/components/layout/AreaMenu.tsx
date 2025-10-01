@@ -129,6 +129,11 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
               key: "fbaProc",
               onClick: () => router.push("/marketplaces/processFBA"),
             },
+            {
+              label: "Visualizador de stock",
+              key: "stockviewer",
+              onClick: () => router.push("/marketplaces/stockMarketsViewer"),
+            },
           ],
         },
         {
@@ -202,6 +207,12 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
       icon: getIcon("Cart"),
       children: [
         {
+          label: "Categorías",
+          key: "categories",
+          onClick: () => router.push("/ecommerce/categories"),
+          icon: getIcon("Shop"),
+        },
+        {
           label: "Departamentos",
           key: "departments",
           onClick: () => router.push("/ecommerce/departments"),
@@ -209,12 +220,6 @@ export default function AreaMenu({ mode = "horizontal" }: MenuProps) {
         },
       ],
     },
-    // {
-    //   label: "Reportes",
-    //   key: "reports",
-    //   icon: getIcon("Folder"),
-    //   onClick: () => router.push("/reports"),
-    // },
     {
       label: "Reportes",
       key: "reports",

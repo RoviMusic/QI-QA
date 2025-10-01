@@ -11,7 +11,6 @@ import {
 import { MarketsEnmu } from "@/shared/enums/MarketEnum";
 import { DinamicColumnsType } from "@/shared/types/tableTypes";
 import {
-  Badge,
   Checkbox,
   Col,
   DatePicker,
@@ -24,7 +23,7 @@ import {
   Typography,
 } from "antd";
 import type { DatePickerProps } from "antd";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { GetProp } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import JsonView from "@uiw/react-json-view";
@@ -360,6 +359,9 @@ export default function Processor({ data, activity }: ProcessorProps) {
 
   const getRowClass = (record: any) => {
     let classColor = "";
+    if (record.warning) {
+      return tableStyles.warningRow;
+    }
     if (record.shipment_reference?.startsWith("NE-")) {
       return tableStyles.neRow;
     }
@@ -389,7 +391,7 @@ export default function Processor({ data, activity }: ProcessorProps) {
           </Space>
         </Flex>
         <GlassCard>
-          <Row gutter={[20, 20]} justify="space-between">
+          <Row gutter={[20, 20]}>
             <Col xl={10} lg={12} md={24} sm={24} xs={24}>
               <Space direction="vertical" style={{ width: "100%" }}>
                 <LabelTitle>Buscar </LabelTitle>
@@ -401,6 +403,13 @@ export default function Processor({ data, activity }: ProcessorProps) {
                 />
               </Space>
             </Col>
+
+            {/* <Col span={"auto"}>
+              <Space direction="vertical">
+                <LabelTitle>Mostrar todo (historial)</LabelTitle>
+                <Checkbox />
+              </Space>
+            </Col> */}
 
             <Col span={24}>
               <Flex gap={10} justify="space-between">
@@ -474,6 +483,7 @@ export default function Processor({ data, activity }: ProcessorProps) {
             dataSource={displayedData}
             rowStyle
             getRowClass={getRowClass}
+            rowHoverable={false}
             //rowActions={{ onRowClick: handleDetail }}
           />
         </GlassCard>
