@@ -48,15 +48,26 @@ export async function validateShipment(
         `Error for ${document_id} && shipment ref: ${actual_shipment_ref} `
       );
       console.log(`--- ${resultError.error.message} ----`);
-      // await DB_PrModel.updateOne(
-      //   { _id: document_id },
-      //   {
-      //     $set: {
-      //       shipment_reference: `(Err) ${actual_shipment_ref}`,
-      //       warning: `API Validate Shipment Error ${response.status}: ${resultError.error.message}`,
-      //     },
-      //   }
-      // );
+      const warningMessage = `API Validate Shipment Error ${response.status}: ${resultError.error.message}`;
+      const currentDoc = await DB_PrModel.findById(document_id);
+      const currentRef = currentDoc.shipment_reference;
+
+      // Solo agregar (Err) si no lo tiene ya
+      const errorRef = currentRef.startsWith("(Err)")
+        ? currentRef
+        : `(Err) ${actual_shipment_ref}`;
+
+      await DB_PrModel.updateOne(
+        { _id: document_id },
+        {
+          $push: {
+            warning: warningMessage, // Agrega al array, lo crea si no existe
+          },
+          $set: {
+            shipment_reference: errorRef,
+          },
+        }
+      );
       throw new Error("Failed to validate shipment");
     }
   } catch (error: any) {
@@ -112,12 +123,24 @@ export async function UpdatedMongo(data: any[]) {
           `Error for ${item._id} && sale id: ${item.sale_id} && shipment ref: ${item.shipment_reference} `
         );
         console.log(`--- ${resultError.error.message} ----`);
+
+        const warningMessage = `API Validate Shipment Error ${response.status}: ${resultError.error.message}`;
+        const currentDoc = await DB_PrModel.findById(item._id);
+        const currentRef = currentDoc.shipment_reference;
+
+        // Solo agregar (Err) si no lo tiene ya
+        const errorRef = currentRef.startsWith("(Err)")
+          ? currentRef
+          : `(Err) ${currentRef}`;
+
         await DB_PrModel.updateOne(
           { _id: item._id },
           {
+            $push: {
+              warning: warningMessage, // Agrega al array, lo crea si no existe
+            },
             $set: {
-              shipment_reference: `(Err) ${item.shipment_reference}`,
-              warning: `API Validate Shipment Error ${response.status}: ${resultError.error.message}`,
+              shipment_reference: errorRef,
             },
           }
         );
@@ -166,12 +189,13 @@ export async function MassiveValidate(data: any[]) {
       } else {
         const errorData = await response.json();
         console.log(`Error for ${item._id}: ${errorData}`);
+        const warningMessage = `API Validate Shipment Error ${response.status}: ${errorData.message || errorData.error.message}`;
 
         await DB_PrModel.updateOne(
           { _id: item._id },
           {
-            $set: {
-              warning: `API Validate Shipment Error ${response.status}: ${errorData.message || errorData.error.message}`,
+            $push: {
+              warning: warningMessage, // Agrega al array, lo crea si no existe
             },
           }
         );

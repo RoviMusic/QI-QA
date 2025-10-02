@@ -22,9 +22,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export default async function SyncProcessPage() {
-  // const meliData = await GetAllMeliData();
-  // const amazonData = await GetAllAmazonData();
-
   const allProcessorData = await GetAllProcessorData();
   const processorActivity = await GetProcessorActivity();
 
@@ -58,13 +55,6 @@ export default async function SyncProcessPage() {
     <>
       <AutoRefresher intervalMinutes={15} />
       <Container>
-        {/* <p>
-          Última actualización de página:{" "}
-          {dayjs
-            .utc()
-            .tz("America/Mexico_City")
-            .format("DD/MM/YYYY [a las] HH:mm:ss a")}
-        </p> */}
         <Flex vertical gap={50}>
           <Sync
             syncTotalErrors={syncErrors}

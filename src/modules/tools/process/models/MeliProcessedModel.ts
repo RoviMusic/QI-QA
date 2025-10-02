@@ -16,7 +16,7 @@ export const ProcessorSchema: Schema<IProcessor> = new Schema(
       type: String,
     },
     warning: {
-      type: String,
+      type: [String],
     },
   },
   {

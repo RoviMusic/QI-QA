@@ -24,7 +24,7 @@ import {
 } from "antd";
 import type { DatePickerProps } from "antd";
 import { useMemo, useState } from "react";
-import type { GetProp } from "antd";
+import type { GetProp, CheckboxProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import JsonView from "@uiw/react-json-view";
 import tableStyles from "@/styles/Tables.module.css";
@@ -70,21 +70,6 @@ export default function Processor({ data, activity }: ProcessorProps) {
           </>
         );
       },
-      // type: "link",
-      // actions: [
-      //   {
-      //     onPress: (record) => {
-      //       //enviar a numero de orden en market
-      //       console.log("Order details:", record);
-      //       if (record.market === MarketsEnmu.Meli && record.sale_id) {
-      //         window.open(
-      //           `${process.env.NEXT_PUBLIC_MELI_ORDERS_URL}/${record.sale_id}/detalle`,
-      //           "_blank"
-      //         );
-      //       }
-      //     },
-      //   },
-      // ],
     },
     {
       title: "SKU",
@@ -236,12 +221,11 @@ export default function Processor({ data, activity }: ProcessorProps) {
     "wl",
     "cop",
   ]);
-
   const [selectedShippingTypes, setSelectedShippingTypes] = useState<string[]>(
     []
   );
-
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const [showAll, setShowAll] = useState<boolean>(false);
 
   const marketMap: Record<string, string> = {
     meli: "Mercado Libre",
@@ -255,6 +239,10 @@ export default function Processor({ data, activity }: ProcessorProps) {
     drop_off: "drop_off",
     cross_docking: "cross_docking",
     no_shipping: "Sin tipo de envío",
+  };
+
+  const onChangeShowAll: CheckboxProps["onChange"] = (e) => {
+    setShowAll(e.target.checked);
   };
 
   const filterByMarket = (items: any[]) =>
@@ -293,6 +281,15 @@ export default function Processor({ data, activity }: ProcessorProps) {
     );
   };
 
+  const filterByAll = (items: any[]) => {
+    if (!showAll) {
+      return items.filter(
+        (item) => !item.shipment_reference?.startsWith("NE-")
+      );
+    }
+    return items;
+  };
+
   const filterMarket = useMemo(
     () => filterByMarket(data),
     [data, selectedMarkets]
@@ -306,6 +303,11 @@ export default function Processor({ data, activity }: ProcessorProps) {
   const filterMarketShippingAndDate = useMemo(
     () => filterByDate(filterMarketAndShipping),
     [filterMarketAndShipping, selectedDate]
+  );
+
+  const filterMarketShipDateAndAll = useMemo(
+    () => filterByAll(filterMarketShippingAndDate),
+    [filterMarketShippingAndDate, showAll]
   );
 
   const onChangeMarket: GetProp<typeof Checkbox.Group, "onChange"> = (
@@ -339,11 +341,23 @@ export default function Processor({ data, activity }: ProcessorProps) {
           )
         );
 
-  // Aplica ambos filtros: mercado y búsqueda
-  const displayedData = useMemo(
-    () => filterBySearch(filterMarketShippingAndDate),
-    [filterMarketShippingAndDate, searchTerm]
-  );
+  // Aplica todos los filtros
+  // const displayedData = useMemo(
+  //   () => filterBySearch(filterMarketShippingAndDate),
+  //   [filterMarketShippingAndDate, searchTerm]
+  // );
+  const displayedData = useMemo(() => {
+    //si hay busqueda, incluir todos los datos originales
+    if (searchTerm.trim()) {
+      return data.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+    //else, retornar los ya filtrados
+    return filterMarketShipDateAndAll;
+  }, [data, filterMarketShipDateAndAll, searchTerm]);
 
   const handleDetail = (data: any) => {
     //if (data.type === "errors") {
@@ -404,12 +418,12 @@ export default function Processor({ data, activity }: ProcessorProps) {
               </Space>
             </Col>
 
-            {/* <Col span={"auto"}>
+            <Col span={"auto"}>
               <Space direction="vertical">
                 <LabelTitle>Mostrar todo (historial)</LabelTitle>
-                <Checkbox />
+                <Checkbox checked={showAll} onChange={onChangeShowAll} />
               </Space>
-            </Col> */}
+            </Col>
 
             <Col span={24}>
               <Flex gap={10} justify="space-between">
