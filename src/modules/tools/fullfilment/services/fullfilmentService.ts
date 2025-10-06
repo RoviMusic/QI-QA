@@ -1,5 +1,6 @@
 import { mainApi } from "@/lib/api/client";
 import {
+  FullfilmentData,
   FullfilmentResponseType,
   FullfilmentType,
 } from "../types/fullfilmentType";
@@ -9,7 +10,8 @@ export class FullfilmentService {
   async getFulfillmentData(): Promise<FullfilmentType> {
     try {
       const response = await mainApi.get<FullfilmentResponseType>(
-        "/fulfillment_p1", {timeout: 60000 * 5}
+        "/fulfillment_p1",
+        { timeout: 60000 * 5 }
       );
       console.log("Fulfillment data fetched:", response);
 
@@ -29,13 +31,21 @@ export class FullfilmentService {
     }
   }
 
-  async processFulfillmentItem(inventory_id: string, authToken: string): Promise<void> {
+  async processFulfillmentItem(
+    inventory_id: string,
+    authToken: string
+  ): Promise<void> {
     try {
-      const response: any = await mainApi.post(`fulfillment?inventory_id=${inventory_id}&authToken=${authToken}`, {timeout: 60000*5} );
+      const response: any = await mainApi.post(
+        `fulfillment?inventory_id=${inventory_id}&authToken=${authToken}`,
+        { timeout: 60000 * 5 }
+      );
       //console.warn("Fulfillment item processed:", response);
       if (!response.success) {
         console.error("Error processing fulfillment item:", response.message);
-        throw new Error(response.message || "Failed to process fulfillment item");
+        throw new Error(
+          response.message || "Failed to process fulfillment item"
+        );
       }
       return response.data;
     } catch (error) {
@@ -47,7 +57,8 @@ export class FullfilmentService {
   async getFulfillmentAllTogether(): Promise<FullfilmentType> {
     try {
       const response = await mainApi.post<FullfilmentResponseType>(
-        "/fulfillment", {timeout: 60000 * 5}
+        "/fulfillment",
+        { timeout: 60000 * 5 }
       );
       console.log("Fulfillment data fetched:", response);
 
@@ -61,6 +72,25 @@ export class FullfilmentService {
         columns: response.columns || [],
         authToken: response.authToken || "",
       };
+    } catch (error) {
+      console.error("Error fetching fulfillment data:", error);
+      throw error;
+    }
+  }
+
+  async getFullfilmentV2(): Promise<FullfilmentData[]> {
+    try {
+      const response = await fetch("http://localhost:11002/picking-reports", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          //"Access-Control-Allow-Origin": "*",
+        },
+      });
+
+      const jsonResponse = await response.json();
+
+      return jsonResponse.data;
     } catch (error) {
       console.error("Error fetching fulfillment data:", error);
       throw error;
