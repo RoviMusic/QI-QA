@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { CircleButton } from "@/components/core/Buttons";
 import { DeleteDepartment } from "../services/departmentsService";
 import { useCategoriesModalStore } from "../stores/categoriesModalStore";
+import { useAlertsModalStore } from "@/shared/stores/alertStore";
 
 interface DepartmentsListProps {
   departmentsData: DepartmentsType[];
@@ -21,8 +22,16 @@ export default function DepartmentsList({
 }: DepartmentsListProps) {
   const { openCreateModal, openEditModal } = useDepartmentModalStore();
   const { openModal } = useCategoriesModalStore();
+  const { openAlert } = useAlertsModalStore();
   const router = useRouter();
   const { message } = App.useApp();
+
+  const deleteDepartment = (departmentId: number) => {
+    openAlert("sure", "Esto eliminará el departamento. ¿Continuar?", () => {
+      console.log("Usuario confirmó la acción de eliminar.");
+      handleDeleteDepartment(departmentId);
+    });
+  };
 
   const handleDeleteDepartment = async (departmentId: number) => {
     // Lógica para eliminar el departamento
@@ -38,10 +47,11 @@ export default function DepartmentsList({
       }
     } catch (error) {
       console.error("Error al eliminar el departamento:", error);
-      message.open({
-        type: "error",
-        content: "Hubo un error al eliminar el departamento",
-      });
+      openAlert("error", "Hubo un error al eliminar el departamento");
+      // message.open({
+      //   type: "error",
+      //   content: "Hubo un error al eliminar el departamento",
+      // });
     }
   };
 
@@ -96,18 +106,11 @@ export default function DepartmentsList({
             tooltip="Editar departamento"
           />
 
-          <Popconfirm
-            title="¿Estás seguro de eliminar este departamento?"
-            description="Esta acción no se puede deshacer."
-            onConfirm={() => handleDeleteDepartment(record.id)}
-            okText="Sí, eliminar"
-            cancelText="Cancelar"
-            okType="danger"
-          >
-            <Tooltip title="Eliminar departamento">
-              <Button shape="circle" icon={getIcon("Trash")} />
-            </Tooltip>
-          </Popconfirm>
+          <CircleButton
+            onPress={() => deleteDepartment(record.id)}
+            icon="Trash"
+            tooltip="Eliminar departamento"
+          />
         </Space>
       ),
     },

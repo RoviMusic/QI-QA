@@ -7,6 +7,7 @@ import { UpdateCategories } from "../services/departmentsService";
 import { useCategoriesModalStore } from "../stores/categoriesModalStore";
 import type { TransferProps } from "antd";
 import { FolderOutlined, TagOutlined } from "@ant-design/icons";
+import { useAlertsModalStore } from "@/shared/stores/alertStore";
 
 interface ModalProps {
   categories: CategoriesType[];
@@ -30,6 +31,7 @@ export default function ModalCategories({
   relationships,
 }: ModalProps) {
   const { message } = App.useApp();
+  const { openAlert } = useAlertsModalStore();
   const { isOpen, selectedDepartment, isLoading, closeModal, setLoading } =
     useCategoriesModalStore();
 
@@ -70,16 +72,10 @@ export default function ModalCategories({
 
         router.refresh(); // Refresca la página para actualizar los datos
       } else {
-        message.open({
-          type: "error",
-          content: "Error al procesar la solicitud",
-        });
+        openAlert("error", "Hubo un error al actualizar las categorías");
       }
     } catch (error: any) {
-      message.open({
-        type: "error",
-        content: "Error al procesar la solicitud",
-      });
+      openAlert("error", "Error al procesar la solicitud");
       console.error("Error:", error);
     } finally {
       setLoading(false);
